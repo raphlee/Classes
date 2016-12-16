@@ -30,7 +30,7 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 		log("%d complete: %d", trackIndex, loopCount);
 	});
 */
-	log("%f", soldier->findBone("gun")->worldRotation);
+	//log("%f", soldier->findBone("gun")->worldRotation);
 
 	return soldier;
 }
