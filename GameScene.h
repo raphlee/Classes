@@ -31,6 +31,8 @@ public:
 	Sprite *bg_3B;
 
 	Follow *camera;
+	Node* follow;
+
 	TMXTiledMap *tmxCurrentMap;
 	TMXTiledMap *tmxNextMap;
 	Point originOfLastMap;
@@ -49,6 +51,7 @@ private:
 
 
 	void update(float dt);
+	void updateSoldier(float dt);
 
 	void createPool();
 	void createSoldier(Point pos);

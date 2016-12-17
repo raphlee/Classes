@@ -12,6 +12,7 @@ using namespace std;
 
 // define
 #define PI								3.1415926
+#define Y_INCREMENT_RATIO				7						
 #define KEYSCORE						"KEYME"
 #define KEYBACKGROUND					"KEYBG"
 #define KEYSOUND						"KEYSOUND"

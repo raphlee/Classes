@@ -40,21 +40,19 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 void Soldier::updateSoldier(float dt)
 {
 	this->setPositionX(body->GetPosition().x * PTM_RATIO);
-	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeSoldier.height / 2 + 2);
+	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeSoldier.height / 2 + 4);
 
 	switch (cur_state)
 	{
-	case JUMPING:
-		jumpping();
-		break;
-
 	case IDLE_SHOOT:
 		idleShoot();
 		break;
 	case IDLE_SHOOT_UP:
 		idleShootUp();
 		break;
-
+	case JUMPING:
+		jumping();
+		break;
 	case LYING_SHOOT:
 		lyingShoot();
 		break;
@@ -95,12 +93,25 @@ void Soldier::move(Point bgPos)
 
 }
 
+void Soldier::initPhysic(b2World * world, Point pos)
+{
+	auto origin = Director::getInstance()->getVisibleOrigin();
+
+	bodyDef.userData = this;			// pass sprite to bodyDef with argument: userData
+
+	bodyDef.position.Set((pos.x + origin.x) / PTM_RATIO, (pos.y + origin.y) / PTM_RATIO);
+	bodyDef.type = b2_dynamicBody;
+
+	body = world->CreateBody(&bodyDef);
+	GB2ShapeCache::sharedGB2ShapeCache()->addFixturesToBody(body, "soldier");
+}
+
 void Soldier::idleShoot()
 {
 	if (pre_state != cur_state) {
 		
 		if (pre_state == LYING_SHOOT) {
-
+			body->SetTransform(body->GetPosition(), 0);
 		}
 
 		clearTracks();
@@ -114,7 +125,7 @@ void Soldier::idleShootUp()
 	
 	if (pre_state != cur_state) {
 		if (pre_state == LYING_SHOOT) {
-
+			body->SetTransform(body->GetPosition(), 0);
 		}
 
 		clearTracks();
@@ -123,11 +134,11 @@ void Soldier::idleShootUp()
 	}
 }
 
-void Soldier::jumpping()
+void Soldier::jumping()
 {
 	if (pre_state != cur_state) {
 		if (pre_state == LYING_SHOOT) {
-			
+			body->SetTransform(body->GetPosition(), 0);
 		}
 
 		clearTracks();
@@ -135,6 +146,7 @@ void Soldier::jumpping()
 		addAnimation(State::JUMPING, "jumping", false);
 		addAnimation(State::JUMPING, "jumping", false);
 		auto entry = addAnimation(State::JUMPING, "jumping", false);
+		addAnimation(State::JUMPING, "standing-shoot", true);
 		
 		/*this->setTrackStartListener(entry, [&](int trackIndex) {
 			
@@ -152,7 +164,7 @@ void Soldier::jumpping()
 void Soldier::lyingShoot()
 {
 	if (pre_state != cur_state) {
-		
+		body->SetTransform(body->GetPosition(), -PI/ 2);
 		clearTracks();
 		setAnimation(State::LYING_SHOOT, "lie-shoot", true);
 		pre_state = LYING_SHOOT;
@@ -163,7 +175,7 @@ void Soldier::runningShoot()
 {
 	if (pre_state != cur_state) {
 		if (pre_state == LYING_SHOOT) {
-
+			body->SetTransform(body->GetPosition(), 0);
 		}
 
 		clearTracks();
@@ -176,7 +188,7 @@ void Soldier::runningShootUp()
 {
 	if (pre_state != cur_state) {
 		if (pre_state == LYING_SHOOT) {
-
+			body->SetTransform(body->GetPosition(), 0);
 		}
 
 		clearTracks();
@@ -189,7 +201,7 @@ void Soldier::runningShootDown()
 {
 	if (pre_state != cur_state) {
 		if (pre_state == LYING_SHOOT) {
-
+			body->SetTransform(body->GetPosition(), 0);
 		}
 
 		clearTracks();
