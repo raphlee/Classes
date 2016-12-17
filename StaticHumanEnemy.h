@@ -17,7 +17,7 @@ public:
 
 	virtual void move();
 	virtual void shoot();
-	virtual void updateEnemy(float dt);
+	void updateEnemy(float dt);
 };
 
 #endif // __ENEMY_H__

@@ -9,7 +9,7 @@ using namespace spine;
 class B2Skeleton : public SkeletonAnimation
 {
 public:
-
+	
 	B2Skeleton(string jsonFile, string atlasFile, float scale);
 
 	static B2Skeleton* create(string jsonFile, string atlasFile, float scale);

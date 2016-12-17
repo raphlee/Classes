@@ -1,5 +1,6 @@
 #include "GameScene.h"
 #include "SimpleAudioEngine.h"
+#include "DynamicHumanEnemy.h"
 
 USING_NS_CC;
 
@@ -7,34 +8,34 @@ Hud *hud;
 
 Scene* GameScene::createScene()
 {
-    // 'scene' is an autorelease object
-    auto scene = Scene::create();
-    
-    // 'layer' is an autorelease object
-    auto layer = GameScene::create();
+	// 'scene' is an autorelease object
+	auto scene = Scene::create();
+
+	// 'layer' is an autorelease object
+	auto layer = GameScene::create();
 	hud = Hud::create();
 
-    // add layer as a child to scene
-    scene->addChild(layer);
+	// add layer as a child to scene
+	scene->addChild(layer);
 	scene->addChild(hud);
 
-    // return the scene
-    return scene;
+	// return the scene
+	return scene;
 }
 
 // on "init" you need to initialize your instance
 bool GameScene::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    if ( !Layer::init() )
-    {
-        return false;
-    }
-    
-    auto visibleSize = Director::getInstance()->getVisibleSize();
-    Vec2 origin = Director::getInstance()->getVisibleOrigin();
-
+	//////////////////////////////
+	// 1. super init first
+	if (!Layer::init())
+	{
+		return false;
+	}
+	
+	auto visibleSize = Director::getInstance()->getVisibleSize();
+	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	posGenEnemy = Point(INT_MAX, INT_MAX);
 	// world
 	world = new b2World(b2Vec2(0, -visibleSize.height * 8.0f / 3.0f / PTM_RATIO));
 
@@ -52,19 +53,36 @@ bool GameScene::init()
 	world->SetAllowSleeping(true);
 	world->SetContinuousPhysics(true);
 
-	createSoldier(Point(SCREEN_SIZE.width * 0.1f, SCREEN_SIZE.height * 0.5f));
+
 	createBackground();
+	createPool();
+	
 
 	indexOfCurrentMap = 1;
 	originOfLastMap = Point(0, 0);
 	createMap(tmxNextMap, originOfLastMap, layNextMap);
 
+	// test dynamic human enemy
+
+
+	createSoldier(Point(SCREEN_SIZE.width * 0.1f, SCREEN_SIZE.height * 0.5f));
+
 	auto listener = new CollisionListener();
 	world->SetContactListener(listener);
 
 	this->scheduleUpdate();
-    
-    return true;
+
+	this->schedule([&](float dt) {
+		if (posGenEnemy != Point(INT_MAX,INT_MAX)) {
+			genEnemy();
+			if ((soldier->getPosition().x + SCREEN_SIZE.width / 2) > posGenEnemy.x) {
+				posGenEnemy = Point(INT_MAX, INT_MAX);
+			}
+		}
+		
+	}, 1.0f, "timer");
+
+	return true;
 }
 
 /************************************************************************/
@@ -77,6 +95,12 @@ void GameScene::update(float dt)
 
 	world->Step(dt, velocityIterations, positionIterations);
 	soldier->updateSoldier(dt);
+	//dynamicEnenmy->updateEnemy(dt);
+	for (int i = 0; i < dEnemyPool->count(); i++) {
+		((DynamicHumanEnemy*)dEnemyPool->getObjectAtIndex(i))->updateEnemy(dt);;
+	}
+
+
 
 	controlSneakyJoystick();
 	controlSneakyButton();
@@ -89,7 +113,11 @@ void GameScene::update(float dt)
 	loadNextMap();
 
 	//if (bg->getPosition().x < soldier->getPosition().x)
-		bg_1A->setPosition(soldier->body->GetPosition().x * PTM_RATIO, SCREEN_SIZE.height / 2);
+	bg_1A->setPosition(soldier->body->GetPosition().x * PTM_RATIO, SCREEN_SIZE.height / 2);
+
+	if (posGenEnemy == Point(INT_MAX,INT_MAX)) {
+		checkGenEnemy();
+	}
 }
 
 /************************************************************************/
@@ -97,10 +125,65 @@ void GameScene::update(float dt)
 /************************************************************************/
 void GameScene::createPool()
 {
-	pool = CCArray::createWithCapacity(50);
-	pool->retain();
+	dEnemyPool = CCArray::createWithCapacity(8);
+	dEnemyPool->retain();
+	for (int i = 0; i < 8; i++) {
+		auto enemy = DynamicHumanEnemy::create(scaleOfMap*0.1f);
+		enemy->setPosition(INT_MAX, INT_MAX);
+		enemy->initCirclePhysic(world, Point(INT_MAX, INT_MAX));
+		enemy->body->SetType(b2_staticBody);
+		this->addChild(enemy);
+		//auto  enemy = DynamicHumanEnemy::create(scaleOfMap*0.1f);
+		dEnemyPool->addObject(enemy);
+	}
+	indexDEnemy = 0;
+}
 
+void GameScene::genEnemy()
+{
+	log("gennemy");
+	log("point genenemy: %f, %f", posGenEnemy.x, posGenEnemy.y);
+	auto enemy = (DynamicHumanEnemy*)dEnemyPool->objectAtIndex(indexDEnemy);
+	enemy->body-> SetTransform(b2Vec2(posGenEnemy.x/PTM_RATIO,posGenEnemy.y/PTM_RATIO),0);
+	enemy->body->SetType(b2_dynamicBody);
+	indexDEnemy++;
+	if (indexDEnemy == dEnemyPool->count()) {
+		indexDEnemy = 0;
+	}
 	
+}
+
+void GameScene::checkGenEnemy()
+{
+	if (tmxCurrentMap != nullptr) {
+		auto groupOfGenemy1 = tmxCurrentMap->getObjectGroup("moveEnemy");
+
+		for (auto e : groupOfGenemy1->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scaleOfMap, mObject["y"].asFloat()* scaleOfMap);
+			origin = layCurrentMap->getPosition() + origin;
+			Size sizeOfBound = Size(mObject["width"].asFloat() *scaleOfMap, mObject["height"].asFloat() *scaleOfMap);
+
+			if (origin.x - soldier->getPosition().x > 0 && origin.x - soldier->getPosition().x < SCREEN_SIZE.width / 2) {
+				posGenEnemy = origin + sizeOfBound;
+				return;
+			}
+		}
+	}
+	if (tmxNextMap != nullptr) {
+		auto groupOfGenemy2 = tmxNextMap->getObjectGroup("moveEnemy");
+		for (auto e : groupOfGenemy2->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scaleOfMap, mObject["y"].asFloat()* scaleOfMap);
+			origin = layNextMap->getPosition() + origin;
+			Size sizeOfBound = Size(mObject["width"].asFloat() *scaleOfMap, mObject["height"].asFloat() *scaleOfMap);
+
+			if (origin.x - soldier->getPosition().x > 0 && origin.x - soldier->getPosition().x < SCREEN_SIZE.width / 2) {
+				posGenEnemy = origin + sizeOfBound;
+				return;
+			}
+		}
+	}
 }
 
 /************************************************************************/
@@ -108,7 +191,8 @@ void GameScene::createPool()
 /************************************************************************/
 void GameScene::createSoldier(Point pos)
 {
-	soldier = Soldier::create("soldier/soldier.json", "soldier/soldier.atlas", SCREEN_SIZE.height / 8.0f / 182.0f);
+	//soldier = Soldier::create("soldier/soldier.json", "soldier/soldier.atlas", SCREEN_SIZE.height / 8.0f / 182.0f);
+	soldier = Soldier::create("soldier/soldier.json", "soldier/soldier.atlas", scaleOfMap*0.15f);
 	soldier->setPosition(pos);
 	soldier->initCirclePhysic(world, soldier->getPosition());
 	soldier->body->SetFixedRotation(true);						// pretent body from ratating
@@ -201,7 +285,7 @@ void GameScene::moveBackground()
 		bg_3B->setPosition(SCREEN_SIZE.width * 1.5f, SCREEN_SIZE.height / 2);
 	}
 
-	
+
 }
 
 /************************************************************************/
@@ -222,9 +306,9 @@ void GameScene::loadNextMap()
 {
 	if ((soldier->getPosition().x > (originOfLastMap.x + SCREEN_SIZE.width))) {
 		Point originOfNextmap = Point(originOfLastMap.x + tmxNextMap->getContentSize().width*scaleOfMap, 0);
-		
+
 		freePassedMap(originOfLastMap);
-		
+
 		tmxCurrentMap = tmxNextMap;
 		layCurrentMap = layNextMap;
 		layNextMap = Layer::create();
@@ -346,27 +430,27 @@ void GameScene::buildLadderDown(TMXTiledMap *map, Layer* layer, float scale)
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-void GameScene::buildMoveEnemy(TMXTiledMap * map, float scale)
-{
-	auto groupMoveEnemy = map->getObjectGroup("moveEnemy");
-	for (auto e : groupMoveEnemy->getObjects()) {
-		auto mObject = e.asValueMap();
-		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
-		Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
-
-		Point pos = Point(origin.x + sizeOfBound.width / 2, origin.y + sizeOfBound.height / 2);
-
-		Enemy *e = Enemy::create("enemy-soldier/soldier.json", "enemy-soldier/soldier.atlas", SCREEN_SIZE.height / 8.0f / 242.0f);
-		e->setPosition(pos);
-		e->initCirclePhysic(world, e->getPosition());
-		e->type = Type::MOVE;
-		e->body->SetFixedRotation(true);						// pretent body from ratating
-		e->addAnimation(0, "running", true);
-		addChild(e);
-
-		listEnemy.push_back(e);
-	}
-}
+//void GameScene::buildMoveEnemy(TMXTiledMap * map, float scale)
+//{
+//	auto groupMoveEnemy = map->getObjectGroup("moveEnemy");
+//	for (auto e : groupMoveEnemy->getObjects()) {
+//		auto mObject = e.asValueMap();
+//		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+//		Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+//
+//		Point pos = Point(origin.x + sizeOfBound.width / 2, origin.y + sizeOfBound.height / 2);
+//
+//		Enemy *e = Enemy::create("enemy-soldier/soldier.json", "enemy-soldier/soldier.atlas", SCREEN_SIZE.height / 8.0f / 242.0f);
+//		e->setPosition(pos);
+//		e->initCirclePhysic(world, e->getPosition());
+//		e->type = Type::MOVE;
+//		e->body->SetFixedRotation(true);						// pretent body from ratating
+//		e->addAnimation(0, "running", true);
+//		addChild(e);
+//
+//		listEnemy.push_back(e);
+//	}
+//}
 
 /************************************************************************/
 /* Control joystick                                                     */
