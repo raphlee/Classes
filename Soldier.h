@@ -39,6 +39,8 @@ public:
 
 	void move(Point bgPos);
 
+	void listener();
+
 	void initPhysic(b2World *world, Point pos);
 
 	void idleShoot();

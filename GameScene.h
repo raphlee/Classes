@@ -9,6 +9,7 @@
 #include "Floor.h"
 #include "CollisionListener.h"
 #include "DynamicHumanEnemy.h"
+#include "InfiniteParallaxNode.h"
 
 class GameScene : public cocos2d::Layer
 {
@@ -24,15 +25,9 @@ public:
 
 	b2World *world;
 
-	Sprite *bg_1A;
-	Sprite *bg_1B;
-	Sprite *bg_2A;
-	Sprite *bg_2B;
-	Sprite *bg_3A;
-	Sprite *bg_3B;
-
 	Follow *camera;
 	Node* follow;
+	InfiniteParallaxNode *background;
 
 	TMXTiledMap *tmxCurrentMap;
 	TMXTiledMap *tmxNextMap;
@@ -45,15 +40,9 @@ public:
 	Soldier *soldier;
 	vector<Enemy*> listEnemy;
 
-	//DynamicHumanEnemy* dynamicEnenmy;
-
 	CCArray *dEnemyPool;
-	//queue<DynamicHumanEnemy*> dEnemyPool;
 	int indexDEnemy;
 	Point posGenEnemy;
-
-	
-
 
 public:
 	// main loop in game
@@ -61,15 +50,14 @@ public:
 	void updateSoldier(float dt);
 
 	// process background / map for game
+	void createInfiniteNode();
 	void createBackground();
-	void moveBackground();
 	void createMap(TMXTiledMap *map, Point origin, Layer *layer);
 	void loadNextMap();
 	void freePassedMap(Point originOfLastMap);
 	void buildFloor(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderUp(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderDown(TMXTiledMap *map, Layer* layer, float scale);
-	//void buildMoveEnemy(TMXTiledMap *map, float scale);
 
 	// process hero for game
 	void createSoldier(Point pos);

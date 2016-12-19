@@ -37,8 +37,6 @@ bool GameScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
-	
-
 	// world
 	world = new b2World(b2Vec2(0, -visibleSize.height * 8.0f / 3.0f / PTM_RATIO));
 
@@ -63,13 +61,12 @@ bool GameScene::init()
 	follow->setPosition(origin + visibleSize / 2);
 	addChild(follow);
 
-	
+
+	camera = Follow::create(follow);
+	runAction(camera);
 
 	indexOfCurrentMap = 1;
 	createBackground();
-	camera = Follow::create(bg_1A);
-	runAction(camera);
-
 	createPool();
 	originOfLastMap = Point(0, 0);
 	createMap(tmxNextMap, originOfLastMap, layNextMap);
@@ -80,9 +77,10 @@ bool GameScene::init()
 	auto listener = new CollisionListener();
 	world->SetContactListener(listener);
 
-	/*this->schedule([&](float dt) {
+	/*
+	this->schedule([&](float dt) {
 		if (posGenEnemy != Point(INT_MAX,INT_MAX)) {
-			genEnemy();
+			//genEnemy();
 			if ((soldier->getPositionX() + SCREEN_SIZE.width / 2) > posGenEnemy.x) {
 				posGenEnemy = Point(INT_MAX, INT_MAX);
 			}
@@ -106,30 +104,25 @@ void GameScene::update(float dt)
 	world->Step(dt, velocityIterations, positionIterations);
 
 	//dynamicEnenmy->updateEnemy(dt);
-	for (int i = 0; i < dEnemyPool->count(); i++) {
+	/*for (int i = 0; i < dEnemyPool->count(); i++) {
 		((DynamicHumanEnemy*)dEnemyPool->getObjectAtIndex(i))->updateEnemy(dt);;
-	}
+	}*/
 
 	updateSoldier(dt);
 	controlSneakyJoystick();
 	controlSneakyButton();
 
-	for (auto e : listEnemy) {
-		e->updateEnemy(dt);
-	}
-
 
 	loadNextMap();
-
-	if (bg_1A->getPositionX() <= soldier->getPositionX())
-		bg_1A->setPositionX(soldier->getPositionX());
+	if (follow->getPositionX() <= soldier->getPositionX())
+		follow->setPositionX(soldier->getPositionX());
 
 
 	/*if (posGenEnemy == Point(INT_MAX, INT_MAX)) {
 		checkGenEnemy();
 	}*/
 
-	//moveBackground();
+	background->updatePosition();
 }
 
 void GameScene::updateSoldier(float dt)
@@ -139,7 +132,7 @@ void GameScene::updateSoldier(float dt)
 		soldier->facingRight = true;
 		soldier->cur_state = JUMPING;
 		soldier->body->SetLinearVelocity(b2Vec2(0, 0));
-		soldier->body->SetTransform(b2Vec2((bg_1A->getPositionX() - SCREEN_SIZE.width * 0.35f) / PTM_RATIO,
+		soldier->body->SetTransform(b2Vec2((follow->getPositionX() - SCREEN_SIZE.width * 0.35f) / PTM_RATIO,
 			SCREEN_SIZE.height / PTM_RATIO), soldier->body->GetAngle());
 	}
 }
@@ -217,6 +210,7 @@ void GameScene::checkGenEnemy()
 void GameScene::createSoldier(Point pos)
 {
 	soldier = Soldier::create("soldier/soldier.json", "soldier/soldier.atlas", SCREEN_SIZE.height / 11.0f / 182.0f);
+	soldier->listener();
 	GB2ShapeCache::sharedGB2ShapeCache()->addShapesWithFile("soldier/soldierShape.plist", soldier->sizeSoldier.height / 251.0f);
 	soldier->setPosition(pos);
 	soldier->initPhysic(world, soldier->getPosition());
@@ -224,47 +218,54 @@ void GameScene::createSoldier(Point pos)
 	addChild(soldier, ZORDER_SOLDIER);
 }
 
+void GameScene::createInfiniteNode()
+{
+	background = InfiniteParallaxNode::create();
+	auto bg1_1 = Sprite::create("bg-1.jpg");
+	bg1_1->setScaleX(SCREEN_SIZE.width / bg1_1->getContentSize().width);
+	bg1_1->setScaleY(SCREEN_SIZE.height / bg1_1->getContentSize().height);
+	bg1_1->setAnchorPoint(Point(0,0.5));
+	auto bg1_2 = Sprite::create("bg-1.jpg");
+	bg1_2->setScaleX(SCREEN_SIZE.width / bg1_2->getContentSize().width);
+	bg1_2->setScaleY(SCREEN_SIZE.height / bg1_2->getContentSize().height);
+	bg1_2->setAnchorPoint(Point(0, 0.5));
+	//bg1->setPosition(SCREEN_SIZE / 2);
+	
+	auto bg2_1 = Sprite::create("bg-2.png");
+	bg2_1->setScaleX(SCREEN_SIZE.width / bg2_1->getContentSize().width);
+	bg2_1->setScaleY(SCREEN_SIZE.height / bg2_1->getContentSize().height);
+	bg2_1->setAnchorPoint(Point(0, 0.5f));
+	auto bg2_2 = Sprite::create("bg-2.png");
+	bg2_2->setScaleX(SCREEN_SIZE.width / bg2_2->getContentSize().width);
+	bg2_2->setScaleY(SCREEN_SIZE.height / bg2_2->getContentSize().height);
+	bg2_2->setAnchorPoint(Point(0, 0.5f));
+	auto bg3_1 = Sprite::create("bg-3.png");
+	bg3_1->setScaleX(SCREEN_SIZE.width / bg3_1->getContentSize().width);
+	bg3_1->setScaleY(SCREEN_SIZE.height / bg3_1->getContentSize().height);
+	bg3_1->setAnchorPoint(Point(0, 0.5f));
+	auto bg3_2 = Sprite::create("bg-3.png");
+	bg3_2->setScaleX(SCREEN_SIZE.width / bg3_2->getContentSize().width);
+	bg3_2->setScaleY(SCREEN_SIZE.height / bg3_2->getContentSize().height);
+	bg3_2->setAnchorPoint(Point(0, 0.5f));
+
+
+	background->addChild(bg1_1, 0, Vec2(0.1, 1), Vec2(0,0));
+	background->addChild(bg1_2, 0, Vec2(0.1, 1), Vec2(bg1_1->getBoundingBox().size.width,0));
+	background->addChild(bg2_1, 0, Vec2(0.5, 1), Vec2(0,0));
+	background->addChild(bg2_2, 0, Vec2(0.5, 1), Vec2(bg2_1->getBoundingBox().size.width, 0));
+	background->addChild(bg3_1, 0, Vec2(1, 1), Vec2(0, 0));
+	background->addChild(bg3_2, 0, Vec2(1, 1), Vec2(bg3_1->getBoundingBox().size.width, 0));
+	background->setPosition(Point(0,SCREEN_SIZE.height/2));
+	background->setAnchorPoint(Point(0,0.5f));
+	this->addChild(background, Z_BACKGROUND);
+}
+
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
 void GameScene::createBackground()
 {
-	bg_1A = Sprite::create("bg-4.png");
-	bg_1A->setScaleX(SCREEN_SIZE.width / bg_1A->getContentSize().width);
-	bg_1A->setScaleY(SCREEN_SIZE.height / bg_1A->getContentSize().height);
-	bg_1A->setPosition(SCREEN_SIZE / 2);
-	addChild(bg_1A);
-	/*
-	bg_1B = Sprite::create("bg-1.jpg");
-	bg_1B->setScaleX(SCREEN_SIZE.width / bg_1B->getContentSize().width);
-	bg_1B->setScaleY(SCREEN_SIZE.height / bg_1B->getContentSize().height);
-	bg_1B->setPosition(SCREEN_SIZE.width * 1.5f, SCREEN_SIZE.height / 2);
-	addChild(bg_1B);
-
-	bg_2A = Sprite::create("bg-2.png");
-	bg_2A->setScaleX(SCREEN_SIZE.width / bg_2A->getContentSize().width);
-	bg_2A->setScaleY(SCREEN_SIZE.height / bg_2A->getContentSize().height);
-	bg_2A->setPosition(SCREEN_SIZE / 2);
-	addChild(bg_2A);
-
-	bg_2B = Sprite::create("bg-2.png");
-	bg_2B->setScaleX(SCREEN_SIZE.width / bg_2B->getContentSize().width);
-	bg_2B->setScaleY(SCREEN_SIZE.height / bg_2B->getContentSize().height);
-	bg_2B->setPosition(SCREEN_SIZE.width * 1.5f, SCREEN_SIZE.height / 2);
-	addChild(bg_2B);
-
-
-	bg_3A = Sprite::create("bg-3.png");
-	bg_3A->setScaleX(SCREEN_SIZE.width / bg_3A->getContentSize().width);
-	bg_3A->setScaleY(SCREEN_SIZE.height / bg_3A->getContentSize().height);
-	bg_3A->setPosition(SCREEN_SIZE / 2);
-	addChild(bg_3A);
-
-	bg_3B = Sprite::create("bg-3.png");
-	bg_3B->setScaleX(SCREEN_SIZE.width / bg_3B->getContentSize().width);
-	bg_3B->setScaleY(SCREEN_SIZE.height / bg_3B->getContentSize().height);
-	bg_3B->setPosition(SCREEN_SIZE.width * 1.5f, SCREEN_SIZE.height / 2);
-	addChild(bg_3B);*/
+	createInfiniteNode();
 
 	tmxNextMap = TMXTiledMap::create("map" + StringUtils::toString(indexOfCurrentMap) + ".tmx");
 	tmxNextMap->setAnchorPoint(Vec2(0, 0));
@@ -279,37 +280,6 @@ void GameScene::createBackground()
 	layNextMap->addChild(tmxNextMap);
 }
 
-/************************************************************************/
-/*                                                                      */
-/************************************************************************/
-void GameScene::moveBackground()
-{
-	if (bg_1A->getPositionX() + bg_1A->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-		bg_1A->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-	}
-
-	if (bg_1B->getPositionX() + bg_1B->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-		bg_1B->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-	}
-
-	if (bg_2A->getPositionX() + bg_2A->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-		bg_2A->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-	}
-
-	if (bg_2B->getPositionX() + bg_2B->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-		bg_2B->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-	}
-
-	if (bg_3A->getPositionX() + bg_3A->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-		bg_3A->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-	}
-
-	if (bg_3B->getPositionX() + bg_3B->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-		bg_3B->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-	}
-
-
-}
 
 /************************************************************************/
 /*                                                                      */
@@ -459,32 +429,6 @@ void GameScene::buildLadderDown(TMXTiledMap *map, Layer* layer, float scale)
 }
 
 /************************************************************************/
-/*                                                                      */
-/************************************************************************/
-
-//void GameScene::buildMoveEnemy(TMXTiledMap * map, float scale)
-//{
-//	auto groupMoveEnemy = map->getObjectGroup("moveEnemy");
-//	for (auto e : groupMoveEnemy->getObjects()) {
-//		auto mObject = e.asValueMap();
-//		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
-//		Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
-//
-//		Point pos = Point(origin.x + sizeOfBound.width / 2, origin.y + sizeOfBound.height / 2);
-//
-//		Enemy *e = Enemy::create("enemy-soldier/soldier.json", "enemy-soldier/soldier.atlas", SCREEN_SIZE.height / 8.0f / 242.0f);
-//		e->setPosition(pos);
-//		e->initCirclePhysic(world, e->getPosition());
-//		e->type = Type::MOVE;
-//		e->body->SetFixedRotation(true);						// pretent body from ratating
-//		e->addAnimation(0, "running", true);
-//		addChild(e);
-//
-//		listEnemy.push_back(e);
-//	}
-//}
-
-/************************************************************************/
 /* Control joystick                                                     */
 /************************************************************************/
 void GameScene::controlSneakyJoystick()
@@ -505,7 +449,7 @@ void GameScene::controlSneakyJoystick()
 			soldier->cur_state = RUNNING_SHOOT;
 	}
 	else if (degree >= 30.0f && degree < 70.0f) {
-		soldier->move(bg_1A->getPosition());
+		soldier->move(follow->getPosition());
 		soldier->facingRight = true;
 		if (soldier->onGround)
 			soldier->cur_state = RUNNING_SHOOT_UP;
@@ -518,19 +462,19 @@ void GameScene::controlSneakyJoystick()
 			soldier->cur_state = IDLE_SHOOT_UP;
 	}
 	else if (degree >= 110.0f && degree < 150.0f) {
-		soldier->move(bg_1A->getPosition());
+		soldier->move(follow->getPosition());
 		soldier->facingRight = false;
 		if (soldier->onGround)
 			soldier->cur_state = RUNNING_SHOOT_UP;
 	}
 	else if (degree >= 150.0f && degree < 210.0f) {
-		soldier->move(bg_1A->getPosition());
+		soldier->move(follow->getPosition());
 		soldier->facingRight = false;
 		if (soldier->onGround)
 			soldier->cur_state = RUNNING_SHOOT;
 	}
 	else if (degree >= 210.0f && degree < 250.0f) {
-		soldier->move(bg_1A->getPosition());
+		soldier->move(follow->getPosition());
 		soldier->facingRight = false;
 		if (soldier->onGround)
 			soldier->cur_state = RUNNING_SHOOT_DOWN;
@@ -543,7 +487,7 @@ void GameScene::controlSneakyJoystick()
 			soldier->cur_state = LYING_SHOOT;
 	}
 	else if (degree >= 290.0f && degree < 330.0f) {
-		soldier->move(bg_1A->getPosition());
+		soldier->move(follow->getPosition());
 		soldier->facingRight = true;
 		if (soldier->onGround)
 			soldier->cur_state = RUNNING_SHOOT_DOWN;

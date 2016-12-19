@@ -106,6 +106,8 @@ using namespace std;
 // ratio
 #define PTM_RATIO							32
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
+#define Z_BACKGROUND						0
+#define Z_HERO								1
 
 // velocity
 const float VELOCITY_TO_UPGRADE_FROG	= 0.1f;

@@ -18,19 +18,6 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 	soldier->cur_state = IDLE_SHOOT;
 	soldier->facingRight = true;
 
-	/*soldier->setStartListener([&](int trackIndex) {	
-		log("%d start", trackIndex);
-	});
-
-	soldier->setEndListener([](int trackIndex) {
-		log("%d end", trackIndex);
-	});
-
-	soldier->setCompleteListener([](int trackIndex, int loopCount) {
-		log("%d complete: %d", trackIndex, loopCount);
-	});
-*/
-	//log("%f", soldier->findBone("gun")->worldRotation);
 
 	return soldier;
 }
@@ -41,6 +28,7 @@ void Soldier::updateSoldier(float dt)
 {
 	this->setPositionX(body->GetPosition().x * PTM_RATIO);
 	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeSoldier.height / 2.0f);
+
 
 	switch (cur_state)
 	{
@@ -91,6 +79,17 @@ void Soldier::move(Point bgPos)
 
 }
 
+void Soldier::listener()
+{
+	this->setCompleteListener([&](int trackIndex, int loopCount) {
+		log("%i", loopCount);
+		//log(getCurrent()->animation->name);
+		if (strcmp(getCurrent()->animation->name, "jumping") == 0 && loopCount == 6) {
+			cur_state = IDLE_SHOOT;
+		}
+	});
+}
+
 void Soldier::initPhysic(b2World * world, Point pos)
 {
 	auto origin = Director::getInstance()->getVisibleOrigin();
@@ -113,7 +112,8 @@ void Soldier::idleShoot()
 		}
 
 		clearTracks();
-		setAnimation(State::IDLE_SHOOT, "standing-shoot", true);
+		addAnimation(0, "standing-shoot", true);
+		setToSetupPose();
 		pre_state = IDLE_SHOOT;
 	}
 }
@@ -128,7 +128,8 @@ void Soldier::idleShootUp()
 
 		clearTracks();
 
-		setAnimation(State::IDLE_SHOOT_UP, "standing-shoot-up", true);
+		addAnimation(0, "standing-shoot-up", true);
+		setToSetupPose();
 		pre_state = IDLE_SHOOT_UP;
 	}
 }
@@ -141,13 +142,8 @@ void Soldier::jumping()
 		}
 
 		clearTracks();
-
-		setAnimation(State::JUMPING, "jumping", true);
-		/*addAnimation(State::JUMPING, "jumping", false);
-		addAnimation(State::JUMPING, "jumping", false);
-		addAnimation(State::JUMPING, "jumping", false);
-		addAnimation(0, "standing-shoot", true);*/
-		
+		addAnimation(0, "jumping", true);
+		this->setToSetupPose();
 
 		pre_state = JUMPING;
 	}
@@ -159,7 +155,8 @@ void Soldier::lyingShoot()
 		body->SetTransform(body->GetPosition(), -PI/ 2);
 
 		clearTracks();
-		setAnimation(State::LYING_SHOOT, "lie-shoot", true);
+		addAnimation(0, "lie-shoot", true);
+		setToSetupPose();
 		pre_state = LYING_SHOOT;
 	}
 }
@@ -172,7 +169,8 @@ void Soldier::runningShoot()
 		}
 
 		clearTracks();
-		setAnimation(State::RUNNING_SHOOT, "running-shoot", true);
+		addAnimation(0, "running-shoot", true);
+		setToSetupPose();
 		pre_state = RUNNING_SHOOT;
 	}
 }
@@ -185,7 +183,8 @@ void Soldier::runningShootUp()
 		}
 
 		clearTracks();
-		setAnimation(State::RUNNING_SHOOT_UP, "running-shoot-up", true);
+		addAnimation(0, "running-shoot-up", true);
+		setToSetupPose();
 		pre_state = RUNNING_SHOOT_UP;
 	}
 }
@@ -198,7 +197,8 @@ void Soldier::runningShootDown()
 		}
 
 		clearTracks();
-		setAnimation(State::RUNNING_SHOOT_DOWN, "running-shoot-down", true);
+		addAnimation(0, "running-shoot-down", true);
+		setToSetupPose();
 		pre_state = RUNNING_SHOOT_DOWN;
 	}
 }
