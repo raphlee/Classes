@@ -12,7 +12,7 @@ bool Hud::init()
 	auto winSize = Director::getInstance()->getVisibleSize();
 
 
-	addJoystick(Point(winSize.width * 0.17f, winSize.height * 0.17f));
+	addJoystick(Point(winSize.width * 0.17f, winSize.height * 0.20f));
 	addJoystickButton(Point(winSize.width * 0.85f, winSize.height * 0.19f));
 
 	return true;

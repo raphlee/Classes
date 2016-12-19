@@ -8,6 +8,7 @@
 #include "Enemy.h"
 #include "Floor.h"
 #include "CollisionListener.h"
+#include "DynamicHumanEnemy.h"
 
 class GameScene : public cocos2d::Layer
 {
@@ -44,33 +45,41 @@ public:
 	Soldier *soldier;
 	vector<Enemy*> listEnemy;
 
-	CCArray *pool;
+	//DynamicHumanEnemy* dynamicEnenmy;
+
+	CCArray *dEnemyPool;
+	//queue<DynamicHumanEnemy*> dEnemyPool;
+	int indexDEnemy;
+	Point posGenEnemy;
+
+	
 
 
-private:
-
-
+public:
+	// main loop in game
 	void update(float dt);
 	void updateSoldier(float dt);
 
-	void createPool();
-	void createSoldier(Point pos);
+	// process background / map for game
 	void createBackground();
 	void moveBackground();
-
 	void createMap(TMXTiledMap *map, Point origin, Layer *layer);
-
 	void loadNextMap();
 	void freePassedMap(Point originOfLastMap);
-
 	void buildFloor(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderUp(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderDown(TMXTiledMap *map, Layer* layer, float scale);
-	void buildMoveEnemy(TMXTiledMap *map, float scale);
- 
+	//void buildMoveEnemy(TMXTiledMap *map, float scale);
 
+	// process hero for game
+	void createSoldier(Point pos);
 
-
+	// process enemy for game
+	void createPool();
+	void genEnemy();			// call in schedule
+	void checkGenEnemy();		// call in update
+	
+	// process joystick
 	void controlSneakyJoystick();
 	void controlSneakyButton();
 

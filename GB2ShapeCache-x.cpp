@@ -212,8 +212,8 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist, float scale) {
                     {
                         string verStr = piter.asString();
                         Point offset = PointFromString(verStr);
-                        vertices[vindex].x = (offset.x / ptmRatio) / scaleFactor * scale;
-                        vertices[vindex].y = (offset.y / ptmRatio) / scaleFactor * scale;
+                        vertices[vindex].x = (offset.x / ptmRatio) * scale;
+                        vertices[vindex].y = (offset.y / ptmRatio) * scale;
                         vindex++;
                     }
                     
