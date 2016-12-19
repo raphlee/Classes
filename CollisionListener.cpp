@@ -18,7 +18,6 @@ void CollisionListener::BeginContact(b2Contact * contact)
 // fix here to collision with enemy
 void CollisionListener::EndContact(b2Contact * contact)
 {
-	log("End");
 	b2Body *bodyA = contact->GetFixtureA()->GetBody();
 	b2Body *bodyB = contact->GetFixtureB()->GetBody();
 

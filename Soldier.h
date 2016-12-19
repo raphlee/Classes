@@ -2,6 +2,7 @@
 #define __SOLDIER_H__
 
 #include "B2Skeleton.h"
+#include "GB2ShapeCache-x.h"
 
 USING_NS_CC;
 
@@ -38,9 +39,11 @@ public:
 
 	void move(Point bgPos);
 
+	void initPhysic(b2World *world, Point pos);
+
 	void idleShoot();
 	void idleShootUp();
-	void jumpping();
+	void jumping();
 	void lyingShoot();
 	void runningShoot();
 	void runningShootUp();

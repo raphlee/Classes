@@ -9,6 +9,7 @@
 #include "Floor.h"
 #include "CollisionListener.h"
 #include "DynamicHumanEnemy.h"
+#include "InfiniteParallaxNode.h"
 
 class GameScene : public cocos2d::Layer
 {
@@ -24,14 +25,17 @@ public:
 
 	b2World *world;
 
-	Sprite *bg_1A;
-	Sprite *bg_1B;
-	Sprite *bg_2A;
-	Sprite *bg_2B;
-	Sprite *bg_3A;
-	Sprite *bg_3B;
+	//Sprite *bg_1A;
+	//Sprite *bg_1B;
+	//Sprite *bg_2A;
+	//Sprite *bg_2B;
+	//Sprite *bg_3A;
+	//Sprite *bg_3B;
 
 	Follow *camera;
+	Node* follow;
+	InfiniteParallaxNode *background;
+
 	TMXTiledMap *tmxCurrentMap;
 	TMXTiledMap *tmxNextMap;
 	Point originOfLastMap;
@@ -56,10 +60,12 @@ public:
 public:
 	// main loop in game
 	void update(float dt);
+	void updateSoldier(float dt);
 
 	// process background / map for game
+	void createInfiniteNode();
 	void createBackground();
-	void moveBackground();
+	//void moveBackground();
 	void createMap(TMXTiledMap *map, Point origin, Layer *layer);
 	void loadNextMap();
 	void freePassedMap(Point originOfLastMap);

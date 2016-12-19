@@ -12,6 +12,7 @@ using namespace std;
 
 // define
 #define PI								3.1415926
+#define Y_INCREMENT_RATIO				7						
 #define KEYSCORE						"KEYME"
 #define KEYBACKGROUND					"KEYBG"
 #define KEYSOUND						"KEYSOUND"
@@ -105,6 +106,8 @@ using namespace std;
 // ratio
 #define PTM_RATIO							32
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
+#define Z_BACKGROUND						0
+#define Z_HERO								1
 
 // velocity
 const float VELOCITY_TO_UPGRADE_FROG	= 0.1f;
