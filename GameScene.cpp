@@ -81,7 +81,7 @@ bool GameScene::init()
 
 	this->schedule([&](float dt) {
 		if (posGenEnemy != Point(INT_MAX,INT_MAX)) {
-			//genEnemy();
+			genEnemy();
 			if ((soldier->getPositionX() + SCREEN_SIZE.width / 2) > posGenEnemy.x) {
 				posGenEnemy = Point(INT_MAX, INT_MAX);
 			}
@@ -328,34 +328,7 @@ void GameScene::createBackground()
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-//void GameScene::moveBackground()
-//{
-//	if (bg_1A->getPositionX() + bg_1A->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-//		bg_1A->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-//	}
-//
-//	if (bg_1B->getPositionX() + bg_1B->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-//		bg_1B->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-//	}
-//
-//	if (bg_2A->getPositionX() + bg_2A->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-//		bg_2A->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-//	}
-//
-//	if (bg_2B->getPositionX() + bg_2B->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-//		bg_2B->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-//	}
-//
-//	if (bg_3A->getPositionX() + bg_3A->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-//		bg_3A->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-//	}
-//
-//	if (bg_3B->getPositionX() + bg_3B->getBoundingBox().size.width / 2 <= follow->getPositionX() - SCREEN_SIZE.width / 2) {
-//		bg_3B->setPositionX(follow->getPositionX() + SCREEN_SIZE.width);
-//	}
-//
-//
-//}
+
 
 /************************************************************************/
 /*                                                                      */
@@ -508,27 +481,6 @@ void GameScene::buildLadderDown(TMXTiledMap *map, Layer* layer, float scale)
 /*                                                                      */
 /************************************************************************/
 
-//void GameScene::buildMoveEnemy(TMXTiledMap * map, float scale)
-//{
-//	auto groupMoveEnemy = map->getObjectGroup("moveEnemy");
-//	for (auto e : groupMoveEnemy->getObjects()) {
-//		auto mObject = e.asValueMap();
-//		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
-//		Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
-//
-//		Point pos = Point(origin.x + sizeOfBound.width / 2, origin.y + sizeOfBound.height / 2);
-//
-//		Enemy *e = Enemy::create("enemy-soldier/soldier.json", "enemy-soldier/soldier.atlas", SCREEN_SIZE.height / 8.0f / 242.0f);
-//		e->setPosition(pos);
-//		e->initCirclePhysic(world, e->getPosition());
-//		e->type = Type::MOVE;
-//		e->body->SetFixedRotation(true);						// pretent body from ratating
-//		e->addAnimation(0, "running", true);
-//		addChild(e);
-//
-//		listEnemy.push_back(e);
-//	}
-//}
 
 /************************************************************************/
 /* Control joystick                                                     */

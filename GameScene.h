@@ -25,13 +25,6 @@ public:
 
 	b2World *world;
 
-	//Sprite *bg_1A;
-	//Sprite *bg_1B;
-	//Sprite *bg_2A;
-	//Sprite *bg_2B;
-	//Sprite *bg_3A;
-	//Sprite *bg_3B;
-
 	Follow *camera;
 	Node* follow;
 	InfiniteParallaxNode *background;
@@ -46,11 +39,7 @@ public:
 
 	Soldier *soldier;
 	vector<Enemy*> listEnemy;
-
-	//DynamicHumanEnemy* dynamicEnenmy;
-
 	CCArray *dEnemyPool;
-	//queue<DynamicHumanEnemy*> dEnemyPool;
 	int indexDEnemy;
 	Point posGenEnemy;
 
