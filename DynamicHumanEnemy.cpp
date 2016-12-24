@@ -23,7 +23,7 @@ DynamicHumanEnemy * DynamicHumanEnemy::create(float scale)
 void DynamicHumanEnemy::move()
 {
 	if(body != nullptr)
-	this->body->SetLinearVelocity(b2Vec2(-move_vel,this->body->GetLinearVelocity().y));
+		this->body->SetLinearVelocity(b2Vec2(-move_vel,this->body->GetLinearVelocity().y));
 }
 
 

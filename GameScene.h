@@ -22,6 +22,7 @@ public:
 	Mat4 _modelViewMV;
 	CustomCommand _customCommand;
 	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
+	int choiceControl;
 
 	b2World *world;
 
@@ -43,6 +44,8 @@ public:
 	CCArray *dEnemyPool;
 	int indexDEnemy;
 	Point posGenEnemy;
+
+	bool isTouchScreen = false;
 
 public:
 	// main loop in game
@@ -69,10 +72,18 @@ public:
 	
 	// process joystick
 	void controlSneakyJoystick();
-	void controlSneakyButton();
+	void controlSneakyButtonJump();
+
+	void controlButtonMove();
+
+	void identifyAngle(Point location);
 
 	virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
 	void onDraw();
+
+	bool onTouchBegan(Touch *touch, Event *unused_event);
+	void onTouchMoved(Touch *touch, Event *unused_event);
+	void onTouchEnded(Touch *touch, Event *unused_event);
 
     // implement the "static create()" method manually
     CREATE_FUNC(GameScene);

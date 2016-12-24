@@ -21,15 +21,15 @@ void CollisionListener::EndContact(b2Contact * contact)
 	b2Body *bodyA = contact->GetFixtureA()->GetBody();
 	b2Body *bodyB = contact->GetFixtureB()->GetBody();
 
-	bodyA->GetFixtureList()->SetSensor(false);
-	bodyB->GetFixtureList()->SetSensor(false);
-
 	B2Skeleton* sA = (B2Skeleton*)bodyA->GetUserData();
 	B2Skeleton* sB = (B2Skeleton*)bodyB->GetUserData();
 
 	if ((sA->getTag() == SOLDIER && sB->getTag() == FLOOR) ||
 		(sB->getTag() == SOLDIER && sA->getTag() == FLOOR)
 		) {
+		bodyA->GetFixtureList()->SetSensor(false);
+		bodyB->GetFixtureList()->SetSensor(false);
+
 		auto soldier = sA->getTag() == SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 		soldier->onGround = false;
 	}
