@@ -21,26 +21,20 @@ using namespace std;
 
 
 // bitmask
-#define SOLIDER_BITMASK					0x0001
-#define ENEMY_BITMASK					0x0002
-#define BRIDGE_BITMASK					0x0004
-#define WAVE_BITMASK					0x0008
-#define VORTEX_BITMASK					0x0010
-#define LOG_BITMASK						0x0020
-#define BLANK_BITMASK					0x0040
-#define ALLIGATOR_BITMASK				0x0080
-#define HIPPO_BITMASK					0x0100
+#define BITMASK_SOLDIER					0x0001
+#define BITMASK_ENEMY					0x0002
+#define BITMASK_FLOOR					0x0004
+#define BITMASK_BULLET_HERO				0x0008
+#define BITMASK_BULLET_ENEMY			0x0010
+#define BITMASK_ITEM_					0x0020
 
 // tag
-#define SOLDIER							101
-#define FLOOR							102
-#define ENEMY							103
-#define BRIDGE							104
-#define WAVE							105
-#define LOG								106
-#define OTHER_LEAF						107
-#define OTHER_BROKEN_LEAF				108
-#define ALLIGATOR						109
+#define TAG_SOLDIER							101
+#define TAG_FLOOR							102
+#define TAG_ENEMY							103
+#define TAG_BULLET_HERO						104
+#define TAG_BULLET_ENEMY					105
+
 
 
 #define WATER_SHAPE						110
@@ -103,14 +97,20 @@ using namespace std;
 // we need max times upgrade
 // upgrade frog velocity, leaf, bridge, all.. @@
 
-// ratio
+
 #define PTM_RATIO							32
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
+#define MAX_BULLET_HERO_POOL				30
+#define MAX_BULLET_SOLDIER_ENEMY_POOL		3
 #define Z_BACKGROUND						0
 #define Z_HERO								1
 
+#define TAG_STANDMAN						1
+#define TAG_AUTOGUN							2
+#define TAG_BULLET_HERO						3
+#define TAG_BULLET_ENEMY					4
+	
 // velocity
-const float VELOCITY_TO_UPGRADE_FROG	= 0.1f;
 
 const b2Vec2 VELOCITY_TO_UPGRADE		= b2Vec2(0.0f, -0.13f);
 

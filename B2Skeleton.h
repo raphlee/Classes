@@ -29,7 +29,7 @@ public:
 	bool facingRight;
 
 	void initBoxPhysic(b2World *world, Point pos);
-	void initCirclePhysic(b2World *world, Point pos);
+	virtual void initCirclePhysic(b2World *world, Point pos);
 
 };
 

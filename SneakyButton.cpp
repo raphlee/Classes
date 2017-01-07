@@ -61,7 +61,7 @@ bool SneakyButton::onTouchBegan(Touch *touch, Event *event)
     {
 		float dSq = location.x*location.x + location.y*location.y;
 		if(target->getRadiusSq() > dSq / 2.0f){
-			log("True");
+
 			target->setIsActive(true);
 			if (!target->getIsHoldable() && !target->getIsToggleable())
             {

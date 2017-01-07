@@ -35,7 +35,7 @@ void B2Skeleton::initBoxPhysic(b2World *world, Point pos)
 void B2Skeleton::initCirclePhysic(b2World * world, Point pos)
 {
 
-	circle_shape.m_radius = this->getBoundingBox().size.width / 2 / PTM_RATIO;
+	circle_shape.m_radius = this->getBoundingBox().size.height / 2 / PTM_RATIO;
 
 	fixtureDef.density = 0.0f;
 	fixtureDef.friction = 0.5f;

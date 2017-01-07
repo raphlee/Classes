@@ -15,6 +15,7 @@ public:
 
 	void createLadderUp(Size sizeOfBox, Point pos);
 	void createLadderDown(Size sizeOfBox, Point pos);
+	void initPhysic(b2World *world, Point pos, b2BodyType type);
 
 };
 

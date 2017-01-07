@@ -9,7 +9,7 @@ DynamicHumanEnemy::DynamicHumanEnemy(string jsonFile, string atlasFile, float sc
 DynamicHumanEnemy * DynamicHumanEnemy::create(float scale)
 {
 	DynamicHumanEnemy *e = new DynamicHumanEnemy("enemy-soldier/soldier.json", "enemy-soldier/soldier.atlas", scale);
-	//e->setTag(ENEMY);
+	e->setTag(TAG_ENEMY);
 	e->update(0.0f);
 	e->health = 1;
 	e->sizeEnemy = e->getBoundingBox().size;
@@ -26,15 +26,43 @@ void DynamicHumanEnemy::move()
 	this->body->SetLinearVelocity(b2Vec2(-move_vel,this->body->GetLinearVelocity().y));
 }
 
-//void DynamicHumanEnemy::shoot()
-//{
-//}
-
-
-void DynamicHumanEnemy::updateEnemy(float dt)
+void DynamicHumanEnemy::die()
 {
-	this->setPositionX(body->GetPosition().x * PTM_RATIO);
-	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeEnemy.height / 2);
+	this->body->SetTransform(b2Vec2(INT_MAX, INT_MAX), 0);
+}
+
+
+void DynamicHumanEnemy::updateEnemy(float dt, Point cameraPoint)
+{
+	Enemy::updateEnemy(dt);
+	//this->setPositionX(body->GetPosition().x * PTM_RATIO);
+	//this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeEnemy.height / 2);
 	move();
 	shoot();
+	if (checkOutScreen(cameraPoint)) resetEnemy();
+	if (isDie) {
+		resetEnemy();
+		isDie = false;
+	}
 }
+
+// private function
+//20/12
+bool DynamicHumanEnemy::checkOutScreen(Point posCamera)
+{
+	auto screenSize = Director::getInstance()->getVisibleSize();
+	if (this->getPosition().y < 0 || this->getPosition().x < (posCamera.x - screenSize.width / 2)) {
+		return true;
+	}
+	return false;
+}
+
+void DynamicHumanEnemy::resetEnemy()
+{
+	this->body->SetTransform(b2Vec2(INT_MAX / PTM_RATIO, INT_MIN / PTM_RATIO), 0);
+	this->body->SetType(b2_staticBody);
+}
+
+
+
+
