@@ -30,6 +30,7 @@ public:
 	Soldier(string jsonFile, string atlasFile, float scale);
 	static Soldier* create(string jsonFile, string atlasFile, float scale);
 	bool onGround = true;
+	bool isGetOriginX = false;
 	
 	Size sizeSoldier;
 	float jump_vel;
@@ -37,7 +38,7 @@ public:
 	State cur_state;
 	State pre_state;
 
-	void move(Point bgPos);
+	void move();
 
 	void listener();
 

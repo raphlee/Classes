@@ -78,14 +78,14 @@ bool GameScene::init()
 	world->SetContactListener(world_listener);
 
 	choiceControl = UserDefault::sharedUserDefault()->getIntegerForKey(KEY_SELECTION);
-	if (choiceControl == 1) {
+	//if (choiceControl == 1) {
 		auto listener = EventListenerTouchOneByOne::create();
 		listener->setSwallowTouches(false);
 		listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
 		listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
 		listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
 		_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
-	}
+	//}
 	
 
 	
@@ -122,7 +122,7 @@ void GameScene::update(float dt)
 
 	if (choiceControl == 0) {
 		controlSneakyJoystick();
-		controlSneakyButtonJump();
+		//controlSneakyButtonJump();
 	} else
 		controlButtonMove();
 
@@ -141,8 +141,16 @@ void GameScene::update(float dt)
 void GameScene::updateSoldier(float dt)
 {
 	soldier->updateSoldier(dt);
+	if ((follow->getPositionX() - soldier->getPositionX()) > SCREEN_SIZE.width / 2 - soldier->sizeSoldier.width / 2) {
+		soldier->isGetOriginX = true;
+	}
+	else {
+		soldier->isGetOriginX = false;
+	}
+		
 	if (soldier->getPosition().y < 0) {
 		soldier->facingRight = true;
+		soldier->setScaleX(1);
 		soldier->cur_state = JUMPING;
 		soldier->body->SetLinearVelocity(b2Vec2(0, 0));
 		soldier->body->SetTransform(b2Vec2((follow->getPositionX() - SCREEN_SIZE.width * 0.35f) / PTM_RATIO,
@@ -456,7 +464,7 @@ void GameScene::controlSneakyJoystick()
 {
 	float degree = hud->joystick->getDegrees();
 	if (hud->joystick->getVelocity() == Vec2::ZERO) {
-		if (soldier->onGround) {
+		if (soldier->onGround && soldier->pre_state != JUMPING) {
 			if (soldier->body->GetLinearVelocity().x != 0.0f)
 				soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
 			soldier->facingRight = true;
@@ -464,53 +472,53 @@ void GameScene::controlSneakyJoystick()
 		}
 	}
 	else if (degree < 30.0f || degree >= 330.0f) {
-		soldier->move(follow->getPosition());
+		soldier->move();
 		soldier->facingRight = true;
-		if (soldier->onGround)
+		if (soldier->onGround && soldier->pre_state != JUMPING)
 			soldier->cur_state = RUNNING_SHOOT;
 	}
 	else if (degree >= 30.0f && degree < 70.0f) {
-		soldier->move(follow->getPosition());
+		soldier->move();
 		soldier->facingRight = true;
-		if (soldier->onGround)
+		if (soldier->onGround && soldier->pre_state != JUMPING)
 			soldier->cur_state = RUNNING_SHOOT_UP;
 	}
 	else if (degree >= 70.0f && degree < 110.0f) {
 		if (soldier->body->GetLinearVelocity().x != 0.0f)
 			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
 		soldier->facingRight = true;
-		if (soldier->onGround)
+		if (soldier->onGround && soldier->pre_state != JUMPING)
 			soldier->cur_state = IDLE_SHOOT_UP;
 	}
 	else if (degree >= 110.0f && degree < 150.0f) {
-		soldier->move(follow->getPosition());
+		soldier->move();
 		soldier->facingRight = false;
-		if (soldier->onGround)
+		if (soldier->onGround && soldier->pre_state != JUMPING)
 			soldier->cur_state = RUNNING_SHOOT_UP;
 	}
 	else if (degree >= 150.0f && degree < 210.0f) {
-		soldier->move(follow->getPosition());
+		soldier->move();
 		soldier->facingRight = false;
-		if (soldier->onGround)
+		if (soldier->onGround && soldier->pre_state != JUMPING)
 			soldier->cur_state = RUNNING_SHOOT;
 	}
 	else if (degree >= 210.0f && degree < 250.0f) {
-		soldier->move(follow->getPosition());
+		soldier->move();
 		soldier->facingRight = false;
-		if (soldier->onGround)
+		if (soldier->onGround && soldier->pre_state != JUMPING)
 			soldier->cur_state = RUNNING_SHOOT_DOWN;
 	}
 	else if (degree >= 250.0f && degree < 290.0f) {
 		if (soldier->body->GetLinearVelocity().x != 0.0f)
 			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
 		soldier->facingRight = true;
-		if (soldier->onGround)
+		if (soldier->onGround && soldier->pre_state != JUMPING)
 			soldier->cur_state = LYING_SHOOT;
 	}
 	else if (degree >= 290.0f && degree < 330.0f) {
-		soldier->move(follow->getPosition());
+		soldier->move();
 		soldier->facingRight = true;
-		if (soldier->onGround)
+		if (soldier->onGround && soldier->pre_state != JUMPING)
 			soldier->cur_state = RUNNING_SHOOT_DOWN;
 	}
 }
@@ -557,15 +565,15 @@ void GameScene::controlButtonMove()
 		soldier->body->SetLinearVelocity(b2Vec2(0, soldier->jump_vel));
 	}
 
-	if (hud->btnLeft->isPress && soldier->onGround) {
+	else if (hud->btnLeft->isPress && soldier->onGround) {
 		soldier->facingRight = false;
-		soldier->move(follow->getPosition());
+		soldier->move();
 		if (soldier->onGround && soldier->pre_state != JUMPING && !isTouchScreen)
 			soldier->cur_state = RUNNING_SHOOT;
 	}
 	else if (hud->btnRight->isPress && soldier->onGround) {
 		soldier->facingRight = true;
-		soldier->move(follow->getPosition());
+		soldier->move();
 		if (soldier->onGround && soldier->pre_state != JUMPING && !isTouchScreen)
 			soldier->cur_state = RUNNING_SHOOT;
 	}
@@ -573,8 +581,8 @@ void GameScene::controlButtonMove()
 	else if (soldier->onGround && !isTouchScreen) {
 		if (soldier->body->GetLinearVelocity().x != 0.0f)
 			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-
-		soldier->cur_state = IDLE_SHOOT;
+		if (soldier->pre_state != JUMPING)
+			soldier->cur_state = IDLE_SHOOT;
 
 	}
 
@@ -690,9 +698,24 @@ bool GameScene::onTouchBegan(Touch * touch, Event * unused_event)
 {
 	auto location = touch->getLocation();
 	convertToNodeSpace(location);
-	identifyAngle(location);
+
 	isTouchScreen = true;
-	return true;
+
+	if (choiceControl == 1) {
+		identifyAngle(location);
+		return true;
+	}
+	else {
+		if (soldier->onGround && location.x > SCREEN_SIZE.width / 2) {
+			soldier->body->SetLinearVelocity(b2Vec2(0.0f, soldier->jump_vel));
+
+			soldier->onGround = false;
+
+			soldier->cur_state = JUMPING;
+		}
+
+		return false;
+	}
 }
 
 void GameScene::onTouchMoved(Touch * touch, Event * unused_event)

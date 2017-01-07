@@ -34,7 +34,6 @@ void Button::addEvents()
 
 			if (tapCount == 1) {
 				this->schedule(schedule_selector(Button::singleTap), timeInterval, 1, 0);	// repeat 1, delay 0
-				
 			}
 			else {
 				this->unschedule(schedule_selector(Button::singleTap));
@@ -43,7 +42,7 @@ void Button::addEvents()
 			}
 
 			isPress = true;
-					
+
 			return true;		// continue
 		}
 
@@ -73,4 +72,5 @@ void Button::singleTap(float dt)
 {
 	this->unschedule(schedule_selector(Button::singleTap));
 	tapCount = 0;
+	
 }

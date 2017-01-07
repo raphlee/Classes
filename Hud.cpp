@@ -15,7 +15,7 @@ bool Hud::init()
 
 	if (choice == 0) {
 		addJoystick(Point(winSize.width * 0.17f, winSize.height * 0.20f));
-		addJoystickButton(Point(winSize.width * 0.85f, winSize.height * 0.19f));
+		//addJoystickButton(Point(winSize.width * 0.85f, winSize.height * 0.19f));
 	} else
 		addButton();
 

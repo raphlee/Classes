@@ -60,9 +60,11 @@ void Soldier::updateSoldier(float dt)
 }
 
 
-void Soldier::move(Point bgPos)
+void Soldier::move()
 {
 	auto cur_velY = body->GetLinearVelocity().y;
+
+	
 
 	if (facingRight) {
 		this->setScaleX(1);
@@ -70,10 +72,10 @@ void Soldier::move(Point bgPos)
 	}
 	else {
 		this->setScaleX(-1);
-		if(bgPos.x - getPosition().x < SCREEN_SIZE.width / 2)
-			body->SetLinearVelocity(b2Vec2(-move_vel, cur_velY));
-		else
+		body->SetLinearVelocity(b2Vec2(-move_vel, cur_velY));
+		if (isGetOriginX) {
 			body->SetLinearVelocity(b2Vec2(0, cur_velY));
+		}
 	}
 
 
@@ -139,10 +141,9 @@ void Soldier::jumping()
 			body->SetTransform(body->GetPosition(), 0);
 		}
 
-		log("Pre - %i", pre_state);
 		clearTracks();
 		addAnimation(0, "jumping", true);
-		this->setToSetupPose();
+		setToSetupPose();
 
 		pre_state = JUMPING;
 	}
