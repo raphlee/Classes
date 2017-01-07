@@ -4,32 +4,30 @@
 
 Scene* StartScene::createScene()
 {
+    // 'scene' is an autorelease object
+    auto scene = Scene::create();
 
-	// 'scene' is an autorelease object
-	auto scene = Scene::create();
+    // 'layer' is an autorelease object
+    auto layer = StartScene::create();
 
-	// 'layer' is an autorelease object
-	auto layer = StartScene::create();
+    // add layer as a child to scene
+    scene->addChild(layer);
 
-	// add layer as a child to scene
-	scene->addChild(layer);
-
-	// return the scene
-	return scene;
+    // return the scene
+    return scene;
 }
 
 // on "init" you need to initialize your instance
 bool StartScene::init()
 {
-	//////////////////////////////
-	// 1. super init first
-	if (!Layer::init())
-	{
-		return false;
-	}
-
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	Vec2 origin = Director::getInstance()->getVisibleOrigin();
+	
+    if ( !Layer::init() )
+    {
+        return false;
+    }
+    
+    auto visibleSize = Director::getInstance()->getVisibleSize();
+    Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
 	// add Start sprite
 	auto backGround = Sprite::create("background.png");
@@ -53,7 +51,6 @@ bool StartScene::init()
 
 	//CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
 	//CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
-
 
 	auto ground = Sprite::createWithSpriteFrameName("ground.png");
 	ground->setAnchorPoint(Vec2(0.5, 0));
@@ -81,17 +78,17 @@ bool StartScene::init()
 	listener->onTouchBegan = CC_CALLBACK_2(StartScene::onTouchBegan, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-	return true;
+    return true;
 }
 
 bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 {
 	if (play->getBoundingBox().containsPoint(touch->getLocation())) {
-		auto scene = GameScene::createScene();
+		auto scene = ControlSelectionScene::createScene();
 		//auto tran = TransitionFade::create(1.0f, scene);
 		Director::getInstance()->replaceScene(scene);
+		//Director::getInstance()->replaceScene(TransitionFade::create(0.67f, ControlSelectionScene::createScene()));
 	}
 
 	return false;
 }
-

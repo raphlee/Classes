@@ -11,17 +11,20 @@ bool Hud::init()
 
 	auto winSize = Director::getInstance()->getVisibleSize();
 
+	int choice = UserDefault::sharedUserDefault()->getIntegerForKey(KEY_SELECTION);
 
-	addJoystick(Point(winSize.width * 0.17f, winSize.height * 0.20f));
-	addJoystickButton(Point(winSize.width * 0.85f, winSize.height * 0.19f));
+	if (choice == 0) {
+		addJoystick(Point(winSize.width * 0.17f, winSize.height * 0.20f));
+		addJoystickButton(Point(winSize.width * 0.85f, winSize.height * 0.19f));
+	} else
+		addButton();
 
 	return true;
 }
 
 void Hud::addJoystick(Point pos)
 {
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	auto rect_size = visibleSize.height / 3;
+	auto rect_size = SCREEN_SIZE.height / 3;
 	Rect joystickBaseDimensions = Rect(0, 0, rect_size, rect_size);
 
 	SneakyJoystickSkinnedBase *joystickBase = new SneakyJoystickSkinnedBase();
@@ -32,7 +35,7 @@ void Hud::addJoystick(Point pos)
 	auto joystick_bg = Sprite::create("send/move-area.png");
 	joystickBase->setThumbSprite(joystick_thumb);
 	joystickBase->setBackgroundSprite(joystick_bg);
-	joystickBase->setScale(visibleSize.height / 3.0 / joystick_bg->getBoundingBox().size.height);
+	joystickBase->setScale(SCREEN_SIZE.height / 3.0 / joystick_bg->getBoundingBox().size.height);
 
 	joystick = new SneakyJoystick();
 	joystick->initWithRect(joystickBaseDimensions);
@@ -45,8 +48,7 @@ void Hud::addJoystick(Point pos)
 
 void Hud::addJoystickButton(Point pos)
 {
-	auto visibleSize = Director::getInstance()->getVisibleSize();
-	auto rect_size = visibleSize.height / 8;
+	auto rect_size = SCREEN_SIZE.height / 8;
 	Rect joystickButtonRect = Rect(0, 0, rect_size, rect_size);
 
 	SneakyButtonSkinnedBase *joystickButtonBase = new SneakyButtonSkinnedBase();
@@ -57,7 +59,7 @@ void Hud::addJoystickButton(Point pos)
 	joystickButtonBase->setDefaultSprite(b);
 	joystickButtonBase->setActivatedSprite(Sprite::create("send/btn-jump.png"));
 	joystickButtonBase->setPressSprite(Sprite::create("send/btn-jump.png"));
-	joystickButtonBase->setScale(visibleSize.height / 6.0f / b->getContentSize().height);
+	joystickButtonBase->setScale(SCREEN_SIZE.height / 6.0f / b->getContentSize().height);
 
 	btnJump = new SneakyButton();
 	btnJump->initWithRect(joystickButtonRect);
@@ -70,6 +72,18 @@ void Hud::addJoystickButton(Point pos)
 	addChild(joystickButtonBase);
 }
 
+void Hud::addButton()
+{
+	btnLeft = Button::create("send/move-left.png", Point(SCREEN_SIZE.width * 0.15f, SCREEN_SIZE.height * 0.165f));
+
+	btnLeft->setScale(SCREEN_SIZE.height / 5.5f / btnLeft->getContentSize().height);
+	addChild(btnLeft);
+
+
+	btnRight = Button::create("send/move-right.png", Point(SCREEN_SIZE.width * 0.33f, SCREEN_SIZE.height * 0.165f));
+	btnRight->setScale(SCREEN_SIZE.height / 5.5f / btnLeft->getContentSize().height);
+	addChild(btnRight);
+}
 
 
 

@@ -12,8 +12,8 @@ Scene* GameScene::createScene()
 	auto scene = Scene::create();
 
 	// 'layer' is an autorelease object
-	auto layer = GameScene::create();
 	hud = Hud::create();
+	auto layer = GameScene::create();
 
 	// add layer as a child to scene
 	scene->addChild(layer);
@@ -75,9 +75,9 @@ bool GameScene::init()
 	createSoldier(Point(SCREEN_SIZE.width * 0.15f, SCREEN_SIZE.height * 0.75f));
 	soldier->createPool();
 
+	auto world_listener = new CollisionListener();
+	world->SetContactListener(world_listener);
 
-	auto listener = new CollisionListener();
-	world->SetContactListener(listener);
 	this->schedule([&](float dt) {
 		if (posGenDEnemy != Point(INT_MAX, INT_MAX)) {
 			genDEnemy();
@@ -87,14 +87,20 @@ bool GameScene::init()
 		}
 	}, 1.0f, "timer");
 
-	this->scheduleUpdate();
+	choiceControl = UserDefault::sharedUserDefault()->getIntegerForKey(KEY_SELECTION);
+	if (choiceControl == 1) {
+		auto listener = EventListenerTouchOneByOne::create();
+		listener->setSwallowTouches(false);
+		listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
+		listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
+		listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
+		_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
+	}
+	this->scheduleUpdate();
 	return true;
 }
-
-/************************************************************************/
-/*                                                                      */
-/************************************************************************/
+	
 void GameScene::update(float dt)
 {
 	int positionIterations = 3;		// position
@@ -128,9 +134,16 @@ void GameScene::update(float dt)
 	updateSoldier(dt);
 	updateStandMan(dt);
 	updateAutoGun(dt);
-	controlSneakyJoystick();
-	controlSneakyButton();
 
+	/*for (int i = 0; i < dEnemyPool->count(); i++) {
+		((DynamicHumanEnemy*)dEnemyPool->getObjectAtIndex(i))->updateEnemy(dt);
+	}*/
+
+	if (choiceControl == 0) {
+		controlSneakyJoystick();
+		controlSneakyButtonJump();
+	} else
+		controlButtonMove();
 
 	loadNextMap();
 	if (follow->getPositionX() <= soldier->getPositionX())
@@ -233,9 +246,9 @@ void GameScene::createPool()
 	for (int i = 0; i < 8; i++) {
 		auto enemy = DynamicHumanEnemy::create(SCREEN_SIZE.height / 11.0f / 242.0f);
 		enemy->setPosition(INT_MAX, INT_MAX);
-
+		enemy->fixtureDef.filter.categoryBits = BITMASK_ENEMY;
+		enemy->fixtureDef.filter.maskBits = BITMASK_BULLET_HERO | BITMASK_FLOOR;
 		enemy->initCirclePhysic(world, Point(INT_MAX, INT_MAX));
-		enemy->body->SetType(b2_staticBody);
 		this->addChild(enemy);
 		dEnemyPool->addObject(enemy);
 	}
@@ -339,29 +352,36 @@ void GameScene::createSoldier(Point pos)
 void GameScene::createInfiniteNode()
 {
 	background = InfiniteParallaxNode::create();
+
 	auto bg1_1 = Sprite::create("bg-1.jpg");
 	//auto bg1_1 = Sprite::create("bg-4.png");
 	bg1_1->setScaleX(SCREEN_SIZE.width / bg1_1->getContentSize().width);
 	bg1_1->setScaleY(SCREEN_SIZE.height / bg1_1->getContentSize().height);
 	bg1_1->setAnchorPoint(Point(0, 0.5));
+
 	auto bg1_2 = Sprite::create("bg-1.jpg");
 	//auto bg1_2 = Sprite::create("bg-4.png");
 	bg1_2->setScaleX(SCREEN_SIZE.width / bg1_2->getContentSize().width);
 	bg1_2->setScaleY(SCREEN_SIZE.height / bg1_2->getContentSize().height);
 	bg1_2->setAnchorPoint(Point(0, 0.5));
+
 	//bg1->setPosition(SCREEN_SIZE / 2);
+
 	auto bg2_1 = Sprite::create("bg-2.png");
 	bg2_1->setScaleX(SCREEN_SIZE.width / bg2_1->getContentSize().width);
 	bg2_1->setScaleY(SCREEN_SIZE.height / bg2_1->getContentSize().height);
 	bg2_1->setAnchorPoint(Point(0, 0.5f));
+
 	auto bg2_2 = Sprite::create("bg-2.png");
 	bg2_2->setScaleX(SCREEN_SIZE.width / bg2_2->getContentSize().width);
 	bg2_2->setScaleY(SCREEN_SIZE.height / bg2_2->getContentSize().height);
 	bg2_2->setAnchorPoint(Point(0, 0.5f));
+
 	auto bg3_1 = Sprite::create("bg-3.png");
 	bg3_1->setScaleX(SCREEN_SIZE.width / bg3_1->getContentSize().width);
 	bg3_1->setScaleY(SCREEN_SIZE.height / bg3_1->getContentSize().height);
 	bg3_1->setAnchorPoint(Point(0, 0.5f));
+
 	auto bg3_2 = Sprite::create("bg-3.png");
 	bg3_2->setScaleX(SCREEN_SIZE.width / bg3_2->getContentSize().width);
 	bg3_2->setScaleY(SCREEN_SIZE.height / bg3_2->getContentSize().height);
@@ -408,6 +428,7 @@ void GameScene::createMap(TMXTiledMap *map, Point origin, Layer *layer)
 	buildFloor(map, layer, scaleOfMap);
 	buildLadderUp(map, layer, scaleOfMap);
 	buildLadderDown(map, layer, scaleOfMap);
+
 	buildStandEnemy(map, layer, scaleOfMap);
 	buildAutoGun(map, layer, scaleOfMap);
 }
@@ -485,6 +506,8 @@ void GameScene::buildFloor(TMXTiledMap *map, Layer* layer, float scale)
 		floor->setPosition(pos);
 
 
+		floor->fixtureDef.filter.categoryBits = BITMASK_FLOOR;
+
 		floor->initPhysic(world, pos + originThisMap, b2_staticBody);
 
 		//	floor->body->get
@@ -512,6 +535,9 @@ void GameScene::buildLadderUp(TMXTiledMap *map, Layer* layer, float scale)
 
 		Point pos = Point(origin.x + sizeOfBound.width / 2,
 			origin.y + (sizeOfBound.height - floor->getBoundingBox().size.height) / 2 + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+		floor->fixtureDef.filter.categoryBits = BITMASK_FLOOR;
+
 		floor->initPhysic(world, pos + originThisMap, b2_staticBody);
 		floor->createLadderUp(sizeOfBound, pos);
 
@@ -540,6 +566,8 @@ void GameScene::buildLadderDown(TMXTiledMap *map, Layer* layer, float scale)
 
 		Point pos = Point(origin.x + sizeOfBound.width / 2,
 			origin.y + (sizeOfBound.height - floor->getBoundingBox().size.height) / 2 + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+		floor->fixtureDef.filter.categoryBits = BITMASK_FLOOR;
 		floor->initPhysic(world, pos + originThisMap, b2_staticBody);
 		floor->createLadderDown(sizeOfBound, pos);
 
@@ -600,7 +628,7 @@ void GameScene::controlSneakyJoystick()
 {
 	float degree = hud->joystick->getDegrees();
 	if (hud->joystick->getVelocity() == Vec2::ZERO) {
-		soldier->getScaleX() > 0 ? soldier->angle = 0:soldier->angle = PI;
+		soldier->getScaleX() > 0 ? soldier->angle = 0:soldier->angle = PI;// ko dieu khien
 		if (soldier->onGround) {
 			if (soldier->body->GetLinearVelocity().x != 0.0f)
 				soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
@@ -609,7 +637,7 @@ void GameScene::controlSneakyJoystick()
 		}
 	}
 	else if (degree < 30.0f || degree >= 330.0f) {
-		soldier->angle = 0;
+		soldier->angle = 0;// goc 0
 		soldier->move(follow->getPosition());
 		soldier->facingRight = true;
 		if (soldier->onGround)
@@ -671,13 +699,154 @@ void GameScene::controlSneakyJoystick()
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-void GameScene::controlSneakyButton()
+void GameScene::controlSneakyButtonJump()
 {
 	if (hud->btnJump->getIsActive() && soldier->onGround) {
 		soldier->cur_state = JUMPING;
 		soldier->onGround = false;
 
 		soldier->body->SetLinearVelocity(b2Vec2(0.0f, soldier->jump_vel));
+	}
+}
+
+
+// 20/12
+void GameScene::controlButtonMove()
+{
+	bool conflict = hud->btnLeft->isPress & hud->btnRight->isPress;
+	if (conflict) {
+		if (soldier->body->GetLinearVelocity().x != 0.0f)
+			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+
+		soldier->cur_state = IDLE_SHOOT;
+		return;
+	}
+
+	if (hud->btnLeft->isDoubleTap && soldier->onGround) {
+		hud->btnLeft->isDoubleTap = false;
+		soldier->facingRight = false;
+		soldier->cur_state = JUMPING;
+		soldier->onGround = false;
+		soldier->body->SetLinearVelocity(b2Vec2(0, soldier->jump_vel));
+	}
+
+	else if (hud->btnRight->isDoubleTap && soldier->onGround) {
+		hud->btnRight->isDoubleTap = false;
+		soldier->facingRight = true;
+		soldier->cur_state = JUMPING;
+		soldier->onGround = false;
+		soldier->body->SetLinearVelocity(b2Vec2(0, soldier->jump_vel));
+	}
+
+	else if (hud->btnLeft->isPress && soldier->onGround) {
+		soldier->angle = PI;
+		soldier->facingRight = false;
+		soldier->move(follow->getPosition());
+		if (soldier->onGround && soldier->pre_state != JUMPING && !isTouchScreen)
+			soldier->cur_state = RUNNING_SHOOT;
+	}
+	else if (hud->btnRight->isPress && soldier->onGround) {
+		soldier->angle = 0;
+		soldier->facingRight = true;
+		soldier->move(follow->getPosition());
+		if (soldier->onGround && soldier->pre_state != JUMPING && !isTouchScreen)
+			soldier->cur_state = RUNNING_SHOOT;
+	}
+
+	else if (soldier->onGround && !isTouchScreen) {
+		if (soldier->body->GetLinearVelocity().x != 0.0f)
+			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+
+		soldier->cur_state = IDLE_SHOOT;
+		if (soldier->facingRight) {
+			soldier->angle = 0;
+		}
+		else {
+			soldier->angle = PI;
+		}
+	}
+
+}
+
+// xac dinh angle de update ani
+void GameScene::identifyAngle(Point location)
+{
+	auto originX = follow->getPositionX() - SCREEN_SIZE.width / 2;
+
+	auto soldierPos = soldier->getPosition();
+	float vX = soldierPos.x - (location.x + originX);
+	float vY = soldierPos.y - location.y;
+
+	float edgeXY = sqrt(vX * vX + vY * vY);
+
+	float cosOrigin = vX / edgeXY;
+	float sinOrigin = vY / edgeXY;
+
+
+	if (sinOrigin >= 0.0f) {
+		if (cosOrigin >= 0.0f) {	// goc phan tu thu 3
+			if (sinOrigin < 0.383f) {
+				soldier->setScaleX(-1);
+				//soldier->angle = PI / 6;
+				soldier->angle = PI;
+				if (soldier->body->GetLinearVelocity().x == 0.0f)
+					soldier->cur_state = IDLE_SHOOT;
+				else
+					soldier->cur_state = RUNNING_SHOOT;
+			}
+			else {
+				soldier->setScaleX(-1);
+				soldier->angle = -PI * 5 / 6;
+				soldier->cur_state = RUNNING_SHOOT_DOWN;
+			}
+		}
+		else {	// goc phan tu thu 4
+			soldier->setScaleX(1);
+			if (sinOrigin < 0.383f) {
+				soldier->angle = 0;
+				if (soldier->body->GetLinearVelocity().x == 0.0f)
+					soldier->cur_state = IDLE_SHOOT;
+				else
+					soldier->cur_state = RUNNING_SHOOT;
+			}
+			else {
+				soldier->angle = -PI / 6;
+				soldier->cur_state = RUNNING_SHOOT_DOWN;
+			}
+		}
+	}
+	else {
+		if (cosOrigin >= 0.0f) {   // goc phan tu thu 2
+			
+			if (sinOrigin > -0.383f) {
+				soldier->setScaleX(-1);
+				soldier->angle = PI;
+				if (soldier->body->GetLinearVelocity().x == 0.0f)
+					soldier->cur_state = IDLE_SHOOT;
+				else
+					soldier->cur_state = RUNNING_SHOOT;
+			}
+			else {
+				soldier->setScaleX(-1);
+				soldier->angle = PI * 5 / 6;
+				soldier->cur_state = RUNNING_SHOOT_UP;
+			}
+		}
+		else {						// goc phan tu thu 1
+			soldier->facingRight = true;
+			soldier->setScaleX(1);
+			if (sinOrigin > -0.383f) {
+				soldier->angle = 0;
+				if (soldier->body->GetLinearVelocity().x == 0.0f)
+					soldier->cur_state = IDLE_SHOOT;
+				else
+					soldier->cur_state = RUNNING_SHOOT;
+			}
+			else {
+				soldier->angle = PI / 6;
+				soldier->cur_state = RUNNING_SHOOT_UP;
+			}
+		}
 	}
 }
 
@@ -713,5 +882,26 @@ void GameScene::onDraw()
 	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewMV);
 	world->DrawDebugData();
 	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, oldMV);
+}
+
+bool GameScene::onTouchBegan(Touch * touch, Event * unused_event)
+{
+	auto location = touch->getLocation();
+	convertToNodeSpace(location);
+	identifyAngle(location);
+	isTouchScreen = true;
+	return true;
+}
+
+void GameScene::onTouchMoved(Touch * touch, Event * unused_event)
+{
+	auto location = touch->getLocation();
+	convertToNodeSpace(location);
+	identifyAngle(location);
+}
+
+void GameScene::onTouchEnded(Touch * touch, Event * unused_event)
+{
+	isTouchScreen = false;
 }
 

@@ -23,14 +23,14 @@ void CollisionListener::BeginContact(b2Contact * contact)
 	B2Skeleton* sA = (B2Skeleton*)bodyA->GetUserData();
 	B2Skeleton* sB = (B2Skeleton*)bodyB->GetUserData();
 
-	if ((sA->getTag() == SOLDIER && sB->getTag() == FLOOR) ||
-		(sB->getTag() == SOLDIER && sA->getTag() == FLOOR)
+	if ((sA->getTag() == TAG_SOLDIER && sB->getTag() == TAG_FLOOR) ||
+		(sB->getTag() == TAG_SOLDIER && sA->getTag() == TAG_FLOOR)
 		) {
 
 
-		auto soldier = sA->getTag() == SOLDIER ? (Soldier *)sA : (Soldier *)sB;
+		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 
-		if (sA->getTag() != SOLDIER) {
+		if (sA->getTag() != TAG_SOLDIER) {
 			auto dentaX = fabs(collidePoint.x - bodyB->GetPosition().x);
 			auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
 			if (bodyB->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
@@ -69,10 +69,10 @@ void CollisionListener::EndContact(b2Contact * contact)
 	B2Skeleton* sA = (B2Skeleton*)bodyA->GetUserData();
 	B2Skeleton* sB = (B2Skeleton*)bodyB->GetUserData();
 
-	if ((sA->getTag() == SOLDIER && sB->getTag() == FLOOR) ||
-		(sB->getTag() == SOLDIER && sA->getTag() == FLOOR)
+	if ((sA->getTag() == TAG_SOLDIER && sB->getTag() == TAG_FLOOR) ||
+		(sB->getTag() == TAG_SOLDIER && sA->getTag() == TAG_FLOOR)
 		) {
-		auto soldier = sA->getTag() == SOLDIER ? (Soldier *)sA : (Soldier *)sB;
+		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 		soldier->onGround = false;
 	}
 

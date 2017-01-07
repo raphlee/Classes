@@ -1,13 +1,11 @@
 #ifndef __HUD_H__
 #define __HUD_H__
 
-#include "cocos2d.h"
+#include "Global.h"
 #include "SneakyButtonSkinnedBase.h"
 #include "SneakyJoystickSkinnedBase.h"
-#include <string>
+#include "Button.h"
 
-USING_NS_CC;
-using namespace std;
 
 
 class Hud : public Layer
@@ -15,12 +13,18 @@ class Hud : public Layer
 public:
 
 	virtual bool init();
-
+	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
 
 	SneakyJoystick *joystick;
 	SneakyButton *btnJump;
+
+	Button *btnLeft;
+	Button *btnRight;
+
 	void addJoystick(Point pos);
 	void addJoystickButton(Point pos);
+
+	void addButton();
 
 	CREATE_FUNC(Hud);
 };

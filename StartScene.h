@@ -4,6 +4,8 @@
 #include "cocos2d.h"
 #include "spine/spine-cocos2dx.h"
 #include "GameScene.h"
+#include "ControlSelectionScene.h"
+
 
 
 USING_NS_CC;
@@ -12,10 +14,10 @@ using namespace spine;
 class StartScene : public cocos2d::Layer
 {
 public:
-	static cocos2d::Scene* createScene();
+    static cocos2d::Scene* createScene();
 
-	virtual bool init();
-
+    virtual bool init();
+	
 	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
 
 	Sprite *play;

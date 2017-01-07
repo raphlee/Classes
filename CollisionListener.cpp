@@ -13,8 +13,6 @@ CollisionListener::~CollisionListener()
 
 void CollisionListener::BeginContact(b2Contact * contact)
 {
-	// oldManifold dùng để truy cập raw contact mainfold
-
 	b2Body *bodyA = contact->GetFixtureA()->GetBody();
 	b2Body *bodyB = contact->GetFixtureB()->GetBody();
 
@@ -86,6 +84,7 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		enemy->isDie = true;
 		bullet->isDie = true;
 	}
+
 }
 
 
@@ -107,12 +106,41 @@ void CollisionListener::EndContact(b2Contact * contact)
 		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 		soldier->onGround = false;
 	}
-
 }
 
 void CollisionListener::PreSolve(b2Contact * contact, const b2Manifold * oldManifold)
 {
+
+	// oldManifold dùng để truy cập raw contact mainfold
+
 	
 }
+
+
+// fix here to collision with enemy
+//void CollisionListener::EndContact(b2Contact * contact)
+//{
+//	b2Body *bodyA = contact->GetFixtureA()->GetBody();
+//	b2Body *bodyB = contact->GetFixtureB()->GetBody();
+//
+//	B2Skeleton* sA = (B2Skeleton*)bodyA->GetUserData();
+//	B2Skeleton* sB = (B2Skeleton*)bodyB->GetUserData();
+//
+//	if ((sA->getTag() == TAG_SOLDIER && sB->getTag() == TAG_FLOOR) ||
+//		(sB->getTag() == TAG_SOLDIER && sA->getTag() == TAG_FLOOR)
+//		) {
+//		bodyA->GetFixtureList()->SetSensor(false);
+//		bodyB->GetFixtureList()->SetSensor(false);
+//
+//		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
+//		soldier->onGround = false;
+//	}
+//
+//}
+
+//void CollisionListener::PreSolve(b2Contact * contact, const b2Manifold * oldManifold)
+//{
+//	
+//}
 
 

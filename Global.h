@@ -13,7 +13,7 @@ using namespace std;
 // define
 #define PI								3.1415926
 #define Y_INCREMENT_RATIO				7						
-#define KEYSCORE						"KEYME"
+#define KEY_SELECTION					"KEYME"
 #define KEYBACKGROUND					"KEYBG"
 #define KEYSOUND						"KEYSOUND"
 #define KEYONGAME						"KEYONGAME"
@@ -27,6 +27,16 @@ using namespace std;
 #define BITMASK_BULLET_HERO				0x0008
 #define BITMASK_BULLET_ENEMY			0x0010
 #define BITMASK_ITEM_					0x0020
+//#define SOLDIER_BITMASK					0x0001
+//#define ENEMY_BITMASK					0x0002
+//#define FLOOR_BITMASK					0x0004
+//#define BULLET_HERO_BITMASK				0x0008
+//#define BULLET_ENEMY_BITMASK			0x0010
+//#define ITEM_BITMASK					0x0020
+//#define BLANK_BITMASK					0x0040
+//#define ALLIGATOR_BITMASK				0x0080
+//#define HIPPO_BITMASK					0x0100
+
 
 // tag
 #define TAG_SOLDIER							101
