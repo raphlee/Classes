@@ -3,6 +3,7 @@
 
 #include "B2Skeleton.h"
 #include "GB2ShapeCache-x.h"
+#include "BulletOfHero.h"
 
 USING_NS_CC;
 
@@ -26,11 +27,19 @@ enum State {
 class Soldier : public B2Skeleton
 {
 public:
+	int canShoot;
+	bool isFirstShoot;
+	int isNoDie;
+	float angle; // goc de ban dan
+
+	CCArray *bulletPool;
+	int indexBullet;
 
 	Soldier(string jsonFile, string atlasFile, float scale);
 	static Soldier* create(string jsonFile, string atlasFile, float scale);
 	bool onGround = true;
 	bool isGetOriginX = false;
+	bool isTransform = false;
 	
 	Size sizeSoldier;
 	float jump_vel;
@@ -38,21 +47,26 @@ public:
 	State cur_state;
 	State pre_state;
 
-	void move();
+	virtual void move();
+	virtual void die(Point posOfCammera);
 
-	void listener();
+	virtual void listener();
 
-	void initPhysic(b2World *world, Point pos);
+	virtual void initPhysic(b2World *world, Point pos);
 
-	void idleShoot();
-	void idleShootUp();
-	void jumping();
-	void lyingShoot();
-	void runningShoot();
-	void runningShootUp();
-	void runningShootDown();
-
-	void updateSoldier(float dt);
+	virtual void idleShoot();
+	virtual void idleShootUp();
+	virtual void jumping();
+	virtual void lyingShoot();
+	virtual void runningShoot();
+	virtual void runningShootUp();
+	virtual void runningShootDown();
+	virtual void createPool();
+	virtual void shoot(float radian);
+	virtual void createBullet(float radian);
+	
+	void updateHero(float dt);
+	virtual void changeBodyBitMask(uint16 mask);
+	virtual Point getGunLocation();
 };
-
 #endif // __SOLDIER_H__

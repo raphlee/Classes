@@ -18,18 +18,14 @@ public:
 	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
 
 	b2Body *body;
-	//------
-	b2BodyDef bodyDef;	// defination of body like: shape,...// first
-	b2PolygonShape box_shape;
-	b2CircleShape circle_shape;
 	b2FixtureDef fixtureDef;
 
 	int health;
 	float move_vel;
 	bool facingRight;
 
-	void initBoxPhysic(b2World *world, Point pos);
-	void initCirclePhysic(b2World *world, Point pos);
+	virtual void initBoxPhysic(b2World *world, Point pos);
+	virtual void initCirclePhysic(b2World *world, Point pos);
 
 };
 

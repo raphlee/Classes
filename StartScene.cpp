@@ -4,7 +4,6 @@
 
 Scene* StartScene::createScene()
 {
-
     // 'scene' is an autorelease object
     auto scene = Scene::create();
 
@@ -21,8 +20,7 @@ Scene* StartScene::createScene()
 // on "init" you need to initialize your instance
 bool StartScene::init()
 {
-    //////////////////////////////
-    // 1. super init first
+	
     if ( !Layer::init() )
     {
         return false;
@@ -40,6 +38,7 @@ bool StartScene::init()
 
 	// cache frame
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("map1.plist");
+	Director::getInstance()->getTextureCache()->addImage("box/lid.png");
 
 	// sound and effect
 	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/backGroundMenu.mp3");
@@ -53,7 +52,6 @@ bool StartScene::init()
 	//CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
 	//CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
 
-	
 	auto ground = Sprite::createWithSpriteFrameName("ground.png");
 	ground->setAnchorPoint(Vec2(0.5, 0));
 	ground->setPosition(origin.x + visibleSize.width / 2, origin.y);
@@ -86,10 +84,11 @@ bool StartScene::init()
 bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 {
 	if (play->getBoundingBox().containsPoint(touch->getLocation())) {
-		Director::getInstance()->replaceScene(TransitionFade::create(0.67f, ControlSelectionScene::createScene()));
+		auto scene = ControlSelectionScene::createScene();
+		//auto tran = TransitionFade::create(1.0f, scene);
+		Director::getInstance()->replaceScene(scene);
+		//Director::getInstance()->replaceScene(TransitionFade::create(0.67f, ControlSelectionScene::createScene()));
 	}
 
 	return false;
 }
-
-

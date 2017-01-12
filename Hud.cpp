@@ -9,13 +9,20 @@ bool Hud::init()
 		return false;
 	}
 
+	auto origin = Director::getInstance()->getVisibleOrigin();
 	auto winSize = Director::getInstance()->getVisibleSize();
 
-	int choice = UserDefault::sharedUserDefault()->getIntegerForKey(KEY_SELECTION);
+	auto ref = UserDefault::sharedUserDefault();
+	int choice = ref->getIntegerForKey(KEY_SELECTION);
 
 	if (choice == 0) {
-		addJoystick(Point(winSize.width * 0.17f, winSize.height * 0.20f));
-		//addJoystickButton(Point(winSize.width * 0.85f, winSize.height * 0.19f));
+		float jtXRatio = ref->getFloatForKey(KEYJOYSTICK_X);
+		float jtYRatio = ref->getFloatForKey(KEYJOYSTICK_Y);
+
+		addJoystick(Point(origin.x + winSize.width * jtXRatio, origin.y + winSize.height * jtYRatio));
+		addJoystickButtonJump(Point(winSize.width * 0.73f, winSize.height * 0.19f));
+		addJoystickButtonFire(Point(winSize.width * 0.87f, winSize.height * 0.38f));
+
 	} else
 		addButton();
 
@@ -35,7 +42,7 @@ void Hud::addJoystick(Point pos)
 	auto joystick_bg = Sprite::create("send/move-area.png");
 	joystickBase->setThumbSprite(joystick_thumb);
 	joystickBase->setBackgroundSprite(joystick_bg);
-	joystickBase->setScale(SCREEN_SIZE.height / 3.0 / joystick_bg->getBoundingBox().size.height);
+	joystickBase->setScale(SCREEN_SIZE.height / 2.4f / joystick_bg->getBoundingBox().size.height);
 
 	joystick = new SneakyJoystick();
 	joystick->initWithRect(joystickBaseDimensions);
@@ -46,7 +53,7 @@ void Hud::addJoystick(Point pos)
 	addChild(joystickBase);
 }
 
-void Hud::addJoystickButton(Point pos)
+void Hud::addJoystickButtonJump(Point pos)
 {
 	auto rect_size = SCREEN_SIZE.height / 8;
 	Rect joystickButtonRect = Rect(0, 0, rect_size, rect_size);
@@ -68,6 +75,32 @@ void Hud::addJoystickButton(Point pos)
 	
 
 	joystickButtonBase->setButton(btnJump);
+
+	addChild(joystickButtonBase);
+}
+
+void Hud::addJoystickButtonFire(Point pos)
+{
+	auto rect_size = SCREEN_SIZE.height / 8;
+	Rect joystickButtonRect = Rect(0, 0, rect_size, rect_size);
+
+	SneakyButtonSkinnedBase *joystickButtonBase = new SneakyButtonSkinnedBase();
+	joystickButtonBase->init();
+	auto b = Sprite::create("send/btn-fire.png");
+
+	joystickButtonBase->setPosition(pos);
+	joystickButtonBase->setDefaultSprite(b);
+	joystickButtonBase->setActivatedSprite(Sprite::create("send/btn-fire.png"));
+	joystickButtonBase->setPressSprite(Sprite::create("send/btn-fire.png"));
+	joystickButtonBase->setScale(SCREEN_SIZE.height / 6.0f / b->getContentSize().height);
+
+	btnFire = new SneakyButton();
+	btnFire->initWithRect(joystickButtonRect);
+	btnFire->autorelease();
+	btnFire->retain();
+
+
+	joystickButtonBase->setButton(btnFire);
 
 	addChild(joystickButtonBase);
 }

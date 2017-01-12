@@ -2,8 +2,7 @@
 #define __CONTROL_SELECTION_SCENE_H__
 
 #include "cocos2d.h"
-#include "Global.h"
-#include "GameScene.h"
+#include "ModifyJoystickPosScene.h"
 
 
 class ControlSelectionScene : public cocos2d::Layer

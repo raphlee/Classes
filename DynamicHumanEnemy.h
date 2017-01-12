@@ -13,9 +13,12 @@ public:
 
 	DynamicHumanEnemy(string jsonFile, string atlasFile, float scale);
 	static DynamicHumanEnemy* create(float scale);
-
 	void move();
-	void updateEnemy(float dt);
+	void die();
+	void updateEnemy(float dt, Point cameraPoint);
+protected:
+	bool checkOutScreen(Point posCamera);
+	void resetEnemy();
 };
 
 #endif // __ENEMY_H__

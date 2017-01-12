@@ -5,10 +5,13 @@
 #include "Hud.h"
 #include "GLES-Render.h"
 #include "Soldier.h"
+#include "TankSoldier.h"
 #include "Enemy.h"
 #include "Floor.h"
 #include "CollisionListener.h"
 #include "DynamicHumanEnemy.h"
+#include "StaticHumanEnemy.h"
+#include "AutoGun.h"
 #include "InfiniteParallaxNode.h"
 
 class GameScene : public cocos2d::Layer
@@ -39,11 +42,16 @@ public:
 	int indexOfCurrentMap;
 
 	Soldier *soldier;
-	vector<Enemy*> listEnemy;
-
 	CCArray *dEnemyPool;
 	int indexDEnemy;
-	Point posGenEnemy;
+	Point posGenDEnemy;
+
+	set<int> listIndexExist;
+	vector<BulletOfHero *> existedBullet;
+
+	/*CCArray *heroBulletPool;
+	int indexHeroBulletPool;*/
+	
 
 	bool isTouchScreen = false;
 
@@ -51,6 +59,10 @@ public:
 	// main loop in game
 	void update(float dt);
 	void updateSoldier(float dt);
+	void updateStandMan(float dt);
+	void updateAutoGun(float dt);
+
+	void transform();
 
 	// process background / map for game
 	void createInfiniteNode();
@@ -61,18 +73,25 @@ public:
 	void buildFloor(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderUp(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderDown(TMXTiledMap *map, Layer* layer, float scale);
+	void buildStandEnemy(TMXTiledMap *map, Layer* layer, float scale);
+	void buildAutoGun(TMXTiledMap *map, Layer* layer, float scale);
 
 	// process hero for game
 	void createSoldier(Point pos);
 
 	// process enemy for game
 	void createPool();
-	void genEnemy();			// call in schedule
-	void checkGenEnemy();		// call in update
+	//void genEnemy();			// call in schedule
+	//void checkGenEnemy();		// call in update
 	
+	void genDEnemy();
+	void checkGenDEnemy();
+
+
 	// process joystick
 	void controlSneakyJoystick();
 	void controlSneakyButtonJump();
+	void controlSneakyButtonFire();
 
 	void controlButtonMove();
 

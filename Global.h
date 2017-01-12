@@ -13,48 +13,41 @@ using namespace std;
 // define
 #define PI								3.1415926
 #define Y_INCREMENT_RATIO				7						
-#define KEY_SELECTION					"KEYME"
-#define KEYBACKGROUND					"KEYBG"
-#define KEYSOUND						"KEYSOUND"
+#define KEY_SELECTION					"KEYSELECTION"
+#define KEYJOYSTICK_X					"KEYJSX"
+#define KEYJOYSTICK_Y					"KEYJSY"
 #define KEYONGAME						"KEYONGAME"
 #define KEYADS							"KEYADS"
 
 
 // bitmask
-#define SOLDIER_BITMASK					0x0001
-#define ENEMY_BITMASK					0x0002
-#define FLOOR_BITMASK					0x0004
-#define BULLET_HERO_BITMASK				0x0008
-#define BULLET_ENEMY_BITMASK			0x0010
-#define ITEM_BITMASK					0x0020
-#define BLANK_BITMASK					0x0040
-#define ALLIGATOR_BITMASK				0x0080
-#define HIPPO_BITMASK					0x0100
+#define BITMASK_SOLDIER					0x0001
+#define BITMASK_ENEMY					0x0002
+#define BITMASK_FLOOR					0x0004
+#define BITMASK_BULLET_HERO				0x0008
+#define BITMASK_BULLET_ENEMY			0x0010
+#define BITMASK_ITEM					0x0020
+//#define SOLDIER_BITMASK					0x0001
+//#define ENEMY_BITMASK					0x0002
+//#define FLOOR_BITMASK					0x0004
+//#define BULLET_HERO_BITMASK				0x0008
+//#define BULLET_ENEMY_BITMASK			0x0010
+//#define ITEM_BITMASK					0x0020
+//#define BLANK_BITMASK					0x0040
+//#define ALLIGATOR_BITMASK				0x0080
+//#define HIPPO_BITMASK					0x0100
+
 
 // tag
-#define SOLDIER							101
-#define FLOOR							102
-#define ENEMY							103
-#define BRIDGE							104
-#define WAVE							105
-#define LOG								106
-#define OTHER_LEAF						107
-#define OTHER_BROKEN_LEAF				108
-#define ALLIGATOR						109
+#define TAG_SOLDIER							101
+#define TAG_FLOOR							102
+#define TAG_ENEMY							103
+#define TAG_BULLET_HERO						104
+#define TAG_BULLET_ENEMY					105
+#define TAG_STANDMAN						106
+#define TAG_AUTOGUN							107
+#define TAG_ITEM							108
 
-
-#define WATER_SHAPE						110
-#define OTHER_WATER_SHAPE				111
-#define SHADOW							112
-#define ITEM							113
-#define TREE							114
-#define WOOD							115
-#define VORTEX							116
-#define HIPPO							117
-#define BULLET							118
-#define EFFECT_ON_LEAF					119
-
-#define GAME_TAG						120
 
 
 
@@ -62,11 +55,11 @@ using namespace std;
 #define ZORDER_BG_1						0
 #define ZORDER_BG_2						1
 #define ZORDER_BG_3						2
-#define ZORDER_SOLDIER					3
+#define ZORDER_BULLET					3
 #define ZORDER_SHADOW					4
 #define ZORDER_VORTEX					5
 #define ZORDER_ENEMY					6
-#define ZORDER_LOG						7
+#define ZORDER_SOLDIER					7
 #define ZORDER_EFFECT_ON_LEAF			8		// touch leaf
 #define ZORDER_LEAF						9
 #define ZORDER_WATER_EFFECT				10		// frog die
@@ -100,30 +93,16 @@ using namespace std;
 #define LEAF_RATIO_ORIGIN				8.5f
 #define LOG_RATIO						4.5f
 
-// we need max times upgrade
-// upgrade frog velocity, leaf, bridge, all.. @@
 
-// ratio
 #define PTM_RATIO							32
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
-#define Z_BACKGROUND						0
-#define Z_HERO								1
-
-// velocity
-const float VELOCITY_TO_UPGRADE_FROG	= 0.1f;
-
-const b2Vec2 VELOCITY_TO_UPGRADE		= b2Vec2(0.0f, -0.13f);
+#define MAX_BULLET_HERO_POOL				30
+#define MAX_BULLET_SOLDIER_ENEMY_POOL		3
 
 
 
 // arr to identify freq item
 const int ARR[] = {0, 0, 0, 1, 0, 0, 1, 0, 0, 1};
-
-// arr to random type of leaf: green leaf and yellow green leaf
-const int ARR_RANDOM_TYPE[] = {0, 1, 0, 0, 1};
-
-// arr to random angle crocodile appear
-const float ARR_ANGLE[] = {0, -90, 90, -60, 60};
 
 
 #endif // __GLOBAL_H__

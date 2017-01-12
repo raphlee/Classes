@@ -3,7 +3,9 @@
 
 #include "cocos2d.h"
 #include "spine/spine-cocos2dx.h"
+#include "GameScene.h"
 #include "ControlSelectionScene.h"
+
 
 
 USING_NS_CC;
@@ -22,8 +24,8 @@ public:
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 
-    // implement the "static create()" method manually
-    CREATE_FUNC(StartScene);
+	// implement the "static create()" method manually
+	CREATE_FUNC(StartScene);
 };
 
 #endif // __START_SCENE_H__

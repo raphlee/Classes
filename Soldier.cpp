@@ -3,12 +3,13 @@
 
 Soldier::Soldier(string jsonFile, string atlasFile, float scale) : B2Skeleton(jsonFile, atlasFile, scale)
 {
+	canShoot = INT_MAX;
 }
 
 Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 {
 	Soldier* soldier = new Soldier(jsonFile, atlasFile, scale);
-	soldier->setTag(SOLDIER);
+	soldier->setTag(TAG_SOLDIER);
 	soldier->update(0.0f);
 	soldier->sizeSoldier = soldier->getBoundingBox().size;
 	soldier->setTimeScale(1.5f);
@@ -17,18 +18,27 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 	soldier->move_vel = soldier->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	soldier->cur_state = IDLE_SHOOT;
 	soldier->facingRight = true;
-
-
+	soldier->canShoot = 1;
+	soldier->angle = 0;
+	soldier->isNoDie = -240;		// time to respawn
 	return soldier;
 }
 
 
 
-void Soldier::updateSoldier(float dt)
+void Soldier::updateHero(float dt)
 {
+	if (isNoDie < 0) { 
+		isNoDie++; 
+		if (isNoDie >= 0) {
+			changeBodyBitMask(BITMASK_SOLDIER);
+		}
+	}
+
 	this->setPositionX(body->GetPosition().x * PTM_RATIO);
 	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeSoldier.height / 2.0f);
-
+	//log("angle: %f", angle);
+	//this->shoot(angle);
 
 	switch (cur_state)
 	{
@@ -56,15 +66,32 @@ void Soldier::updateSoldier(float dt)
 	case DIE:
 		break;
 	}
+}
 
+void Soldier::changeBodyBitMask(uint16 mask)
+{
+	auto fixture = this->body->GetFixtureList();
+	b2Filter filter = fixture->GetFilterData();
+
+	filter.categoryBits = mask;
+	//and set it back
+	fixture->SetFilterData(filter);
+}
+
+Point Soldier::getGunLocation()
+{
+	auto gun = findBone("shoot");
+	auto pos = Vec2(this->getScaleX()*gun->worldX, gun->worldY);
+	//pos = convertToWorldSpace(pos);
+	//float scale = character->getScale();
+	pos = pos + this->getPosition();
+	return pos;
 }
 
 
 void Soldier::move()
 {
 	auto cur_velY = body->GetLinearVelocity().y;
-
-	
 
 	if (facingRight) {
 		this->setScaleX(1);
@@ -81,6 +108,25 @@ void Soldier::move()
 
 }
 
+void Soldier::die(Point posOfCammera)
+{
+	if (isNoDie >= 0) {
+		this->facingRight = true;
+		this->setScaleX(1);
+		this->cur_state = JUMPING;
+		this->onGround = false;
+		this->body->SetLinearVelocity(b2Vec2(0, 0));
+		this->body->SetTransform(b2Vec2((posOfCammera.x - SCREEN_SIZE.width * 0.35f) / PTM_RATIO,
+			SCREEN_SIZE.height / PTM_RATIO), this->body->GetAngle());
+
+		this->isNoDie = -240;
+		this->changeBodyBitMask(BITMASK_ENEMY);
+		auto blink = CCBlink::create(1, 4);
+		auto sequence = Sequence::create(blink, blink, blink, blink, nullptr);
+		this->runAction(sequence);
+	}
+}
+
 void Soldier::listener()
 {
 	this->setCompleteListener([&](int trackIndex, int loopCount) {
@@ -93,6 +139,7 @@ void Soldier::listener()
 void Soldier::initPhysic(b2World * world, Point pos)
 {
 	auto origin = Director::getInstance()->getVisibleOrigin();
+	b2BodyDef bodyDef;
 
 	bodyDef.userData = this;			// pass sprite to bodyDef with argument: userData
 
@@ -101,6 +148,7 @@ void Soldier::initPhysic(b2World * world, Point pos)
 
 	body = world->CreateBody(&bodyDef);
 	GB2ShapeCache::sharedGB2ShapeCache()->addFixturesToBody(body, "soldier");
+
 }
 
 void Soldier::idleShoot()
@@ -200,5 +248,64 @@ void Soldier::runningShootDown()
 		addAnimation(0, "running-shoot-down", true);
 		setToSetupPose();
 		pre_state = RUNNING_SHOOT_DOWN;
+	}
+}
+
+void Soldier::createPool()
+{
+	bulletPool = CCArray::createWithCapacity(MAX_BULLET_HERO_POOL);
+	bulletPool->retain();
+	indexBullet = 0;
+	for (int i = 0; i < MAX_BULLET_HERO_POOL; i++) {
+		auto bullet = BulletOfHero::create(this->getScale());
+		bullet->setPosition(INT_MAX, INT_MAX);
+		bullet->body = nullptr;
+		//bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_HERO;
+		//bullet->fixtureDef.filter.maskBits = BITMASK_ENEMY|BITMASK_ITEM_;
+
+		//bullet->initPhysic(world, Point(INT_MAX, INT_MAX));
+		//bullet->body->SetType(b2_staticBody);
+		this->getParent()->addChild(bullet, ZORDER_BULLET);
+		bulletPool->addObject(bullet);
+	}
+
+	indexBullet = 0;
+}
+
+
+void Soldier::shoot(float radian)
+{
+	if (canShoot < INT_MAX) {
+		if (isFirstShoot) {
+			createBullet(radian);
+			isFirstShoot = false;
+			canShoot = 1;
+		}
+
+		if (!canShoot && bulletPool != nullptr) {
+			createBullet(radian);
+		}
+
+		canShoot++;
+		if (canShoot == 20) {
+			canShoot = 0;
+		}
+	}
+}
+
+void Soldier::createBullet(float radian)
+{
+	auto bullet = (BulletOfHero*)bulletPool->getObjectAtIndex(indexBullet);
+	//bullet->body->SetTransform(this->body->GetPosition()+b2Vec2(this->getBoundingBox().size.width/PTM_RATIO,0), 0);
+	//bullet->setPosition(this->getPosition() + Point(this->getBoundingBox().size.width / PTM_RATIO, this->getBoundingBox().size.height/2));
+	bullet->setPosition(this->getGunLocation());
+	bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_HERO;
+	bullet->fixtureDef.filter.maskBits = BITMASK_ENEMY | BITMASK_ITEM;
+	bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
+
+	bullet->setAngel(radian);
+	indexBullet++;
+	if (indexBullet == MAX_BULLET_HERO_POOL) {
+		indexBullet = 0;
 	}
 }
