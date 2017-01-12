@@ -2,6 +2,7 @@
 #define __DYNAMIC_HUMAN_ENEMY_H__
 
 #include "Enemy.h"
+#include "Utility.h"
 
 USING_NS_CC;
 
@@ -16,7 +17,7 @@ public:
 	void move();
 	void die();
 	void updateEnemy(float dt, Point cameraPoint);
-protected:
+//protected:
 	bool checkOutScreen(Point posCamera);
 	void resetEnemy();
 };

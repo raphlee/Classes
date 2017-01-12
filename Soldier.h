@@ -60,7 +60,7 @@ public:
 	void createPool();
 	void shoot(float radian);
 	void updateSoldier(float dt);
-	void changeBodyBitMask(uint16 mask);
+	//void changeBodyBitMask(uint16 mask);
 	Point getGunLocation();
 };
 #endif // __SOLDIER_H__

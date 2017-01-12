@@ -3,6 +3,7 @@
 
 B2Skeleton::B2Skeleton(string jsonFile, string atlasFile, float scale) : SkeletonAnimation(jsonFile, atlasFile, scale)
 {
+
 }
 
 B2Skeleton * B2Skeleton::create(string jsonFile, string atlasFile, float scale)
@@ -49,6 +50,42 @@ void B2Skeleton::initCirclePhysic(b2World * world, Point pos)
 
 	body = world->CreateBody(&bodyDef);
 	body->CreateFixture(&fixtureDef);
+}
+
+void B2Skeleton::die()
+{
+	this->boom = Sprite::createWithSpriteFrameName("explosion-1.png");
+	this->boom->setPosition(0, this->getBoundingBox().size.height / 2);
+	this->addChild(boom);
+	Vector<SpriteFrame*> animFrames;
+	animFrames.reserve(7);
+
+	for (int i = 2; i < 8; i++)
+	{
+		auto frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("explosion-%d.png", i));
+		animFrames.pushBack(frame);
+	}
+
+	auto animation = Animation::createWithSpriteFrames(animFrames, 0.075f);
+	auto animate = Animate::create(animation);
+	animate->retain();
+	boom->runAction(animate);
+
+	auto callFunc2 = CallFunc::create([&]() {
+		boom->removeFromParentAndCleanup(true);
+	});
+
+	this->runAction(Sequence::create(DelayTime::create(0.5f), callFunc2, nullptr));
+}
+
+void B2Skeleton::changeBodyBitMask(uint16 mask)
+{
+	auto fixture = this->body->GetFixtureList();
+	b2Filter filter = fixture->GetFilterData();
+
+	filter.categoryBits = mask;
+	//and set it back
+	fixture->SetFilterData(filter);
 }
 
 

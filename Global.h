@@ -39,11 +39,16 @@ using namespace std;
 
 
 // tag
-#define TAG_SOLDIER							101
-#define TAG_FLOOR							102
-#define TAG_ENEMY							103
-#define TAG_BULLET_HERO						104
-#define TAG_BULLET_ENEMY					105
+#define TAG_SOLDIER							50
+#define TAG_FLOOR							51
+#define TAG_BULLET_HERO						52
+#define TAG_BULLET_ENEMY					53
+
+#define TAG_ENEMY_SOLDIER					101
+#define TAG_ENEMY_AUTOGUN					102
+#define TAG_ENEMY_FORTMINI					103
+#define TAG_ENEMY_FORT						104
+					
 
 
 
@@ -112,13 +117,14 @@ using namespace std;
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
 #define MAX_BULLET_HERO_POOL				30
 #define MAX_BULLET_SOLDIER_ENEMY_POOL		3
+#define MAX_BULLET_AUTOGUN_POOL				5
+#define MAX_BULLET_FORT_MINI_POOL			3
+#define MAX_BULLET_FORT_POOL				6
+
 #define Z_BACKGROUND						0
 #define Z_HERO								1
 
-#define TAG_STANDMAN						1
-#define TAG_AUTOGUN							2
-#define TAG_BULLET_HERO						3
-#define TAG_BULLET_ENEMY					4
+
 	
 // velocity
 

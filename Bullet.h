@@ -15,6 +15,7 @@ public:
 	static Bullet* create();
 	virtual void update(float dt);
 	virtual void initPhysic(b2World *world, Point pos);
+	virtual void initPhysic(b2World *world, b2Vec2 pos);
 	virtual void setAngel(float radian);
 };
 

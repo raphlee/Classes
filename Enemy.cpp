@@ -32,13 +32,17 @@ void Enemy::shoot(Point posOfHuman)
 
 void Enemy::die()
 {
+	B2Skeleton::die();
+	//isDie = false;
 }
 
 
 void Enemy::updateEnemy(float dt)
 {
-	this->setPositionX(body->GetPosition().x * PTM_RATIO);
-	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeEnemy.height / 2);
+	if (body != nullptr) {
+		this->setPositionX(body->GetPosition().x * PTM_RATIO);
+		this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeEnemy.height / 2);
+	}
 	
 }
 

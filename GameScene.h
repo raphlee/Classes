@@ -57,6 +57,8 @@ public:
 	void updateSoldier(float dt);
 	void updateStandMan(float dt);
 	void updateAutoGun(float dt);
+	void updateMiniFort(float dt);
+	void updateFort(float dt);
 
 	// process background / map for game
 	void createInfiniteNode();
@@ -64,11 +66,14 @@ public:
 	void createMap(TMXTiledMap *map, Point origin, Layer *layer);
 	void loadNextMap();
 	void freePassedMap(Point originOfLastMap);
+
 	void buildFloor(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderUp(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderDown(TMXTiledMap *map, Layer* layer, float scale);
 	void buildStandEnemy(TMXTiledMap *map, Layer* layer, float scale);
 	void buildAutoGun(TMXTiledMap *map, Layer* layer, float scale);
+	void buildMiniFort(TMXTiledMap *map, Layer* layer, float scale);
+	void buildFort(TMXTiledMap *map, Layer* layer, float scale);
 
 	// process hero for game
 	void createSoldier(Point pos);

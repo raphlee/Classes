@@ -20,7 +20,7 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 	soldier->facingRight = true;
 	soldier->canShoot = 1;
 	soldier->angle = 0;
-	soldier->isNoDie = -240;
+	soldier->isNoDie = -180;
 	return soldier;
 }
 
@@ -67,15 +67,15 @@ void Soldier::updateSoldier(float dt)
 	}
 }
 
-void Soldier::changeBodyBitMask(uint16 mask)
-{
-	auto fixture = this->body->GetFixtureList();
-	b2Filter filter = fixture->GetFilterData();
-
-	filter.categoryBits = mask;
-	//and set it back
-	fixture->SetFilterData(filter);
-}
+//void Soldier::changeBodyBitMask(uint16 mask)
+//{
+//	auto fixture = this->body->GetFixtureList();
+//	b2Filter filter = fixture->GetFilterData();
+//
+//	filter.categoryBits = mask;
+//	//and set it back
+//	fixture->SetFilterData(filter);
+//}
 
 Point Soldier::getGunLocation()
 {
@@ -120,7 +120,10 @@ void Soldier::die(Point posOfCammera)
 		this->isNoDie = -240;
 		this->changeBodyBitMask(BITMASK_ENEMY);
 		auto blink = CCBlink::create(1, 4);
-		auto sequence = Sequence::create(blink, blink, blink, blink, nullptr);
+		auto visible = CallFunc:: create([&]() {
+			this->setVisible(true);
+		});
+		auto sequence = Sequence::create(blink, blink, blink, visible, nullptr);
 		this->runAction(sequence);
 	}
 }

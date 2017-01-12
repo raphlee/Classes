@@ -81,13 +81,15 @@ bool ControlSelectionScene::onTouchBegan(Touch * touch, Event * unused_event)
 	if (joystick->getBoundingBox().containsPoint(location)) {
 		choice = 0;
 		reference->setIntegerForKey(KEY_SELECTION, choice);
-		Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
+		//Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
+		Director::getInstance()->replaceScene(GameScene::createScene());
 	}
 
 	else if (button->getBoundingBox().containsPoint(location)) {
 		choice = 1;
 		reference->setIntegerForKey(KEY_SELECTION, choice);
-		Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
+		//Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
+		Director::getInstance()->replaceScene(GameScene::createScene());
 	}
 
 	return false;

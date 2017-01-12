@@ -22,7 +22,7 @@ public:
 	virtual void updateEnemy(float dt);
 	virtual void initCirclePhysic(b2World *world, Point pos) override;
 
-protected:
+//protected:
 	virtual bool checkOutScreen(Point posCamera);
 	virtual void resetEnemy();
 };
