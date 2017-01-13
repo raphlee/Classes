@@ -1,4 +1,5 @@
 #include "AutoGun.h"
+//#include "Global.h"
 
 AutoGun::AutoGun(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {
@@ -35,6 +36,7 @@ void AutoGun::shoot()
 	//
 
 	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition());
+	//bullet->initPhysic(world, this->body->GetPosition());
 	bullet->setVisible(true);
 
 	indexBullet++;
@@ -50,6 +52,7 @@ void AutoGun::die()
 	Enemy::die();
 	isDie = false;
 	auto world = this->body->GetWorld();
+	if (world->IsLocked()) return;
 	world->DestroyBody(body);
 	this->body = nullptr;
 	//this->setVisible(false);
@@ -63,7 +66,7 @@ void AutoGun::die()
 }
 
 
-void AutoGun::updateEnemy(float dt, Point cameraPoint)
+void AutoGun::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 {
 	if (!checkOutScreen(cameraPoint)  && body !=nullptr) {
 		if (!this->isVisible()) {
@@ -79,7 +82,7 @@ void AutoGun::updateEnemy(float dt, Point cameraPoint)
 			this->setPositionY(body->GetPosition().y * PTM_RATIO - this->getParent()->getPositionY() - sizeEnemy.height / 2);
 		}
 		checkCanShoot++;
-		if (checkCanShoot >= 30 && checkCanShoot <= 90 && checkCanShoot%15 == 0 ) {
+		if (checkCanShoot >= 30 && checkCanShoot <= 40 && checkCanShoot%10 == 0 ) {
 			
 			shoot();
 		}
@@ -100,7 +103,7 @@ bool AutoGun::checkOutScreen(Point posCamera)
 {
 	auto screenSize = Director::getInstance()->getVisibleSize();
 	// truong hop dac biet khong gian check nho honss
-	if (fabs((this->getPosition().x + this->getParent()->getPosition().x)- posCamera.x)  > screenSize.width/3) {
+	if (fabs((this->getPosition().x + this->getParent()->getPosition().x)- posCamera.x)  > screenSize.width/2.5f) {
 		return true;
 	}
 	return false;

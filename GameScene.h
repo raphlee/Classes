@@ -11,7 +11,9 @@
 #include "DynamicHumanEnemy.h"
 #include "StaticHumanEnemy.h"
 #include "AutoGun.h"
+#include "TankEnemy.h"
 #include "InfiniteParallaxNode.h"
+
 
 class GameScene : public cocos2d::Layer
 {
@@ -25,7 +27,6 @@ public:
 	CustomCommand _customCommand;
 	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
 	int choiceControl;
-
 	b2World *world;
 
 	Follow *camera;
@@ -56,9 +57,9 @@ public:
 	void update(float dt);
 	void updateSoldier(float dt);
 	void updateStandMan(float dt);
-	void updateAutoGun(float dt);
+	/*void updateAutoGun(float dt);
 	void updateMiniFort(float dt);
-	void updateFort(float dt);
+	void updateFort(float dt);*/
 
 	// process background / map for game
 	void createInfiniteNode();
@@ -74,6 +75,7 @@ public:
 	void buildAutoGun(TMXTiledMap *map, Layer* layer, float scale);
 	void buildMiniFort(TMXTiledMap *map, Layer* layer, float scale);
 	void buildFort(TMXTiledMap *map, Layer* layer, float scale);
+	void buildTankEnemy(TMXTiledMap *map, Layer* layer, float scale);
 
 	// process hero for game
 	void createSoldier(Point pos);

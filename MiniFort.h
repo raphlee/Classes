@@ -14,9 +14,9 @@ public:
 
 	MiniFort(string jsonFile, string atlasFile, float scale);
 	static MiniFort* create(float scale);
-	void shoot(Point posOfHero);
-	bool checkOutScreen(Point posCamera);
-	void die();
+	virtual	void shoot(Point posOfHero);
+	virtual	bool checkOutScreen(Point posCamera);
+	virtual void die();
 	//void updateBullet();
 	
 };

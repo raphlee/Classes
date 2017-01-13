@@ -14,11 +14,11 @@ public:
 
 	AutoGun(string jsonFile, string atlasFile, float scale);
 	static AutoGun* create(float scale);
-	void shoot();
-	void die();
-	void updateEnemy(float dt, Point cameraPoint);
+	virtual void shoot();
+	virtual void die();
+	virtual void updateEnemy(float dt, Point cameraPoint, Point posOfHero);
 //protected:
-	bool checkOutScreen(Point posCamera);
+	virtual bool checkOutScreen(Point posCamera);
 };
 
 #endif // __ENEMY_H__

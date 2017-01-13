@@ -48,6 +48,7 @@ using namespace std;
 #define TAG_ENEMY_AUTOGUN					102
 #define TAG_ENEMY_FORTMINI					103
 #define TAG_ENEMY_FORT						104
+#define TAG_ENEMY_TANK						105
 					
 
 
@@ -117,9 +118,10 @@ using namespace std;
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
 #define MAX_BULLET_HERO_POOL				30
 #define MAX_BULLET_SOLDIER_ENEMY_POOL		3
-#define MAX_BULLET_AUTOGUN_POOL				5
+#define MAX_BULLET_AUTOGUN_POOL				2
 #define MAX_BULLET_FORT_MINI_POOL			3
 #define MAX_BULLET_FORT_POOL				6
+#define MAX_BULLET_TANK_POOL				3
 
 #define Z_BACKGROUND						0
 #define Z_HERO								1
@@ -141,5 +143,5 @@ const int ARR_RANDOM_TYPE[] = {0, 1, 0, 0, 1};
 // arr to random angle crocodile appear
 const float ARR_ANGLE[] = {0, -90, 90, -60, 60};
 
-
+//const b2World *world;
 #endif // __GLOBAL_H__

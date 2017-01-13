@@ -1,5 +1,6 @@
 #include "StaticHumanEnemy.h"
 #include "BulletOfEnemy.h"
+#include "Utility.h"
 
 StaticHumanEnemy::StaticHumanEnemy(string jsonFile, string atlasFile, float scale) : Enemy(jsonFile, atlasFile, scale)
 {
@@ -128,6 +129,7 @@ void StaticHumanEnemy::die()
 {
 	Enemy::die();
 	auto world = this->body->GetWorld();
+	if (world->IsLocked()) return;
 	world->DestroyBody(body);
 	this->body = nullptr;
 	//this->setVisible(false);
@@ -164,6 +166,7 @@ void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 }
 void StaticHumanEnemy::updateBullet(Point cameraPoint)
 {
+	log("Fuking bug in bullet update");
 	if (this->indexBullet >= 0) {
 		for (int i = 0; i < bulletPool->count(); i++) {
 			auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(i);

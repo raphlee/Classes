@@ -1,4 +1,5 @@
 #include "DynamicHumanEnemy.h"
+#include "Utility.h"
 
 DynamicHumanEnemy::DynamicHumanEnemy(string jsonFile, string atlasFile, float scale) : Enemy(jsonFile, atlasFile, scale)
 {
@@ -93,13 +94,16 @@ void DynamicHumanEnemy::resetEnemy()
 	});
 	auto callFunc2 = CallFunc::create([&]() {
 		this->die();
+		if (this->body != nullptr) {
+			auto world = this->body->GetWorld();
+			//this->body->SetTransform(b2Vec2(INT_MAX / PTM_RATIO, INT_MIN / PTM_RATIO), 0);
+			world->DestroyBody(this->body);
+			this->body = nullptr;
+		}
 	});
 	
 	this->runAction(Spawn::createWithTwoActions(Sequence::create(DelayTime::create(0.5f), callFunc, nullptr),callFunc2));
-	auto world = this->body->GetWorld();
-	//this->body->SetTransform(b2Vec2(INT_MAX / PTM_RATIO, INT_MIN / PTM_RATIO), 0);
-	world->DestroyBody(this->body);
-	this->body = nullptr;
+	
 	
 	//this->body->SetType(b2_staticBody);
 }

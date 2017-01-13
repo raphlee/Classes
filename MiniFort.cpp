@@ -1,4 +1,5 @@
 #include "MiniFort.h"
+#include "Utility.h"
 
 MiniFort::MiniFort(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {
@@ -54,6 +55,7 @@ void MiniFort::die()
 {
 	Enemy::die();
 	auto world = this->body->GetWorld();
+	if (world->IsLocked()) return;
 	world->DestroyBody(body);
 	this->body = nullptr;
 	//this->setVisible(false);

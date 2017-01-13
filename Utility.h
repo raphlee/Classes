@@ -2,6 +2,7 @@
 #define __UTILITY_H__
 
 #include "cocos2d.h"
+#include "Box2D\Box2D.h"
 
 USING_NS_CC;
 using namespace std;
@@ -9,7 +10,7 @@ using namespace std;
 class Utility 
 {
 public:
-	static void showBoomBoom(Node *father, Point posToShow);
+	static b2World *world;
 };
 
 #endif // __B2_SPRITE_H__
