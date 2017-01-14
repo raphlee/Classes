@@ -61,11 +61,10 @@ bool GameScene::init()
 	follow->setPosition(origin + visibleSize / 2);
 	addChild(follow);
 
-
 	camera = Follow::create(follow);
 	runAction(camera);
 
-	indexOfCurrentMap = 1;
+	indexOfCurrentMap = 12;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
@@ -114,6 +113,8 @@ void GameScene::update(float dt)
 	}
 
 
+	switchItem(dt);
+
 	for (int i = 0; i < existedBullet.size(); i++) {
 		auto bullet = (BulletOfHero*) existedBullet[i];
 		bullet->update(dt);
@@ -160,7 +161,7 @@ void GameScene::update(float dt)
 	if (choiceControl == 0) {
 		controlSneakyJoystick();
 		controlSneakyButtonJump();
-		controlSneakyButtonFire();
+		//controlSneakyButtonFire();
 	}
 	else
 		controlButtonMove();
@@ -197,18 +198,9 @@ void GameScene::updateSoldier(float dt)
 	}
 
 	if (soldier->cur_state == State::DIE) {
-		soldier->health--;
+		//soldier->health--;
 		//log("%d", soldier->health);
 		soldier->die(follow->getPosition());
-	}
-
-	if (soldier->health < 0) {
-		soldier->isTransform = true;
-	}
-
-	if (soldier->isTransform) {
-		transform();
-		soldier->isTransform = false;
 	}
 }
 
@@ -274,12 +266,12 @@ void GameScene::updateAutoGun(float dt)
 	}*/
 }
 
-void GameScene::transform()
+void GameScene::transformTank(Point pos)
 {
+	log("Tanker");
 	for (int i = 0; i < soldier->bulletPool->count(); i++) {
 		auto bullet = (BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i);
 		if (abs(bullet->getPositionX() - follow->getPositionX()) < SCREEN_SIZE.width / 2) {
-			log("Bullet %i", i);
 			existedBullet.push_back((BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i));
 		}
 	}
@@ -292,11 +284,96 @@ void GameScene::transform()
 
 	if (soldier == nullptr) {
 		soldier = TankSoldier::create("tank/tank.json", "tank/tank.atlas", SCREEN_SIZE.height / 11.0f / 113.0f);
-		soldier->setPosition(follow->getPositionX() - SCREEN_SIZE.width * 0.35f, SCREEN_SIZE.height);
+		soldier->setPosition(pos);
 		addChild(soldier, ZORDER_SOLDIER);
 		soldier->initPhysic(world, soldier->getPosition());
 		soldier->body->SetFixedRotation(true);
 		soldier->createPool();
+	}
+
+}
+
+void GameScene::transformHelicopter(Point pos)
+{
+	log("Helicopter");
+	for (int i = 0; i < soldier->bulletPool->count(); i++) {
+		auto bullet = (BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i);
+		if (abs(bullet->getPositionX() - follow->getPositionX()) < SCREEN_SIZE.width / 2) {
+			existedBullet.push_back((BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i));
+		}
+	}
+
+	soldier->bulletPool->removeAllObjects();
+	world->DestroyBody(soldier->body);
+
+	removeChildByTag(TAG_SOLDIER);
+	soldier = nullptr;
+
+	if (soldier == nullptr) {
+		soldier = HelicopterSoldier::create("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
+		soldier->setPosition(pos);
+		addChild(soldier, ZORDER_SOLDIER);
+		soldier->initPhysic(world, soldier->getPosition());
+		soldier->body->SetFixedRotation(true);
+		soldier->createPool();
+		soldier->setScaleX(-1);
+		soldier->idleShoot();
+	}
+}
+
+void GameScene::transformPlane(Point pos)
+{
+}
+
+void GameScene::switchItem(float dt)
+{
+	for (auto i : items) {
+		i->update(dt);
+		if (i->isTaken) {
+			switch (i->type)
+			{
+			case TYPE::TANK: {
+				if (!choiceControl) {
+					hud->btnJump->getParent()->setVisible(false);
+				}
+				transformTank(i->getPosition() + i->getParent()->getPosition());
+				break;
+			}
+			case TYPE::HEALTH: {
+				log("Health me");
+				break;
+			}
+			case TYPE::HELICOPTER: {
+				if (!choiceControl) {
+					hud->btnJump->getParent()->setVisible(false);
+				}
+				transformHelicopter(i->getPosition() + i->getParent()->getPosition());
+				break;
+			}
+			case TYPE::FAST_BULLET: {
+				log("Fast me");
+				break;
+			}
+			case TYPE::MULT_BULLET: {
+				log("Mult me");
+				break;
+			}
+			case TYPE::ORBIT_BULLET: {
+				log("Orbit me");
+				break;
+			}
+			case TYPE::PLANE: {
+				log("Plane me");
+				break;
+			}
+			default:
+				break;
+			}
+
+			i->isTaken = false;
+			world->DestroyBody(i->body);
+			i->setVisible(false);
+		}
 	}
 }
 
@@ -496,6 +573,13 @@ void GameScene::createMap(TMXTiledMap *map, Point origin, Layer *layer)
 
 	buildStandEnemy(map, layer, scaleOfMap);
 	buildAutoGun(map, layer, scaleOfMap);
+
+	buildItem(map, layer, scaleOfMap, "item_tank", "item-up-tank.png", TYPE::TANK);
+	buildItem(map, layer, scaleOfMap, "item_helicopter", "item-up-helicopter.png", TYPE::HELICOPTER);
+	buildItem(map, layer, scaleOfMap, "item_plane", "item-up-plane.png", TYPE::PLANE);
+	buildItem(map, layer, scaleOfMap, "rewardM", "item-speed-bullet.png", TYPE::FAST_BULLET);
+	buildItem(map, layer, scaleOfMap, "rewardF", "item-swirl-bullet.png", TYPE::ORBIT_BULLET);
+	buildItem(map, layer, scaleOfMap, "rewardS", "item-spread-bullet.png", TYPE::MULT_BULLET);
 }
 
 /************************************************************************/
@@ -572,9 +656,6 @@ void GameScene::buildFloor(TMXTiledMap *map, Layer* layer, float scale)
 		floor->setPosition(pos);
 
 		floor->initPhysic(world, pos + originThisMap, b2_staticBody);
-
-		//	floor->body->get
-
 		layer->addChild(floor);
 	}
 }
@@ -681,19 +762,50 @@ void GameScene::buildAutoGun(TMXTiledMap * map, Layer * layer, float scale)
 	//}
 }
 
+void GameScene::buildItem(TMXTiledMap * map, Layer * layer, float scale, string nameTile, string frameName, TYPE type)
+{
+	auto originThisMap = layer->getPosition();
+	auto group = map->getObjectGroup(nameTile);
+
+	if (group == nullptr)
+		return;
+
+	for (auto e : group->getObjects()) {
+		auto mObject = e.asValueMap();
+		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+		
+		auto item = Item::create(frameName, type);
+		item->setScale(SCREEN_SIZE.height / 8.0f / item->getContentSize().height);
+		item->size = item->getBoundingBox().size;
+		Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+		item->setPosition(pos);
+		item->initPhysic(world, pos + originThisMap, b2_dynamicBody);
+		layer->addChild(item, ZORDER_ENEMY);
+
+		items.push_back(item);
+	}
+
+}
+
 /************************************************************************/
 /* Control joystick                                                     */
 /************************************************************************/
 void GameScene::controlSneakyJoystick()
 {
 	float degree = hud->joystick->getDegrees();
+	auto joystickVel = hud->joystick->getVelocity();
+	if (soldier->isOnTheAir) {
+		soldier->moveFollow(joystickVel);
+		return;
+	}
+
 	if (hud->joystick->getVelocity() == Vec2::ZERO) {
 		if (soldier->onGround) {
-			soldier->getScaleX() > 0 ? soldier->angle = 0 : soldier->angle = PI;    // ko dieu khien
+			soldier->facingRight ? soldier->angle = 0 : soldier->angle = PI;
 			if (soldier->body->GetLinearVelocity().x != 0.0f)
 				soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-			soldier->facingRight = true;
 			soldier->cur_state = IDLE_SHOOT;
+
 		}
 	}
 	else if (degree < 30.0f || degree >= 330.0f) {
@@ -740,10 +852,10 @@ void GameScene::controlSneakyJoystick()
 			soldier->cur_state = RUNNING_SHOOT_DOWN;
 	}
 	else if (degree >= 250.0f && degree < 290.0f) {
-		soldier->getScaleX() > 0 ? soldier->angle = 0 : soldier->angle = PI;
 		if (soldier->body->GetLinearVelocity().x != 0.0f)
 			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
 		soldier->facingRight = true;
+		soldier->angle = 0;
 		if (soldier->onGround)
 			soldier->cur_state = LYING_SHOOT;
 	}

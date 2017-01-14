@@ -6,8 +6,10 @@
 #include "GLES-Render.h"
 #include "Soldier.h"
 #include "TankSoldier.h"
+#include "HelicopterSoldier.h"
 #include "Enemy.h"
 #include "Floor.h"
+#include "Item.h"
 #include "CollisionListener.h"
 #include "DynamicHumanEnemy.h"
 #include "StaticHumanEnemy.h"
@@ -48,10 +50,10 @@ public:
 
 	set<int> listIndexExist;
 	vector<BulletOfHero *> existedBullet;
+	vector<Item*> items;
 
 	/*CCArray *heroBulletPool;
 	int indexHeroBulletPool;*/
-	
 
 	bool isTouchScreen = false;
 
@@ -62,7 +64,10 @@ public:
 	void updateStandMan(float dt);
 	void updateAutoGun(float dt);
 
-	void transform();
+	void transformTank(Point pos);
+	void transformHelicopter(Point pos);
+	void transformPlane(Point pos);
+	void switchItem(float dt);
 
 	// process background / map for game
 	void createInfiniteNode();
@@ -75,6 +80,7 @@ public:
 	void buildLadderDown(TMXTiledMap *map, Layer* layer, float scale);
 	void buildStandEnemy(TMXTiledMap *map, Layer* layer, float scale);
 	void buildAutoGun(TMXTiledMap *map, Layer* layer, float scale);
+	void buildItem(TMXTiledMap *map, Layer* layer, float scale, string nameTile, string frameName, TYPE type);
 
 	// process hero for game
 	void createSoldier(Point pos);

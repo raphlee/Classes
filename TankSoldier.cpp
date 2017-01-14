@@ -16,13 +16,16 @@ TankSoldier * TankSoldier::create(string jsonFile, string atlasFile, float scale
 	tank->health = 10000;
 	tank->jump_vel = tank->SCREEN_SIZE.height * (4.0f / 3.0f) / PTM_RATIO;
 	tank->move_vel = tank->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
-	tank->cur_state = IDLE_SHOOT;
 	tank->facingRight = true;
 	tank->canShoot = 1;
+
+	tank->cur_state = IDLE_SHOOT;
+
 	tank->angle = 0;
 	tank->isNoDie = -240;		// time to respawn
 	return tank;
 }
+
 
 void TankSoldier::initPhysic(b2World * world, Point pos)
 {
@@ -36,8 +39,6 @@ Point TankSoldier::getGunLocation()
 {
 	auto gun = findBone("eff0");
 	auto pos = Vec2(this->getScaleX()*gun->worldX, gun->worldY);
-	//pos = convertToWorldSpace(pos);
-	//float scale = character->getScale();
 	pos = pos + this->getPosition();
 	return pos;
 }
@@ -76,7 +77,6 @@ void TankSoldier::idleShootUp()
 {
 	
 	if (pre_state != cur_state) {
-
 		clearTracks();
 
 		addAnimation(0, "standing-shoot-up", true);
@@ -91,6 +91,13 @@ void TankSoldier::jumping()
 
 void TankSoldier::lyingShoot()
 {
+	if (pre_state != cur_state) {
+
+		clearTracks();
+		addAnimation(0, "standing-shoot", true);
+		setToSetupPose();
+		pre_state = LYING_SHOOT;
+	}
 }
 
 
