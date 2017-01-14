@@ -7,7 +7,6 @@ Floor * Floor::create()
 {
 	Floor *floor = new Floor();
 	floor->initWithFile("box/lid.png");
-	//floor->initWithTexture("lid.png");
 	floor->setTag(TAG_FLOOR);
 	return floor;
 }

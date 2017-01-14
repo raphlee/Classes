@@ -13,9 +13,9 @@ using namespace std;
 // define
 #define PI								3.1415926
 #define Y_INCREMENT_RATIO				7						
-#define KEY_SELECTION					"KEYME"
-#define KEYBACKGROUND					"KEYBG"
-#define KEYSOUND						"KEYSOUND"
+#define KEY_SELECTION					"KEYSELECTION"
+#define KEYJOYSTICK_X					"KEYJSX"
+#define KEYJOYSTICK_Y					"KEYJSY"
 #define KEYONGAME						"KEYONGAME"
 #define KEYADS							"KEYADS"
 
@@ -26,7 +26,7 @@ using namespace std;
 #define BITMASK_FLOOR					0x0004
 #define BITMASK_BULLET_HERO				0x0008
 #define BITMASK_BULLET_ENEMY			0x0010
-#define BITMASK_ITEM_					0x0020
+#define BITMASK_ITEM					0x0020
 //#define SOLDIER_BITMASK					0x0001
 //#define ENEMY_BITMASK					0x0002
 //#define FLOOR_BITMASK					0x0004
@@ -53,30 +53,16 @@ using namespace std;
 
 
 
-#define WATER_SHAPE						110
-#define OTHER_WATER_SHAPE				111
-#define SHADOW							112
-#define ITEM							113
-#define TREE							114
-#define WOOD							115
-#define VORTEX							116
-#define HIPPO							117
-#define BULLET							118
-#define EFFECT_ON_LEAF					119
-
-#define GAME_TAG						120
-
-
 
 // z-order
 #define ZORDER_BG_1						0
 #define ZORDER_BG_2						1
 #define ZORDER_BG_3						2
-#define ZORDER_SOLDIER					3
+#define ZORDER_BULLET					3
 #define ZORDER_SHADOW					4
 #define ZORDER_VORTEX					5
 #define ZORDER_ENEMY					6
-#define ZORDER_LOG						7
+#define ZORDER_SOLDIER					7
 #define ZORDER_EFFECT_ON_LEAF			8		// touch leaf
 #define ZORDER_LEAF						9
 #define ZORDER_WATER_EFFECT				10		// frog die
@@ -110,14 +96,12 @@ using namespace std;
 #define LEAF_RATIO_ORIGIN				8.5f
 #define LOG_RATIO						4.5f
 
-// we need max times upgrade
-// upgrade frog velocity, leaf, bridge, all.. @@
-
 
 #define PTM_RATIO							32
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
 #define MAX_BULLET_HERO_POOL				30
 #define MAX_BULLET_SOLDIER_ENEMY_POOL		3
+
 #define MAX_BULLET_AUTOGUN_POOL				2
 #define MAX_BULLET_FORT_MINI_POOL			3
 #define MAX_BULLET_FORT_POOL				6
@@ -131,7 +115,6 @@ using namespace std;
 // velocity
 
 const b2Vec2 VELOCITY_TO_UPGRADE		= b2Vec2(0.0f, -0.13f);
-
 
 
 // arr to identify freq item

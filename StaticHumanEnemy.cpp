@@ -1,6 +1,6 @@
 #include "StaticHumanEnemy.h"
 #include "BulletOfEnemy.h"
-#include "Utility.h"
+
 
 StaticHumanEnemy::StaticHumanEnemy(string jsonFile, string atlasFile, float scale) : Enemy(jsonFile, atlasFile, scale)
 {
@@ -32,9 +32,8 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 	posOfHero = posOfHero - this->getParent()->getPosition();
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;
-	//bullet->body->SetTransform(this->body->GetPosition(), 0);
-	//
 
+	
 	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition());
 	bullet->setVisible(true);
 
@@ -52,12 +51,14 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 				this->setScaleX(-1);
 				this->clearTracks();
 				this->setAnimation(0, "standing-shoot", false);
+				this->setToSetupPose();
 				bullet->setAngel(PI);
 			}
 			else {
 				this->setScaleX(1);
 				this->clearTracks();
 				this->setAnimation(0, "standing-shoot", false);
+				this->setToSetupPose();
 				bullet->setAngel(0);
 			}
 		}
@@ -67,12 +68,14 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 					this->setScaleX(-1);
 					this->clearTracks();
 					this->setAnimation(0, "standing-shoot-45down", false);
+					this->setToSetupPose();
 					bullet->setAngel(PI * 5 / 4);
 				}
 				else {
 					this->setScaleX(-1);
 					this->clearTracks();
 					this->setAnimation(0, "standing-shoot-45up", false);
+					this->setToSetupPose();
 					bullet->setAngel(PI * 3 / 4);
 				}
 			}
@@ -81,12 +84,14 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 					this->setScaleX(1);
 					this->clearTracks();
 					this->setAnimation(0, "standing-shoot-45down", false);
+					this->setToSetupPose();
 					bullet->setAngel(-PI / 4);
 				}
 				else {
 					this->setScaleX(1);
 					this->clearTracks();
 					this->setAnimation(0, "standing-shoot-45up", false);
+					this->setToSetupPose();
 					bullet->setAngel(PI / 4);
 				}
 			}
@@ -95,11 +100,13 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 			if (thisToHero.y > 0) {
 				this->clearTracks();
 				this->setAnimation(0, "standing-shoot-up", false);
+				this->setToSetupPose();
 				bullet->setAngel(PI / 2);
 			}
 			else {
 				this->clearTracks();
 				this->setAnimation(0, "standing-shoot-down", false);
+				this->setToSetupPose();
 				bullet->setAngel(-PI / 2);
 			}
 		}
@@ -201,8 +208,8 @@ void StaticHumanEnemy::createPool(int count)
 	for (int i = 0; i < count; i++) {
 		auto bullet = BulletOfEnemy::create(1);
 		bullet->setPosition(INT_MAX, INT_MAX);
-		this->getParent()->addChild(bullet);
-
+		//this->getParent()->addChild(bullet);
+		this->getParent()->addChild(bullet, ZORDER_BULLET);
 		bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_ENEMY;
 		bullet->fixtureDef.filter.maskBits = BITMASK_SOLDIER;
 		//bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
@@ -232,7 +239,8 @@ bool StaticHumanEnemy::checkOutScreen(Point posCamera)
 		log("This fucking bug!");
 	}
 
-	if ((fabs((this->getPosition().x + this->getParent()->getPosition().x) - posCamera.x) > screenSize.width / 2) || (this->getPosition().y < 0)) {
+	if ((fabs((this->getPosition().x + this->getParent()->getPosition().x) - posCamera.x) > screenSize.width / 2) 
+		|| (this->getPosition().y < 0)) {
 		return true;
 	}
 	return false;

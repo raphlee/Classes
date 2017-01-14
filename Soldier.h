@@ -28,14 +28,18 @@ class Soldier : public B2Skeleton
 {
 public:
 	int canShoot;
+	bool isFirstShoot;
 	int isNoDie;
-	float angle; // goc de bem dan
+	float angle; // goc de ban dan
+
 	CCArray *bulletPool;
 	int indexBullet;
 
 	Soldier(string jsonFile, string atlasFile, float scale);
 	static Soldier* create(string jsonFile, string atlasFile, float scale);
 	bool onGround = true;
+	bool isGetOriginX = false;
+	bool isTransform = false;
 	
 	Size sizeSoldier;
 	float jump_vel;
@@ -43,24 +47,26 @@ public:
 	State cur_state;
 	State pre_state;
 
-	void move(Point bgPos);
-	void die(Point posOfCammera);
+	virtual void move();
+	virtual void die(Point posOfCammera);
 
-	void listener();
+	virtual void listener();
 
-	void initPhysic(b2World *world, Point pos);
+	virtual void initPhysic(b2World *world, Point pos);
 
-	void idleShoot();
-	void idleShootUp();
-	void jumping();
-	void lyingShoot();
-	void runningShoot();
-	void runningShootUp();
-	void runningShootDown();
-	void createPool();
-	void shoot(float radian);
-	void updateSoldier(float dt);
-	//void changeBodyBitMask(uint16 mask);
-	Point getGunLocation();
+	virtual void idleShoot();
+	virtual void idleShootUp();
+	virtual void jumping();
+	virtual void lyingShoot();
+	virtual void runningShoot();
+	virtual void runningShootUp();
+	virtual void runningShootDown();
+	virtual void createPool();
+	virtual void shoot(float radian);
+	virtual void createBullet(float radian);
+	
+	void updateHero(float dt);
+	//virtual void changeBodyBitMask(uint16 mask);
+	virtual Point getGunLocation();
 };
 #endif // __SOLDIER_H__

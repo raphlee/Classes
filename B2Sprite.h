@@ -19,10 +19,6 @@ public:
 	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
 
 	b2Body *body;
-	//------
-	b2BodyDef bodyDef;	// defination of body like: shape,...// first
-	b2PolygonShape shape;
-
 	b2FixtureDef fixtureDef;
 
 	void initPhysic(b2World *world, Point pos, b2BodyType type);

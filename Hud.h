@@ -17,12 +17,14 @@ public:
 
 	SneakyJoystick *joystick;
 	SneakyButton *btnJump;
+	SneakyButton *btnFire;
 
 	Button *btnLeft;
 	Button *btnRight;
 
 	void addJoystick(Point pos);
-	void addJoystickButton(Point pos);
+	void addJoystickButtonJump(Point pos);
+	void addJoystickButtonFire(Point pos);
 
 	void addButton();
 

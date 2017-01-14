@@ -53,7 +53,7 @@ void Enemy::initCirclePhysic(b2World * world, Point pos)
 	b2Filter filter= fixture->GetFilterData();
 
 	filter.categoryBits = BITMASK_ENEMY;
-	filter.maskBits = BITMASK_SOLDIER|BITMASK_BULLET_HERO|BITMASK_FLOOR;
+	filter.maskBits = BITMASK_SOLDIER | BITMASK_BULLET_HERO | BITMASK_FLOOR;
 
 	fixture->SetFilterData(filter);
 }

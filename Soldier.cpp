@@ -26,7 +26,7 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 
 
 
-void Soldier::updateSoldier(float dt)
+void Soldier::updateHero(float dt)
 {
 	if (isNoDie < 0) { 
 		isNoDie++; 
@@ -34,10 +34,11 @@ void Soldier::updateSoldier(float dt)
 			changeBodyBitMask(BITMASK_SOLDIER);
 		}
 	}
+
 	this->setPositionX(body->GetPosition().x * PTM_RATIO);
 	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeSoldier.height / 2.0f);
 	//log("angle: %f", angle);
-	this->shoot(angle);
+	//this->shoot(angle);
 
 	switch (cur_state)
 	{
@@ -88,7 +89,7 @@ Point Soldier::getGunLocation()
 }
 
 
-void Soldier::move(Point bgPos)
+void Soldier::move()
 {
 	auto cur_velY = body->GetLinearVelocity().y;
 
@@ -98,10 +99,10 @@ void Soldier::move(Point bgPos)
 	}
 	else {
 		this->setScaleX(-1);
-		if(bgPos.x - getPosition().x < SCREEN_SIZE.width / 2)
-			body->SetLinearVelocity(b2Vec2(-move_vel, cur_velY));
-		else
+		body->SetLinearVelocity(b2Vec2(-move_vel, cur_velY));
+		if (isGetOriginX) {
 			body->SetLinearVelocity(b2Vec2(0, cur_velY));
+		}
 	}
 
 
@@ -113,6 +114,7 @@ void Soldier::die(Point posOfCammera)
 		this->facingRight = true;
 		this->setScaleX(1);
 		this->cur_state = JUMPING;
+		this->onGround = false;
 		this->body->SetLinearVelocity(b2Vec2(0, 0));
 		this->body->SetTransform(b2Vec2((posOfCammera.x - SCREEN_SIZE.width * 0.35f) / PTM_RATIO,
 			SCREEN_SIZE.height / PTM_RATIO), this->body->GetAngle());
@@ -140,6 +142,7 @@ void Soldier::listener()
 void Soldier::initPhysic(b2World * world, Point pos)
 {
 	auto origin = Director::getInstance()->getVisibleOrigin();
+	b2BodyDef bodyDef;
 
 	bodyDef.userData = this;			// pass sprite to bodyDef with argument: userData
 
@@ -189,10 +192,9 @@ void Soldier::jumping()
 			body->SetTransform(body->GetPosition(), 0);
 		}
 
-		log("Pre - %i", pre_state);
 		clearTracks();
 		addAnimation(0, "jumping", true);
-		this->setToSetupPose();
+		setToSetupPose();
 
 		pre_state = JUMPING;
 	}
@@ -254,7 +256,7 @@ void Soldier::runningShootDown()
 
 void Soldier::createPool()
 {
-	bulletPool=CCArray::createWithCapacity(MAX_BULLET_HERO_POOL);
+	bulletPool = CCArray::createWithCapacity(MAX_BULLET_HERO_POOL);
 	bulletPool->retain();
 	indexBullet = 0;
 	for (int i = 0; i < MAX_BULLET_HERO_POOL; i++) {
@@ -266,7 +268,7 @@ void Soldier::createPool()
 
 		//bullet->initPhysic(world, Point(INT_MAX, INT_MAX));
 		//bullet->body->SetType(b2_staticBody);
-		this->getParent()->addChild(bullet);
+		this->getParent()->addChild(bullet, ZORDER_BULLET);
 		bulletPool->addObject(bullet);
 	}
 
@@ -277,24 +279,36 @@ void Soldier::createPool()
 void Soldier::shoot(float radian)
 {
 	if (canShoot < INT_MAX) {
-		if (!canShoot&& bulletPool != nullptr) {
-			auto bullet = (BulletOfHero*)bulletPool->getObjectAtIndex(indexBullet);
-			//bullet->body->SetTransform(this->body->GetPosition()+b2Vec2(this->getBoundingBox().size.width/PTM_RATIO,0), 0);
-			//bullet->setPosition(this->getPosition() + Point(this->getBoundingBox().size.width / PTM_RATIO, this->getBoundingBox().size.height/2));
-			bullet->setPosition(this->getGunLocation());
-			bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_HERO;
-			bullet->fixtureDef.filter.maskBits = BITMASK_ENEMY|BITMASK_ITEM_;
-			bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
-
-			bullet->setAngel(radian);
-			indexBullet++;
-			if (indexBullet == MAX_BULLET_HERO_POOL) {
-				indexBullet = 0;
-			}
+		if (isFirstShoot) {
+			createBullet(radian);
+			isFirstShoot = false;
+			canShoot = 1;
 		}
+
+		if (!canShoot && bulletPool != nullptr) {
+			createBullet(radian);
+		}
+
 		canShoot++;
-		if (canShoot == 30) {
+		if (canShoot == 20) {
 			canShoot = 0;
 		}
+	}
+}
+
+void Soldier::createBullet(float radian)
+{
+	auto bullet = (BulletOfHero*)bulletPool->getObjectAtIndex(indexBullet);
+	//bullet->body->SetTransform(this->body->GetPosition()+b2Vec2(this->getBoundingBox().size.width/PTM_RATIO,0), 0);
+	//bullet->setPosition(this->getPosition() + Point(this->getBoundingBox().size.width / PTM_RATIO, this->getBoundingBox().size.height/2));
+	bullet->setPosition(this->getGunLocation());
+	bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_HERO;
+	bullet->fixtureDef.filter.maskBits = BITMASK_ENEMY | BITMASK_ITEM;
+	bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
+
+	bullet->setAngel(radian);
+	indexBullet++;
+	if (indexBullet == MAX_BULLET_HERO_POOL) {
+		indexBullet = 0;
 	}
 }

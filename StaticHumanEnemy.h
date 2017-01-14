@@ -14,6 +14,7 @@ public:
 	int checkCanShoot;
 	CCArray *bulletPool;
 	int indexBullet;
+
 	StaticHumanEnemy(string jsonFile, string atlasFile, float scale);
 	static StaticHumanEnemy* create(float scale);
 	virtual void shoot(Point posOfHero);
@@ -21,6 +22,7 @@ public:
 	virtual void updateEnemy(float dt, Point cameraPoint, Point posOfHero);
 	virtual void updateBullet(Point cameraPoint);
 	virtual void createPool(int count);
+
 //	void setAngle(float radian);
 	virtual bool checkOutScreen(Point posCamera);
 	//void resetEnemy();

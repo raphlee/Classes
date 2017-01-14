@@ -5,6 +5,7 @@
 #include "Hud.h"
 #include "GLES-Render.h"
 #include "Soldier.h"
+#include "TankSoldier.h"
 #include "Enemy.h"
 #include "Floor.h"
 #include "CollisionListener.h"
@@ -46,6 +47,9 @@ public:
 	int indexDEnemy;
 	Point posGenDEnemy;
 
+	set<int> listIndexExist;
+	vector<BulletOfHero *> existedBullet;
+
 	/*CCArray *heroBulletPool;
 	int indexHeroBulletPool;*/
 	
@@ -60,6 +64,8 @@ public:
 	/*void updateAutoGun(float dt);
 	void updateMiniFort(float dt);
 	void updateFort(float dt);*/
+
+	void transform();
 
 	// process background / map for game
 	void createInfiniteNode();
@@ -87,9 +93,12 @@ public:
 	
 	void genDEnemy();
 	void checkGenDEnemy();
+
+
 	// process joystick
 	void controlSneakyJoystick();
 	void controlSneakyButtonJump();
+	void controlSneakyButtonFire();
 
 	void controlButtonMove();
 

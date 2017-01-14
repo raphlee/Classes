@@ -41,6 +41,7 @@ void CollisionListener::BeginContact(b2Contact * contact)
 			}
 			else {
 				soldier->onGround = true;
+				log("On ground");
 			}
 		}
 		else {
@@ -52,6 +53,7 @@ void CollisionListener::BeginContact(b2Contact * contact)
 			}
 			else {
 				soldier->onGround = true;
+				log("On ground");
 			}
 		}
 
@@ -65,6 +67,7 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		}
 		//contact->SetEnabled(false);
 	}
+
 	// neu nguoi va cham dan enemy
 	else if ((sA->getTag() == TAG_SOLDIER && (sB->getTag() == TAG_BULLET_ENEMY)) ||
 		(sB->getTag() == TAG_SOLDIER && (sA->getTag() == TAG_BULLET_ENEMY))) {
@@ -76,6 +79,7 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		}
 
 	}
+
 	// neu enemy va cham dan cua hero
 	else if ((sA->getTag() == TAG_BULLET_HERO && (sB->getTag() > 100)) ||
 		(sB->getTag() == TAG_BULLET_HERO && (sA->getTag() > 100))) {
@@ -102,45 +106,8 @@ void CollisionListener::EndContact(b2Contact * contact)
 		) {
 		bodyA->GetFixtureList()->SetSensor(false);
 		bodyB->GetFixtureList()->SetSensor(false);
-
-		/*auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
-		soldier->onGround = false;*/
 	}
 }
 
-void CollisionListener::PreSolve(b2Contact * contact, const b2Manifold * oldManifold)
-{
-
-	// oldManifold dùng để truy cập raw contact mainfold
-
-	
-}
-
-
-// fix here to collision with enemy
-//void CollisionListener::EndContact(b2Contact * contact)
-//{
-//	b2Body *bodyA = contact->GetFixtureA()->GetBody();
-//	b2Body *bodyB = contact->GetFixtureB()->GetBody();
-//
-//	B2Skeleton* sA = (B2Skeleton*)bodyA->GetUserData();
-//	B2Skeleton* sB = (B2Skeleton*)bodyB->GetUserData();
-//
-//	if ((sA->getTag() == TAG_SOLDIER && sB->getTag() == TAG_FLOOR) ||
-//		(sB->getTag() == TAG_SOLDIER && sA->getTag() == TAG_FLOOR)
-//		) {
-//		bodyA->GetFixtureList()->SetSensor(false);
-//		bodyB->GetFixtureList()->SetSensor(false);
-//
-//		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
-//		soldier->onGround = false;
-//	}
-//
-//}
-
-//void CollisionListener::PreSolve(b2Contact * contact, const b2Manifold * oldManifold)
-//{
-//	
-//}
 
 

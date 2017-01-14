@@ -9,7 +9,7 @@ bool SneakyButton::initWithRect(Rect rect)
     status = 1; //defaults to enabled
     active = false;
     value = 0;
-    isHoldable = 0;
+    isHoldable = 1;
     isToggleable = 0;
     radius = 32.0f;
     rateLimit = 1.0f/120.0f;
@@ -63,6 +63,7 @@ bool SneakyButton::onTouchBegan(Touch *touch, Event *event)
 		if(target->getRadiusSq() > dSq / 2.0f){
 
 			target->setIsActive(true);
+
 			if (!target->getIsHoldable() && !target->getIsToggleable())
             {
 				target->setValue(1);
@@ -127,6 +128,7 @@ void SneakyButton::onTouchEnded(Touch *touch, Event *event)
     {
         return;
     }
+
 	if (target->getIsHoldable())
     {
         target->setValue(0);
