@@ -20,6 +20,7 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 	soldier->facingRight = true;
 	soldier->canShoot = 1;
 	soldier->angle = 0;
+	soldier->bulletType = BulletType::Circle;
 	soldier->isNoDie = -180;
 	return soldier;
 }
@@ -28,8 +29,8 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 
 void Soldier::updateHero(float dt)
 {
-	if (isNoDie < 0) { 
-		isNoDie++; 
+	if (isNoDie < 0) {
+		isNoDie++;
 		if (isNoDie >= 0) {
 			changeBodyBitMask(BITMASK_SOLDIER);
 		}
@@ -65,6 +66,21 @@ void Soldier::updateHero(float dt)
 		break;
 	case DIE:
 		break;
+	}
+
+	//shoot(angle);
+	// update canshoot
+	if (canShoot) {
+		canShoot++;
+		if (canShoot == 20) {
+			canShoot = 0;
+		}
+		if (bulletType == BulletType::Fast) {
+			if (canShoot > 10) {
+				canShoot = 0;
+			}
+		}
+
 	}
 }
 
@@ -118,11 +134,11 @@ void Soldier::die(Point posOfCammera)
 		this->body->SetLinearVelocity(b2Vec2(0, 0));
 		this->body->SetTransform(b2Vec2((posOfCammera.x - SCREEN_SIZE.width * 0.35f) / PTM_RATIO,
 			SCREEN_SIZE.height / PTM_RATIO), this->body->GetAngle());
-
+		this->bulletType = BulletType::Slow;
 		this->isNoDie = -240;
 		this->changeBodyBitMask(BITMASK_ENEMY);
 		auto blink = CCBlink::create(1, 4);
-		auto visible = CallFunc:: create([&]() {
+		auto visible = CallFunc::create([&]() {
 			this->setVisible(true);
 		});
 		auto sequence = Sequence::create(blink, blink, blink, visible, nullptr);
@@ -157,7 +173,7 @@ void Soldier::initPhysic(b2World * world, Point pos)
 void Soldier::idleShoot()
 {
 	if (pre_state != cur_state) {
-		
+
 		if (pre_state == LYING_SHOOT) {
 			body->SetTransform(body->GetPosition(), 0);
 		}
@@ -171,7 +187,7 @@ void Soldier::idleShoot()
 
 void Soldier::idleShootUp()
 {
-	
+
 	if (pre_state != cur_state) {
 		if (pre_state == LYING_SHOOT) {
 			body->SetTransform(body->GetPosition(), 0);
@@ -203,7 +219,7 @@ void Soldier::jumping()
 void Soldier::lyingShoot()
 {
 	if (pre_state != cur_state) {
-		body->SetTransform(body->GetPosition(), -PI/ 2);
+		body->SetTransform(body->GetPosition(), -PI / 2);
 
 		clearTracks();
 		addAnimation(0, "lie-shoot", true);
@@ -279,26 +295,78 @@ void Soldier::createPool()
 void Soldier::shoot(float radian)
 {
 	if (canShoot < INT_MAX) {
-		if (isFirstShoot) {
-			createBullet(radian);
-			isFirstShoot = false;
+		if (!canShoot) {
+			switch (bulletType)
+			{
+			case BulletType::Circle:
+			case BulletType::Slow: {
+				if (isFirstShoot) {
+					createBullet(radian);
+					isFirstShoot = false;
+				}
+
+				if (!canShoot && bulletPool != nullptr) {
+					createBullet(radian);
+
+				}
+				break;
+			}
+			case BulletType::Fast: {
+				if (isFirstShoot) {
+					createBullet(radian);
+					isFirstShoot = false;
+
+				}
+
+				if (!(canShoot % 10) && bulletPool != nullptr) {
+					createBullet(radian);
+
+				}
+
+				break;
+			}
+			
+			case BulletType::Super: {
+				if (isFirstShoot) {
+					createBullet(radian);
+					createBullet(radian - PI / 10);
+					createBullet(radian + PI / 10);
+					createBullet(radian - PI / 5);
+					createBullet(radian + PI / 5);
+					isFirstShoot = false;
+
+				}
+
+				if (!canShoot && bulletPool != nullptr) {
+					createBullet(radian);
+					createBullet(radian - PI / 10);
+					createBullet(radian + PI / 10);
+					createBullet(radian - PI / 5);
+					createBullet(radian + PI / 5);
+
+				}
+
+
+				break;
+			}
+			default: {
+				break;
+			}
+			}
 			canShoot = 1;
-		}
-
-		if (!canShoot && bulletPool != nullptr) {
-			createBullet(radian);
-		}
-
-		canShoot++;
-		if (canShoot == 20) {
-			canShoot = 0;
 		}
 	}
 }
 
+
 void Soldier::createBullet(float radian)
 {
 	auto bullet = (BulletOfHero*)bulletPool->getObjectAtIndex(indexBullet);
+	if (bullet->body != nullptr) {
+		auto world = bullet->body->GetWorld();
+		world->DestroyBody(bullet->body);
+	}
+	bullet->setVisible(true);
 	//bullet->body->SetTransform(this->body->GetPosition()+b2Vec2(this->getBoundingBox().size.width/PTM_RATIO,0), 0);
 	//bullet->setPosition(this->getPosition() + Point(this->getBoundingBox().size.width / PTM_RATIO, this->getBoundingBox().size.height/2));
 	bullet->setPosition(this->getGunLocation());
@@ -311,4 +379,13 @@ void Soldier::createBullet(float radian)
 	if (indexBullet == MAX_BULLET_HERO_POOL) {
 		indexBullet = 0;
 	}
+	if (this->bulletType == BulletType::Circle) {
+		bullet->type = Type::circle;
+		bullet->alpha = 3*PI/2;
+	}
+	else {
+		bullet->type = Type::normal;
+	}
+
+
 }

@@ -1,6 +1,7 @@
 ﻿#include "CollisionListener.h"
 #include "Enemy.h"
 #include "Bullet.h"
+#include "Item.h"
 
 CollisionListener::CollisionListener() {
 
@@ -29,7 +30,6 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		(sB->getTag() == TAG_SOLDIER && sA->getTag() == TAG_FLOOR)
 		) {
 
-
 		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 
 		if (sA->getTag() != TAG_SOLDIER) {
@@ -41,7 +41,6 @@ void CollisionListener::BeginContact(b2Contact * contact)
 			}
 			else {
 				soldier->onGround = true;
-				log("On ground");
 			}
 		}
 		else {
@@ -53,7 +52,6 @@ void CollisionListener::BeginContact(b2Contact * contact)
 			}
 			else {
 				soldier->onGround = true;
-				log("On ground");
 			}
 		}
 
@@ -77,7 +75,14 @@ void CollisionListener::BeginContact(b2Contact * contact)
 			soldier->cur_state = State::DIE;
 			bullet->isDie = true;
 		}
+	}
 
+	// neu nguoi va cham item
+	else if ((sA->getTag() == TAG_SOLDIER && (sB->getTag() == TAG_ITEM)) ||
+		(sB->getTag() == TAG_SOLDIER && (sA->getTag() == TAG_ITEM))) {
+		auto item = sA->getTag() == TAG_ITEM ? (Item *)sA : (Item *)sB;
+		item->isTaken = true;
+		log("TAKEN");
 	}
 
 	// neu enemy va cham dan cua hero

@@ -6,8 +6,10 @@
 #include "GLES-Render.h"
 #include "Soldier.h"
 #include "TankSoldier.h"
+//#include "HelicopterSoldier.h"
 #include "Enemy.h"
 #include "Floor.h"
+#include "Item.h"
 #include "CollisionListener.h"
 #include "DynamicHumanEnemy.h"
 #include "StaticHumanEnemy.h"
@@ -49,10 +51,10 @@ public:
 
 	set<int> listIndexExist;
 	vector<BulletOfHero *> existedBullet;
+	vector<Item*> items;
 
 	/*CCArray *heroBulletPool;
 	int indexHeroBulletPool;*/
-	
 
 	bool isTouchScreen = false;
 
@@ -65,14 +67,17 @@ public:
 	void updateMiniFort(float dt);
 	void updateFort(float dt);*/
 
-	void transform();
+	void transformTank(Point pos);
+	//void transformHelicopter(Point pos);
+	void transformPlane(Point pos);
+	void switchItem(float dt);
 
 	// process background / map for game
 	void createInfiniteNode();
 	void createBackground();
 	void createMap(TMXTiledMap *map, Point origin, Layer *layer);
 	void loadNextMap();
-	void freePassedMap(Point originOfLastMap);
+	void freePassedMap();
 
 	void buildFloor(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderUp(TMXTiledMap *map, Layer* layer, float scale);
@@ -82,6 +87,9 @@ public:
 	void buildMiniFort(TMXTiledMap *map, Layer* layer, float scale);
 	void buildFort(TMXTiledMap *map, Layer* layer, float scale);
 	void buildTankEnemy(TMXTiledMap *map, Layer* layer, float scale);
+	void buildHelicopterShoot(TMXTiledMap *map, Layer* layer, float scale);
+	void buildItem(TMXTiledMap *map, Layer* layer, float scale, string nameTile, string frameName, TYPE type);
+
 
 	// process hero for game
 	void createSoldier(Point pos);

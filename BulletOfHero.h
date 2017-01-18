@@ -3,10 +3,16 @@
 
 #include "Bullet.h"
 
+enum Type {
+	normal,
+	circle
+};
 
 class BulletOfHero : public Bullet
 {
 public:
+	float alpha;
+	Type type;
 	BulletOfHero();
 	~BulletOfHero();
 

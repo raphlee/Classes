@@ -9,6 +9,13 @@ USING_NS_CC;
 
 using namespace spine;
 
+enum BulletType {
+	Slow,
+	Fast,
+	Circle,
+	Super
+};
+
 enum State {
 	IDLE_SHOOT,
 	IDLE_SHOOT_UP,
@@ -27,6 +34,8 @@ enum State {
 class Soldier : public B2Skeleton
 {
 public:
+	BulletType bulletType;
+
 	int canShoot;
 	bool isFirstShoot;
 	int isNoDie;
@@ -39,7 +48,7 @@ public:
 	static Soldier* create(string jsonFile, string atlasFile, float scale);
 	bool onGround = true;
 	bool isGetOriginX = false;
-	bool isTransform = false;
+	bool isOnTheAir = false;
 	
 	Size sizeSoldier;
 	float jump_vel;

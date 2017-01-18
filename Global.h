@@ -43,12 +43,15 @@ using namespace std;
 #define TAG_FLOOR							51
 #define TAG_BULLET_HERO						52
 #define TAG_BULLET_ENEMY					53
+#define TAG_ITEM							54
 
 #define TAG_ENEMY_SOLDIER					101
 #define TAG_ENEMY_AUTOGUN					102
 #define TAG_ENEMY_FORTMINI					103
 #define TAG_ENEMY_FORT						104
 #define TAG_ENEMY_TANK						105
+#define TAG_ENEMY_HELICOPTER_SHOOT			106
+#define TAG_ENEMY_HELICOPTER_BOOM			107
 					
 
 
@@ -106,6 +109,7 @@ using namespace std;
 #define MAX_BULLET_FORT_MINI_POOL			3
 #define MAX_BULLET_FORT_POOL				6
 #define MAX_BULLET_TANK_POOL				3
+#define MAX_BULLET_HELICOPTER_POOL			2
 
 #define Z_BACKGROUND						0
 #define Z_HERO								1

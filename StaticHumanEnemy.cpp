@@ -144,6 +144,7 @@ void StaticHumanEnemy::die()
 	this->setAnimation(0, "die", false);
 	auto callFunc = CallFunc::create([&]() {
 		this->setVisible(false);//removeFromParentAndCleanup(true);
+		//removeFromParentAndCleanup(true);
 	});
 
 	this->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));
