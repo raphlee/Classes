@@ -103,7 +103,7 @@ bool AutoGun::checkOutScreen(Point posCamera)
 {
 	auto screenSize = Director::getInstance()->getVisibleSize();
 	// truong hop dac biet khong gian check nho honss
-	if (fabs((this->getPosition().x + this->getParent()->getPosition().x)- posCamera.x)  > screenSize.width/2.5f) {
+	if (fabs((this->getPosition().x + this->getParent()->getPosition().x)- posCamera.x)  > screenSize.width/2.2f) {
 		return true;
 	}
 	return false;

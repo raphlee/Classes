@@ -4,6 +4,7 @@
 #include "MiniFort.h"
 #include "Fort.h"
 #include "HelicopterShootEnemy.h"
+#include "HelicopterBoomEnemy.h"
 //#include "Utility.h"
 
 USING_NS_CC;
@@ -68,7 +69,7 @@ bool GameScene::init()
 	camera = Follow::create(follow);
 	runAction(camera);
 
-	indexOfCurrentMap = 1;
+	indexOfCurrentMap = 12;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
@@ -577,6 +578,7 @@ void GameScene::createMap(TMXTiledMap *map, Point origin, Layer *layer)
 	buildFort(map, layer, scaleOfMap);
 	buildTankEnemy(map, layer, scaleOfMap);
 	buildHelicopterShoot(map, layer, scaleOfMap);
+	buildHelicopterBoom(map, layer, scaleOfMap);
 
 
 	buildItem(map, layer, scaleOfMap, "item_tank", "item-up-tank.png", TYPE::TANK);
@@ -637,8 +639,11 @@ void GameScene::freePassedMap()
 				log("Destroy layout");
 				world->DestroyBody(a);
 			}
-
+			layCurrentMap->removeAllChildrenWithCleanup(true);
 			this->removeChild(layCurrentMap, true);
+			//layCurrentMap->removeFromParentAndCleanup(true);
+			layCurrentMap = nullptr;
+			tmxCurrentMap = nullptr;
 		}
 	}
 }
@@ -930,6 +935,52 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
 		}
 
+}
+
+void GameScene::buildHelicopterBoom(TMXTiledMap * map, Layer * layer, float scale)
+{
+	auto originThisMap = layer->getPosition();
+	auto group = map->getObjectGroup("plane_bomb");
+	if (group != nullptr)
+		for (auto e : group->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+			auto gun = HelicopterBoomEnemy::create(SCREEN_SIZE.height / 8.0f / 167.0f, HelicopterBoomType::SIMPLE);
+
+			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+			gun->initCirclePhysic(world, pos + originThisMap);
+			gun->body->SetGravityScale(0);
+			//gun->changeBodyBitMask(BITMASK_SOLDIER);
+			//and set it back
+			//gun->setTag(TAG_ENEMY_TANK);
+			gun->setPosition(pos);
+			layer->addChild(gun, 3);
+			gun->createPool(TAG_ENEMY_HELICOPTER_BOOM);
+		}
+
+	auto group2 = map->getObjectGroup("plane_bomb_back");
+	if (group2 != nullptr)
+		for (auto e : group2->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+			auto gun = HelicopterBoomEnemy::create(SCREEN_SIZE.height / 8.0f / 167.0f, HelicopterBoomType::BACK);
+
+			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+			gun->initCirclePhysic(world, pos + originThisMap);
+			gun->body->SetGravityScale(0);
+			//gun->changeBodyBitMask(BITMASK_SOLDIER);
+			//and set it back
+			gun->setTag(TAG_ENEMY_HELICOPTER_BOOM);
+			gun->setPosition(pos);
+			layer->addChild(gun, 3);
+			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
+		}
 }
 
 void GameScene::buildItem(TMXTiledMap * map, Layer * layer, float scale, string nameTile, string frameName, TYPE type)
