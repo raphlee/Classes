@@ -8,6 +8,7 @@
 #include "TankSoldier.h"
 #include "HelicopterSoldier.h"
 #include "PlaneSoldier.h"
+
 #include "Enemy.h"
 #include "Floor.h"
 #include "Item.h"
@@ -15,7 +16,9 @@
 #include "DynamicHumanEnemy.h"
 #include "StaticHumanEnemy.h"
 #include "AutoGun.h"
+#include "TankEnemy.h"
 #include "InfiniteParallaxNode.h"
+
 
 class GameScene : public cocos2d::Layer
 {
@@ -28,7 +31,6 @@ public:
 	Mat4 _modelViewMV;
 	CustomCommand _customCommand;
 	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
-	//int choiceControl;
 
 	b2World *world;
 
@@ -60,7 +62,9 @@ public:
 	void update(float dt);
 	void updateSoldier(float dt);
 	void updateStandMan(float dt);
-	void updateAutoGun(float dt);
+	/*void updateAutoGun(float dt);
+	void updateMiniFort(float dt);
+	void updateFort(float dt);*/
 
 	void removeOlderSoldier();
 	void transformTank(Point pos);
@@ -73,13 +77,19 @@ public:
 	void createBackground();
 	void createMap(TMXTiledMap *map, Point origin, Layer *layer);
 	void loadNextMap();
-	void freePassedMap(Point originOfLastMap);
+	void freePassedMap();
+
 	void buildFloor(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderUp(TMXTiledMap *map, Layer* layer, float scale);
 	void buildLadderDown(TMXTiledMap *map, Layer* layer, float scale);
 	void buildStandEnemy(TMXTiledMap *map, Layer* layer, float scale);
 	void buildAutoGun(TMXTiledMap *map, Layer* layer, float scale);
+	void buildMiniFort(TMXTiledMap *map, Layer* layer, float scale);
+	void buildFort(TMXTiledMap *map, Layer* layer, float scale);
+	void buildTankEnemy(TMXTiledMap *map, Layer* layer, float scale);
+	void buildHelicopterShoot(TMXTiledMap *map, Layer* layer, float scale);
 	void buildItem(TMXTiledMap *map, Layer* layer, float scale, string nameTile, string frameName, TYPE type);
+
 
 	// process hero for game
 	void createSoldier(Point pos);
@@ -100,7 +110,7 @@ public:
 
 	//void controlButtonMove();
 
-	void identifyAngle(Point location);
+	//void identifyAngle(Point location);
 
 	virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
 	void onDraw();

@@ -9,6 +9,7 @@ using namespace spine;
 class B2Skeleton : public SkeletonAnimation
 {
 public:
+	Sprite *boom;
 	
 	B2Skeleton(string jsonFile, string atlasFile, float scale);
 
@@ -26,6 +27,8 @@ public:
 
 	virtual void initBoxPhysic(b2World *world, Point pos);
 	virtual void initCirclePhysic(b2World *world, Point pos);
+	virtual void die();
+	virtual void changeBodyBitMask(uint16 mask);
 
 };
 

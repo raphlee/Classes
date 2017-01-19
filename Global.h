@@ -12,8 +12,7 @@ using namespace std;
 
 // define
 #define PI								3.1415926
-#define Y_INCREMENT_RATIO				7						
-#define KEY_SELECTION					"KEYSELECTION"
+#define Y_INCREMENT_RATIO				7
 #define KEYJOYSTICK_X					"KEYJSX"
 #define KEYJOYSTICK_Y					"KEYJSY"
 #define KEYBTNFIRE_X					"KEYFIREX"
@@ -34,15 +33,19 @@ using namespace std;
 
 
 // tag
-#define TAG_SOLDIER							101
-#define TAG_FLOOR							102
-#define TAG_ENEMY							103
-#define TAG_BULLET_HERO						104
-#define TAG_BULLET_ENEMY					105
-#define TAG_STANDMAN						106
-#define TAG_AUTOGUN							107
-#define TAG_ITEM							108
-#define TAG_BOMB_HERO						109
+#define TAG_SOLDIER							50
+#define TAG_FLOOR							51
+#define TAG_BULLET_HERO						52
+#define TAG_BULLET_ENEMY					53
+#define TAG_ITEM							54
+
+#define TAG_ENEMY_SOLDIER					101
+#define TAG_ENEMY_AUTOGUN					102
+#define TAG_ENEMY_FORTMINI					103
+#define TAG_ENEMY_FORT						104
+#define TAG_ENEMY_TANK						105
+#define TAG_ENEMY_HELICOPTER_SHOOT			106
+#define TAG_ENEMY_HELICOPTER_BOOM			107
 
 
 
@@ -70,14 +73,6 @@ using namespace std;
 #define ZORDER_POONG_TEXT				19
 #define ZORDER_LIGHT					20
 
-// timing
-#define TIME_BRIDGE_OCCUR				21
-#define TIME_ALLIGATOR_OCCUR			41
-#define TIME_HIPPO_OCCUR				50
-#define TIME_VORTEX_OCCUR				90
-#define TIME_TREE_OCCUR					6
-#define TIME_WOOD_OCCUR					11
-#define TIME_TO_UPGRADE					11
 
 
 // define scale ratio
@@ -96,10 +91,13 @@ using namespace std;
 #define MAX_BOMB_HERO_POOL					7
 #define MAX_BULLET_SOLDIER_ENEMY_POOL		3
 
+#define MAX_BULLET_AUTOGUN_POOL				2
+#define MAX_BULLET_FORT_MINI_POOL			3
+#define MAX_BULLET_FORT_POOL				6
+#define MAX_BULLET_TANK_POOL				3
+#define MAX_BULLET_HELICOPTER_POOL			2
 
-
-// arr to identify freq item
-const int ARR[] = {0, 0, 0, 1, 0, 0, 1, 0, 0, 1};
-
+#define Z_BACKGROUND						0
+#define Z_HERO								1
 
 #endif // __GLOBAL_H__

@@ -2,6 +2,7 @@
 #define __DYNAMIC_HUMAN_ENEMY_H__
 
 #include "Enemy.h"
+//#include "Utility.h"
 
 USING_NS_CC;
 
@@ -13,12 +14,12 @@ public:
 
 	DynamicHumanEnemy(string jsonFile, string atlasFile, float scale);
 	static DynamicHumanEnemy* create(float scale);
-	void move();
-	void die();
-	void updateEnemy(float dt, Point cameraPoint);
-protected:
-	bool checkOutScreen(Point posCamera);
-	void resetEnemy();
+	virtual void move();
+	virtual void die();
+	virtual void updateEnemy(float dt, Point cameraPoint);
+//protected:
+	virtual bool checkOutScreen(Point posCamera);
+	virtual void resetEnemy();
 };
 
 #endif // __ENEMY_H__

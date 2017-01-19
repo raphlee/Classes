@@ -12,7 +12,7 @@ bool Hud::init()
 	auto origin = Director::getInstance()->getVisibleOrigin();
 	auto winSize = Director::getInstance()->getVisibleSize();
 
-	auto ref = UserDefault::sharedUserDefault();
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
 	/*int choice = ref->getIntegerForKey(KEY_SELECTION);*/
 
 	//if (choice == 0) {
@@ -71,7 +71,7 @@ void Hud::addJoystickButtonJump(Point pos)
 	joystickButtonBase->setPosition(pos);
 	joystickButtonBase->setDefaultSprite(b);
 	joystickButtonBase->setActivatedSprite(Sprite::create("send/btn-jump.png"));
-	joystickButtonBase->setPressSprite(Sprite::create("send/btn-jump.png"));
+	joystickButtonBase->setPressSprite(Sprite::create("send/btn-jump2.png"));
 	joystickButtonBase->setScale(SCREEN_SIZE.height / 5.0f / b->getContentSize().height);
 
 	btnJump = new SneakyButton();
@@ -92,12 +92,13 @@ void Hud::addJoystickButtonFire(Point pos)
 
 	SneakyButtonSkinnedBase *joystickButtonBase = new SneakyButtonSkinnedBase();
 	joystickButtonBase->init();
-	auto b = Sprite::create("send/btn-fire.png");
+	auto b = Sprite::create("send/btn-shoot.png");
 
 	joystickButtonBase->setPosition(pos);
 	joystickButtonBase->setDefaultSprite(b);
-	joystickButtonBase->setActivatedSprite(Sprite::create("send/btn-fire.png"));
-	joystickButtonBase->setPressSprite(Sprite::create("send/btn-fire.png"));
+
+	joystickButtonBase->setActivatedSprite(Sprite::create("send/btn-shoot.png"));
+	joystickButtonBase->setPressSprite(Sprite::create("send/btn-shoot2.png"));
 	joystickButtonBase->setScale(SCREEN_SIZE.height / 5.0f / b->getContentSize().height);
 
 	btnFire = new SneakyButton();

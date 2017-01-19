@@ -37,7 +37,7 @@ bool ControlSettingScene::init()
 	label->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.83f);
 	addChild(label);
 	
-	reference = UserDefault::sharedUserDefault();
+	reference = UserDefault::getInstance()->sharedUserDefault();
 	
 	float jtXRatio = reference->getFloatForKey(KEYJOYSTICK_X);
 	float jtYRatio = reference->getFloatForKey(KEYJOYSTICK_Y);
@@ -51,10 +51,10 @@ bool ControlSettingScene::init()
 	joystick = Sprite::create("send/joystick.png");
 	joystick->setScale(visibleSize.height / 2.4f / joystick->getContentSize().height);
 
-	btnJump = Sprite::createWithSpriteFrameName("btn-jump.png");
+	btnJump = Sprite::create("send/btn-jump.png");
 	btnJump->setScale(visibleSize.height / 5.0f / btnJump->getContentSize().height);
 
-	btnFire = Sprite::createWithSpriteFrameName("btn-fire.png");
+	btnFire = Sprite::create("send/btn-shoot.png");
 	btnFire->setScale(visibleSize.height / 5.0f / btnFire->getContentSize().height);
 
 	if (jtXRatio == NULL) {

@@ -1,6 +1,10 @@
 #include "GameScene.h"
 #include "SimpleAudioEngine.h"
 #include "DynamicHumanEnemy.h"
+#include "MiniFort.h"
+#include "Fort.h"
+#include "HelicopterShootEnemy.h"
+
 
 USING_NS_CC;
 
@@ -105,7 +109,7 @@ void GameScene::update(float dt)
 
 	updateSoldier(dt);
 	updateStandMan(dt);
-	updateAutoGun(dt);
+	//updateAutoGun(dt);
 
 	//dynamicEnenmy->updateEnemy(dt);
 	for (int i = 0; i < dEnemyPool->count(); i++) {
@@ -120,7 +124,6 @@ void GameScene::update(float dt)
 		bullet->update(dt);
 		if (abs(bullet->getPositionX() - follow->getPositionX()) > SCREEN_SIZE.width / 2) {
 			listIndexExist.insert(i);
-			log("Size: %i", listIndexExist.size());
 		}
 	}
 
@@ -132,7 +135,6 @@ void GameScene::update(float dt)
 
 		existedBullet.clear();
 		listIndexExist.clear();
-		log("End");
 	}
 
 	for (int i = 0; i < soldier->bulletPool->count(); i++) {
@@ -148,7 +150,8 @@ void GameScene::update(float dt)
 				world->DestroyBody(bullet->body);
 			}
 			bullet->body = nullptr;
-			bullet->setPosition(INT_MAX, INT_MAX);
+			//bullet->setPosition(INT_MAX, INT_MAX);
+			bullet->setVisible(false);
 			bullet->isDie = false;
 		}
 	}
@@ -160,7 +163,6 @@ void GameScene::update(float dt)
 			if (bomb->getPositionY() < 0) {
 				bomb->isDie = true;
 			}
-
 			if (bomb->isDie) {
 				if (bomb->body != nullptr) {
 					//log("Destroy Bullet");
@@ -172,6 +174,9 @@ void GameScene::update(float dt)
 			}
 		}
 	}
+
+
+	
 	
 
 	//if (choiceControl == 0) {
@@ -183,6 +188,7 @@ void GameScene::update(float dt)
 		//controlButtonMove();
 
 	loadNextMap();
+	freePassedMap();
 	if (follow->getPositionX() <= soldier->getPositionX())
 		follow->setPositionX(soldier->getPositionX());
 
@@ -192,6 +198,7 @@ void GameScene::update(float dt)
 	}
 
 	background->updatePosition();
+
 }
 
 void GameScene::updateSoldier(float dt)
@@ -214,8 +221,6 @@ void GameScene::updateSoldier(float dt)
 	}
 
 	if (soldier->cur_state == State::DIE) {
-		//soldier->health--;
-		//log("%d", soldier->health);
 		soldier->die(follow->getPosition());
 	}
 }
@@ -225,8 +230,9 @@ void GameScene::updateStandMan(float dt)
 	if (layCurrentMap != nullptr) {
 		auto listObj = layCurrentMap->getChildren();
 		for (auto e : listObj) {
-			if (e->getTag() == TAG_ENEMY) {
+			if (e->getTag() > 100) {
 				auto tmp = (StaticHumanEnemy*)e;
+				tmp->updateBullet(follow->getPosition());
 				if (!tmp->checkOutScreen(follow->getPosition())) {
 					tmp->updateEnemy(dt, follow->getPosition(), soldier->getPosition());
 				}
@@ -235,6 +241,7 @@ void GameScene::updateStandMan(float dt)
 						if (tmp->body != nullptr)
 							tmp->die();
 					}
+
 				}
 			}
 		}
@@ -243,8 +250,9 @@ void GameScene::updateStandMan(float dt)
 	if (layNextMap != nullptr) {
 		auto listObj = layNextMap->getChildren();
 		for (auto e : listObj) {
-			if (e->getTag() == TAG_ENEMY) {
+			if (e->getTag() > 100) {
 				auto tmp = (StaticHumanEnemy*)e;
+				tmp->updateBullet(follow->getPosition());
 				if (!tmp->checkOutScreen(follow->getPosition())) {
 					tmp->updateEnemy(dt, follow->getPosition(), soldier->getPosition());
 				}
@@ -259,28 +267,7 @@ void GameScene::updateStandMan(float dt)
 	}
 }
 
-void GameScene::updateAutoGun(float dt)
-{
-	/*if (layCurrentMap != nullptr) {
-		auto listObj = layCurrentMap->getChildren();
-		for (auto e : listObj) {
-			if (e->getTag() == TAG_ENEMY) {
-				auto tmp = (StaticHumanEnemy*)e;
-				tmp->updateEnemy(dt, follow->getPosition(), soldier->getPosition());
-			}
-		}
-	}
 
-	if (layNextMap != nullptr) {
-		auto listObj = layNextMap->getChildren();
-		for (auto e : listObj) {
-			if (e->getTag() == TAG_ENEMY) {
-				auto tmp = (StaticHumanEnemy*)e;
-				tmp->updateEnemy(dt, follow->getPosition(), soldier->getPosition());
-			}
-		}
-	}*/
-}
 
 void GameScene::removeOlderSoldier()
 {
@@ -300,7 +287,6 @@ void GameScene::removeOlderSoldier()
 
 void GameScene::transformTank(Point pos)
 {
-	log("Tanker");
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
@@ -317,7 +303,6 @@ void GameScene::transformTank(Point pos)
 
 void GameScene::transformHelicopter(Point pos)
 {
-	log("Helicopter");
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
@@ -333,9 +318,9 @@ void GameScene::transformHelicopter(Point pos)
 	}
 }
 
+
 void GameScene::transformPlane(Point pos)
 {
-	log("Plane");
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
@@ -366,7 +351,6 @@ void GameScene::switchItem(float dt)
 				break;
 			}
 			case TYPE::HEALTH: {
-				log("Health me");
 				break;
 			}
 			case TYPE::HELICOPTER: {
@@ -374,18 +358,19 @@ void GameScene::switchItem(float dt)
 					hud->btnJump->getParent()->setVisible(false);
 				}
 				transformHelicopter(i->getPosition() + i->getParent()->getPosition());
+				
 				break;
 			}
 			case TYPE::FAST_BULLET: {
-				log("Fast me");
+				soldier->bulletType = BulletType::Fast;
 				break;
 			}
 			case TYPE::MULT_BULLET: {
-				log("Mult me");
+				soldier->bulletType = BulletType::Super;
 				break;
 			}
 			case TYPE::ORBIT_BULLET: {
-				log("Orbit me");
+				soldier->bulletType = BulletType::Circle;
 				break;
 			}
 			case TYPE::PLANE: {
@@ -443,8 +428,10 @@ void GameScene::createPool()
 void GameScene::genDEnemy()
 {
 	auto enemy = (DynamicHumanEnemy*)dEnemyPool->objectAtIndex(indexDEnemy);
-	enemy->body->SetTransform(b2Vec2(posGenDEnemy.x / PTM_RATIO, posGenDEnemy.y / PTM_RATIO), 0);
-	enemy->body->SetType(b2_dynamicBody);
+	enemy->setPosition(posGenDEnemy);
+	//enemy->body->SetTransform(b2Vec2(posGenDEnemy.x / PTM_RATIO, posGenDEnemy.y / PTM_RATIO), 0);
+	//enemy->body->SetType(b2_dynamicBody);
+	enemy->initCirclePhysic(world, posGenDEnemy);
 	indexDEnemy++;
 	if (indexDEnemy == dEnemyPool->count()) {
 		indexDEnemy = 0;
@@ -515,8 +502,6 @@ void GameScene::createSoldier(Point pos)
 	// ko duoc thay doi thu tu cau lenh nay
 	soldier->initPhysic(world, soldier->getPosition());
 	soldier->body->SetFixedRotation(true);
-
-
 	soldier->createPool();
 }
 
@@ -524,17 +509,17 @@ void GameScene::createInfiniteNode()
 {
 	background = InfiniteParallaxNode::create();
 
-	//auto bg1_1 = Sprite::create("bg-1.jpg");
-	auto bg1_1 = Sprite::create("bg-4.png");
+	auto bg1_1 = Sprite::create("bg-1.jpg");
+	//auto bg1_1 = Sprite::create("bg-4.png");
 	bg1_1->setScaleX(SCREEN_SIZE.width / bg1_1->getContentSize().width);
 	bg1_1->setScaleY(SCREEN_SIZE.height / bg1_1->getContentSize().height);
-	bg1_1->setAnchorPoint(Point(0, 0.5));
+	bg1_1->setAnchorPoint(Point(0, 0.5f));
 
-	//auto bg1_2 = Sprite::create("bg-1.jpg");
-	auto bg1_2 = Sprite::create("bg-4.png");
+	auto bg1_2 = Sprite::create("bg-1.jpg");
+	//auto bg1_2 = Sprite::create("bg-4.png");
 	bg1_2->setScaleX(SCREEN_SIZE.width / bg1_2->getContentSize().width);
 	bg1_2->setScaleY(SCREEN_SIZE.height / bg1_2->getContentSize().height);
-	bg1_2->setAnchorPoint(Point(0, 0.5));
+	bg1_2->setAnchorPoint(Point(0, 0.5f));
 
 	auto bg2_1 = Sprite::create("bg-2.png");
 	bg2_1->setScaleX(SCREEN_SIZE.width / bg2_1->getContentSize().width);
@@ -557,10 +542,10 @@ void GameScene::createInfiniteNode()
 	bg3_2->setAnchorPoint(Point(0, 0.5f));
 
 
-	background->addChild(bg1_1, 0, Vec2(0.1, 1), Vec2(0, 0));
-	background->addChild(bg1_2, 0, Vec2(0.1, 1), Vec2(bg1_1->getBoundingBox().size.width, 0));
-	background->addChild(bg2_1, 0, Vec2(0.5, 1), Vec2(0, 0));
-	background->addChild(bg2_2, 0, Vec2(0.5, 1), Vec2(bg2_1->getBoundingBox().size.width, 0));
+	background->addChild(bg1_1, 0, Vec2(0.1f, 1), Vec2(0, 0));
+	background->addChild(bg1_2, 0, Vec2(0.1f, 1), Vec2(bg1_1->getBoundingBox().size.width, 0));
+	background->addChild(bg2_1, 0, Vec2(0.5f, 1), Vec2(0, 0));
+	background->addChild(bg2_2, 0, Vec2(0.5f, 1), Vec2(bg2_1->getBoundingBox().size.width, 0));
 	background->addChild(bg3_1, 0, Vec2(1, 1), Vec2(0, 0));
 	background->addChild(bg3_2, 0, Vec2(1, 1), Vec2(bg3_1->getBoundingBox().size.width, 0));
 	background->setPosition(Point(0, SCREEN_SIZE.height / 2));
@@ -601,12 +586,19 @@ void GameScene::createMap(TMXTiledMap *map, Point origin, Layer *layer)
 	buildStandEnemy(map, layer, scaleOfMap);
 	buildAutoGun(map, layer, scaleOfMap);
 
+	buildMiniFort(map, layer, scaleOfMap);
+	buildFort(map, layer, scaleOfMap);
+	buildTankEnemy(map, layer, scaleOfMap);
+	buildHelicopterShoot(map, layer, scaleOfMap);
+
+
 	buildItem(map, layer, scaleOfMap, "item_tank", "item-up-tank.png", TYPE::TANK);
 	buildItem(map, layer, scaleOfMap, "item_helicopter", "item-up-helicopter.png", TYPE::HELICOPTER);
 	buildItem(map, layer, scaleOfMap, "item_plane", "item-up-plane.png", TYPE::PLANE);
 	buildItem(map, layer, scaleOfMap, "rewardM", "item-speed-bullet.png", TYPE::FAST_BULLET);
 	buildItem(map, layer, scaleOfMap, "rewardF", "item-swirl-bullet.png", TYPE::ORBIT_BULLET);
 	buildItem(map, layer, scaleOfMap, "rewardS", "item-spread-bullet.png", TYPE::MULT_BULLET);
+
 }
 
 /************************************************************************/
@@ -614,10 +606,11 @@ void GameScene::createMap(TMXTiledMap *map, Point origin, Layer *layer)
 /************************************************************************/
 void GameScene::loadNextMap()
 {
-	if ((soldier->getPosition().x > (originOfLastMap.x + SCREEN_SIZE.width) && indexOfCurrentMap < 17)) {
+	if ((soldier->getPosition().x > (originOfLastMap.x + tmxNextMap->getBoundingBox().size.width - SCREEN_SIZE.width) && indexOfCurrentMap < 17)) {
+
 		Point originOfNextmap = Point(originOfLastMap.x + tmxNextMap->getContentSize().width*scaleOfMap, 0);
 
-		freePassedMap(originOfLastMap);
+		//freePassedMap(originOfLastMap);
 
 		tmxCurrentMap = tmxNextMap;
 		layCurrentMap = layNextMap;
@@ -640,24 +633,26 @@ void GameScene::loadNextMap()
 /************************************************************************/
 /*                                                                      */
 /************************************************************************/
-void GameScene::freePassedMap(Point originOfLastMap)
+void GameScene::freePassedMap()
 {
-	if (layCurrentMap != nullptr) {
-		vector <b2Body*> toDestroy;
+	if ((soldier->getPosition().x > (originOfLastMap.x + SCREEN_SIZE.width) && indexOfCurrentMap < 17)) {
+		if (layCurrentMap != nullptr) {
+			vector <b2Body*> toDestroy;
 
-		for (auto body = world->GetBodyList(); body; body = body->GetNext()) {
-			log("POS BODY: %f", body->GetPosition().x*PTM_RATIO);
-			log("POS ORIGIN: %f", originOfLastMap.x);
-			if (body->GetPosition().x*PTM_RATIO < originOfLastMap.x) {
-				toDestroy.push_back(body);
+			for (auto body = world->GetBodyList(); body; body = body->GetNext()) {
+				log("POS BODY: %f", body->GetPosition().x*PTM_RATIO);
+				log("POS ORIGIN: %f", layNextMap->getPositionX());
+				if (body->GetPosition().x*PTM_RATIO < layNextMap->getPositionX()) {
+					toDestroy.push_back(body);
+				}
 			}
-		}
-		for (auto a : toDestroy) {
-			log("Destroy layout");
-			world->DestroyBody(a);
-		}
+			for (auto a : toDestroy) {
+				log("Destroy layout");
+				world->DestroyBody(a);
+			}
 
-		this->removeChild(layCurrentMap, true);
+			this->removeChild(layCurrentMap, true);
+		}
 	}
 }
 
@@ -761,32 +756,193 @@ void GameScene::buildStandEnemy(TMXTiledMap * map, Layer * layer, float scale)
 		//and set it back
 		//standMan->setTag(TAG_STANDMAN);
 		standMan->setPosition(pos);
-		layer->addChild(standMan, ZORDER_ENEMY);
-		standMan->createPool();
 
+		layer->addChild(standMan, 3);
+		standMan->createPool(MAX_BULLET_SOLDIER_ENEMY_POOL);
 	}
 }
 
 void GameScene::buildAutoGun(TMXTiledMap * map, Layer * layer, float scale)
 {
-	//auto originThisMap = layer->getPosition();
-	//auto group = map->getObjectGroup("hide_man");
-	//for (auto e : group->getObjects()) {
-	//	auto mObject = e.asValueMap();
-	//	Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
-	//	//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+	auto originThisMap = layer->getPosition();
+	auto group = map->getObjectGroup("hide_man");
+	for (auto e : group->getObjects()) {
+		auto mObject = e.asValueMap();
+		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+		//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
 
-	//	auto gun = AutoGun::create(SCREEN_SIZE.height / 11.0f / 131.0f);
+		auto gun = AutoGun::create(SCREEN_SIZE.height / 11.0f / 131.0f);
 
-	//	Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+		Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 
-	//	gun->initCirclePhysic(world, pos + originThisMap);
-	//	//and set it back
-	//	gun->setTag(TAG_ENEMY);
-	//	gun->setPosition(pos);
-	//	layer->addChild(gun, 3);
+		gun->initCirclePhysic(world, pos + originThisMap);
+		gun->changeBodyBitMask(BITMASK_SOLDIER);
+		//and set it back
+		gun->setTag(TAG_ENEMY_AUTOGUN);
+		gun->setPosition(pos);
+		layer->addChild(gun, 3);
+		gun->createPool(MAX_BULLET_AUTOGUN_POOL);
 
-	//}
+	}
+}
+
+void GameScene::buildMiniFort(TMXTiledMap * map, Layer * layer, float scale)
+{
+	auto originThisMap = layer->getPosition();
+	auto group = map->getObjectGroup("minifort");
+	for (auto e : group->getObjects()) {
+		auto mObject = e.asValueMap();
+		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+		//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+		auto gun = MiniFort::create(SCREEN_SIZE.height / 8.0f / 111.0f);
+
+		Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+		gun->initCirclePhysic(world, pos + originThisMap);
+		//gun->changeBodyBitMask(BITMASK_SOLDIER);
+		//and set it back
+		gun->setTag(TAG_ENEMY_FORTMINI);
+		gun->setPosition(pos);
+		layer->addChild(gun, 3);
+		gun->createPool(MAX_BULLET_FORT_MINI_POOL);
+
+	}
+}
+
+void GameScene::buildFort(TMXTiledMap * map, Layer * layer, float scale)
+{
+	auto originThisMap = layer->getPosition();
+	auto group = map->getObjectGroup("bigfort");
+	for (auto e : group->getObjects()) {
+		auto mObject = e.asValueMap();
+		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+		//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+		auto gun = Fort::create(SCREEN_SIZE.height / 8.0f / 111.0f);
+
+		Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+		gun->initCirclePhysic(world, pos + originThisMap);
+		//gun->changeBodyBitMask(BITMASK_SOLDIER);
+		//and set it back
+		gun->setTag(TAG_ENEMY_FORT);
+		gun->setPosition(pos);
+		layer->addChild(gun, 3);
+		gun->createPool(MAX_BULLET_FORT_POOL);
+
+	}
+}
+
+void GameScene::buildTankEnemy(TMXTiledMap * map, Layer * layer, float scale)
+{
+	auto originThisMap = layer->getPosition();
+	auto group = map->getObjectGroup("tank_move");
+	if (group != nullptr)
+		for (auto e : group->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+			auto gun = TankEnemy::create(SCREEN_SIZE.height / 8.0f / 227.0f, TankType::STUPID);
+
+			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+			gun->initCirclePhysic(world, pos + originThisMap);
+			//gun->changeBodyBitMask(BITMASK_SOLDIER);
+			//and set it back
+			gun->setTag(TAG_ENEMY_TANK);
+			gun->setPosition(pos);
+			layer->addChild(gun, 3);
+			gun->createPool(MAX_BULLET_TANK_POOL);
+		}
+
+	auto group2 = map->getObjectGroup("tank");
+	if (group2 != nullptr)
+		for (auto e : group2->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+			auto gun = TankEnemy::create(SCREEN_SIZE.height / 8.0f / 227.0f, TankType::NORMAL);
+
+			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+			gun->initCirclePhysic(world, pos + originThisMap);
+			//gun->changeBodyBitMask(BITMASK_SOLDIER);
+			//and set it back
+			gun->setTag(TAG_ENEMY_TANK);
+			gun->setPosition(pos);
+			layer->addChild(gun, 3);
+			gun->createPool(MAX_BULLET_TANK_POOL);
+		}
+
+	auto group3 = map->getObjectGroup("tank2");
+	if (group3 != nullptr)
+		for (auto e : group3->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+			auto gun = TankEnemy::create(SCREEN_SIZE.height / 8.0f / 227.0f, TankType::SMART);
+
+			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+			gun->initCirclePhysic(world, pos + originThisMap);
+			//gun->changeBodyBitMask(BITMASK_SOLDIER);
+			//and set it back
+			gun->setTag(TAG_ENEMY_TANK);
+			gun->setPosition(pos);
+			layer->addChild(gun, 3);
+			gun->createPool(MAX_BULLET_TANK_POOL);
+		}
+}
+
+void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float scale)
+{
+	auto originThisMap = layer->getPosition();
+	auto group = map->getObjectGroup("plane");
+	if (group != nullptr)
+		for (auto e : group->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+			auto gun = HelicopterShootEnemy::create(SCREEN_SIZE.height / 8.0f / 167.0f, HelicopterType::SHOOT_HORIZONTAL);
+
+			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+			gun->initCirclePhysic(world, pos + originThisMap);
+			gun->body->SetGravityScale(0);
+			//gun->changeBodyBitMask(BITMASK_SOLDIER);
+			//and set it back
+			//gun->setTag(TAG_ENEMY_TANK);
+			gun->setPosition(pos);
+			layer->addChild(gun, 3);
+			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
+		}
+
+	auto group2 = map->getObjectGroup("plane2");
+	if (group2 != nullptr)
+		for (auto e : group2->getObjects()) {
+			auto mObject = e.asValueMap();
+			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
+			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
+
+			auto gun = HelicopterShootEnemy::create(SCREEN_SIZE.height / 8.0f / 167.0f, HelicopterType::SHOOT_VERTICAL);
+
+			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
+
+			gun->initCirclePhysic(world, pos + originThisMap);
+			gun->body->SetGravityScale(0);
+			//gun->changeBodyBitMask(BITMASK_SOLDIER);
+			//and set it back
+			gun->setTag(TAG_ENEMY_HELICOPTER_SHOOT);
+			gun->setPosition(pos);
+			layer->addChild(gun, 3);
+			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
+		}
+
 }
 
 void GameScene::buildItem(TMXTiledMap * map, Layer * layer, float scale, string nameTile, string frameName, TYPE type)
@@ -827,6 +983,7 @@ void GameScene::controlSneakyJoystick()
 	}
 
 	if (hud->joystick->getVelocity() == Vec2::ZERO) {
+		//
 		if (soldier->onGround) {
 			soldier->facingRight ? soldier->angle = 0 : soldier->angle = PI;
 			if (soldier->body->GetLinearVelocity().x != 0.0f)
@@ -858,6 +1015,7 @@ void GameScene::controlSneakyJoystick()
 			soldier->cur_state = IDLE_SHOOT_UP;
 	}
 	else if (degree >= 110.0f && degree < 150.0f) {
+
 		soldier->move();
 		soldier->angle = PI * 5 / 6;
 		soldier->facingRight = false;
@@ -978,87 +1136,87 @@ void GameScene::controlSneakyButtonFire()
 //}
 
 // xac dinh angle de update ani
-void GameScene::identifyAngle(Point location)
-{
-	auto originX = follow->getPositionX() - SCREEN_SIZE.width / 2;
+//void GameScene::identifyAngle(Point location)
+//{
+//	auto originX = follow->getPositionX() - SCREEN_SIZE.width / 2;
+//
+//	auto soldierPos = soldier->getPosition();
+//	float vX = soldierPos.x - (location.x + originX);
+//	float vY = soldierPos.y - location.y;
+//
+//	float edgeXY = sqrt(vX * vX + vY * vY);
+//
+//	float cosOrigin = vX / edgeXY;
+//	float sinOrigin = vY / edgeXY;
+//
+//
+//	if (sinOrigin >= 0.0f) {
+//		if (cosOrigin >= 0.0f) {	// goc phan tu thu 3
+//			soldier->facingRight = false;
+//			soldier->setScaleX(-1);
+//			if (sinOrigin < 0.383f) {
+//				soldier->angle = PI;
+//				if (soldier->body->GetLinearVelocity().x == 0.0f)
+//					soldier->cur_state = IDLE_SHOOT;
+//				else
+//					soldier->cur_state = RUNNING_SHOOT;
+//			}
+//			else {
+//				soldier->angle = -PI * 5 / 6;
+//				soldier->cur_state = RUNNING_SHOOT_DOWN;
+//			}
+//		}
+//		else {	// goc phan tu thu 4
+//			soldier->facingRight = true;
+//			soldier->setScaleX(1);
+//			if (sinOrigin < 0.383f) {
+//				soldier->angle = 0;
+//				if (soldier->body->GetLinearVelocity().x == 0.0f)
+//					soldier->cur_state = IDLE_SHOOT;
+//				else
+//					soldier->cur_state = RUNNING_SHOOT;
+//			}
+//			else {
+//				soldier->angle = -PI / 6;
+//				soldier->cur_state = RUNNING_SHOOT_DOWN;
+//			}
+//		}
+//	}
+//	else {
+//		if (cosOrigin >= 0.0f) {   // goc phan tu thu 2
+//			soldier->facingRight = false;
+//			soldier->setScaleX(-1);
+//			if (sinOrigin > -0.383f) {
+//				soldier->angle = PI;
+//				if (soldier->body->GetLinearVelocity().x == 0.0f)
+//					soldier->cur_state = IDLE_SHOOT;
+//				else
+//					soldier->cur_state = RUNNING_SHOOT;
+//			}
+//			else {
+//				soldier->angle = PI * 5 / 6;
+//				soldier->cur_state = RUNNING_SHOOT_UP;
+//			}
+//		}
+//		else {						// goc phan tu thu 1
+//			soldier->facingRight = true;
+//			soldier->setScaleX(1);
+//			if (sinOrigin > -0.383f) {
+//				soldier->angle = 0;
+//				if (soldier->body->GetLinearVelocity().x == 0.0f)
+//					soldier->cur_state = IDLE_SHOOT;
+//				else
+//					soldier->cur_state = RUNNING_SHOOT;
+//			}
+//			else {
+//				soldier->angle = PI / 6;
+//				soldier->cur_state = RUNNING_SHOOT_UP;
+//			}
+//		}
+//	}
+//}
 
-	auto soldierPos = soldier->getPosition();
-	float vX = soldierPos.x - (location.x + originX);
-	float vY = soldierPos.y - location.y;
 
-	float edgeXY = sqrt(vX * vX + vY * vY);
-
-	float cosOrigin = vX / edgeXY;
-	float sinOrigin = vY / edgeXY;
-
-
-	if (sinOrigin >= 0.0f) {
-		if (cosOrigin >= 0.0f) {	// goc phan tu thu 3
-			soldier->facingRight = false;
-			soldier->setScaleX(-1);
-			if (sinOrigin < 0.383f) {
-				soldier->angle = PI;
-				if (soldier->body->GetLinearVelocity().x == 0.0f)
-					soldier->cur_state = IDLE_SHOOT;
-				else
-					soldier->cur_state = RUNNING_SHOOT;
-			}
-			else {
-				soldier->angle = -PI * 5 / 6;
-				soldier->cur_state = RUNNING_SHOOT_DOWN;
-			}
-		}
-		else {	// goc phan tu thu 4
-			soldier->facingRight = true;
-			soldier->setScaleX(1);
-			if (sinOrigin < 0.383f) {
-				soldier->angle = 0;
-				if (soldier->body->GetLinearVelocity().x == 0.0f)
-					soldier->cur_state = IDLE_SHOOT;
-				else
-					soldier->cur_state = RUNNING_SHOOT;
-			}
-			else {
-				soldier->angle = -PI / 6;
-				soldier->cur_state = RUNNING_SHOOT_DOWN;
-			}
-		}
-	}
-	else {
-		if (cosOrigin >= 0.0f) {   // goc phan tu thu 2
-
-			soldier->facingRight = false;
-			soldier->setScaleX(-1);
-
-			if (sinOrigin > -0.383f) {
-				soldier->angle = PI;
-				if (soldier->body->GetLinearVelocity().x == 0.0f)
-					soldier->cur_state = IDLE_SHOOT;
-				else
-					soldier->cur_state = RUNNING_SHOOT;
-			}
-			else {
-				soldier->angle = PI * 5 / 6;
-				soldier->cur_state = RUNNING_SHOOT_UP;
-			}
-		}
-		else {						// goc phan tu thu 1
-			soldier->facingRight = true;
-			soldier->setScaleX(1);
-			if (sinOrigin > -0.383f) {
-				soldier->angle = 0;
-				if (soldier->body->GetLinearVelocity().x == 0.0f)
-					soldier->cur_state = IDLE_SHOOT;
-				else
-					soldier->cur_state = RUNNING_SHOOT;
-			}
-			else {
-				soldier->angle = PI / 6;
-				soldier->cur_state = RUNNING_SHOOT_UP;
-			}
-		}
-	}
-}
 
 void GameScene::draw(Renderer * renderer, const Mat4 & transform, uint32_t flags)
 {

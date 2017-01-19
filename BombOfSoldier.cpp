@@ -12,7 +12,7 @@ BombOfSoldier * BombOfSoldier::create()
 {
 	BombOfSoldier *bomb = new BombOfSoldier();
 	bomb->initWithSpriteFrameName("bomb.png");
-	bomb->setTag(TAG_BOMB_HERO);
+	bomb->setTag(TAG_BULLET_HERO);
 	return bomb;
 }
 

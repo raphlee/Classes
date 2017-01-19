@@ -3,15 +3,22 @@
 
 #include "Bullet.h"
 
+enum Type {
+	normal,
+	circle
+};
 
 class BulletOfHero : public Bullet
 {
 public:
+	float alpha;
+	Type type;
 	BulletOfHero();
 	~BulletOfHero();
 
 
 	static BulletOfHero* create(float scale);
+	void update(float dt);
 
 };
 

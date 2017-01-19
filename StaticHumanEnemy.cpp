@@ -1,6 +1,7 @@
 #include "StaticHumanEnemy.h"
 #include "BulletOfEnemy.h"
 
+
 StaticHumanEnemy::StaticHumanEnemy(string jsonFile, string atlasFile, float scale) : Enemy(jsonFile, atlasFile, scale)
 {
 	checkCanShoot = 100;
@@ -11,16 +12,17 @@ StaticHumanEnemy::StaticHumanEnemy(string jsonFile, string atlasFile, float scal
 StaticHumanEnemy * StaticHumanEnemy::create(float scale)
 {
 	StaticHumanEnemy *e = new StaticHumanEnemy("enemy-soldier/soldier.json", "enemy-soldier/soldier.atlas", scale);
-	e->setTag(TAG_ENEMY);
+	e->setTag(TAG_ENEMY_SOLDIER);
 	e->isDie = false;
 	e->update(0.0f);
 	e->health = 1;
 	e->sizeEnemy = e->getBoundingBox().size;
-	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
+	//e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(-1);
 	e->facingRight = false;
 	e->setAnimation(0, "standing-shoot", false);
 	//e->setTag(TAG_ENEMY);
+	//e->setVisible(0);
 	e->indexBullet = -1;
 	return e;
 }
@@ -31,8 +33,9 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;
 
-	bullet->body->SetTransform(body->GetPosition(), 0);
-	//
+	
+	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition());
+	bullet->setVisible(true);
 
 	indexBullet++;
 	if (indexBullet == MAX_BULLET_SOLDIER_ENEMY_POOL) {
@@ -131,29 +134,27 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 
 void StaticHumanEnemy::die()
 {
-	this->body->SetTransform(b2Vec2(INT_MAX, INT_MAX), 0);
-	//this->updateEnemy();
+	Enemy::die();
 	auto world = this->body->GetWorld();
+	if (world->IsLocked()) return;
 	world->DestroyBody(body);
 	this->body = nullptr;
-	for (int i = 0; i < bulletPool->count(); i++) {
-		auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(i);
-		//auto world = bullet->body->GetWorld();
-		world->DestroyBody(bullet->body);
-		bullet->setVisible(false);
-		//bullet->setPosition(INT_MAX, INT_MAX);
-		//bullet->release();
-	}
-	this->bulletPool->removeAllObjects();
-	this->bulletPool->release();
-	this->setVisible(false);
-	//this->setPosition(INT_MAX, INT_MAX);
+	//this->setVisible(false);
+	this->clearTracks();
+	this->setAnimation(0, "die", false);
+	auto callFunc = CallFunc::create([&]() {
+		this->setVisible(false);//removeFromParentAndCleanup(true);
+		//removeFromParentAndCleanup(true);
+	});
+
+	this->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));
+
 }
 
 
 void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 {
-	
+	//if (!this->checkOutScreen(cameraPoint)) {
 	if (!isDie) {
 		this->setPositionX(body->GetPosition().x * PTM_RATIO - this->getParent()->getPositionX());
 		this->setPositionY(body->GetPosition().y * PTM_RATIO - this->getParent()->getPositionY() - sizeEnemy.height / 2);
@@ -162,20 +163,36 @@ void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 			checkCanShoot = 0;
 			shoot(posOfHero);
 		}
-		if (this->indexBullet >= 0) {
-			for (int i = 0; i < bulletPool->count(); i++) {
-				auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(i);
-				if (bullet->isDie) {
-					bullet->body->SetTransform(b2Vec2(INT_MAX, INT_MAX), 0);
-					bullet->isDie = false;
-				}
-				bullet->update(dt);
-			}
-		}
 	}
 	else {
 		if (this->body != nullptr) {
 			this->die();
+		}
+	}
+	//}
+	//updateBullet(cameraPoint);
+}
+void StaticHumanEnemy::updateBullet(Point cameraPoint)
+{
+	log("Fuking bug in bullet update");
+	if (this->indexBullet >= 0) {
+		for (int i = 0; i < bulletPool->count(); i++) {
+			auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(i);
+			if (bullet->checkOutOfScreen(cameraPoint)) {
+				bullet->isDie = true;
+				log("Fk bug1");
+			}
+			if (bullet->isDie) {
+				log("Fk bug2");
+				/*	bullet->body->SetTransform(b2Vec2(INT_MAX, INT_MAX), 0);
+				bullet->isDie = false;*/
+				auto world = bullet->body->GetWorld();
+				world->DestroyBody(bullet->body);
+				bullet->body = nullptr;
+				bullet->setVisible(false);
+				bullet->isDie = false;
+			}
+			bullet->update(0);
 		}
 	}
 }
@@ -185,19 +202,21 @@ void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 }*/
 
 
-void StaticHumanEnemy::createPool()
+void StaticHumanEnemy::createPool(int count)
 {
-	bulletPool = CCArray::createWithCapacity(MAX_BULLET_SOLDIER_ENEMY_POOL);
+	bulletPool = CCArray::createWithCapacity(count);
 	bulletPool->retain();
-	for (int i = 0; i < MAX_BULLET_SOLDIER_ENEMY_POOL; i++) {
+	for (int i = 0; i < count; i++) {
 		auto bullet = BulletOfEnemy::create(1);
 		bullet->setPosition(INT_MAX, INT_MAX);
+		//this->getParent()->addChild(bullet);
 		this->getParent()->addChild(bullet, ZORDER_BULLET);
 		bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_ENEMY;
 		bullet->fixtureDef.filter.maskBits = BITMASK_SOLDIER;
-		bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
+		//bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
+		bullet->body = nullptr;
 		bulletPool->addObject(bullet);
-		
+
 	}
 	indexBullet = 0;
 }
@@ -218,10 +237,4 @@ bool StaticHumanEnemy::checkOutScreen(Point posCamera)
 		return true;
 	}
 	return false;
-}
-
-void StaticHumanEnemy::resetEnemy()
-{
-	this->body->SetTransform(b2Vec2(INT_MAX / PTM_RATIO, INT_MIN / PTM_RATIO), 0);
-	this->body->SetType(b2_staticBody);
 }

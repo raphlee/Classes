@@ -2,6 +2,7 @@
 #define __STATIC_HUMAN_ENEMY_H__
 
 #include "Enemy.h"
+//#include "Utility.h"
 
 USING_NS_CC;
 
@@ -16,15 +17,15 @@ public:
 
 	StaticHumanEnemy(string jsonFile, string atlasFile, float scale);
 	static StaticHumanEnemy* create(float scale);
-	
-	void shoot(Point posOfHero);
+	virtual void shoot(Point posOfHero);
+	virtual void die();
+	virtual void updateEnemy(float dt, Point cameraPoint, Point posOfHero);
+	virtual void updateBullet(Point cameraPoint);
+	virtual void createPool(int count);
 
-	void die();
-	void updateEnemy(float dt, Point cameraPoint, Point posOfHero);
-	void createPool();
 //	void setAngle(float radian);
-	bool checkOutScreen(Point posCamera);
-	void resetEnemy();
+	virtual bool checkOutScreen(Point posCamera);
+	//void resetEnemy();
 };
 
 #endif // __ENEMY_H__
