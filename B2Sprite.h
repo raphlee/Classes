@@ -21,8 +21,8 @@ public:
 	b2Body *body;
 	b2FixtureDef fixtureDef;
 
-	void initPhysic(b2World *world, Point pos, b2BodyType type);
-	void update(float dt);
+	virtual void initPhysic(b2World *world, Point pos, b2BodyType type);
+	virtual void update(float dt);
 
 };
 

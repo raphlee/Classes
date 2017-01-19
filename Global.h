@@ -16,6 +16,10 @@ using namespace std;
 #define KEY_SELECTION					"KEYSELECTION"
 #define KEYJOYSTICK_X					"KEYJSX"
 #define KEYJOYSTICK_Y					"KEYJSY"
+#define KEYBTNFIRE_X					"KEYFIREX"
+#define KEYBTNFIRE_Y					"KEYFIREY"
+#define KEYBTNJUMP_X					"KEYJUMPX"
+#define KEYBTNJUMP_Y					"KEYJUMPY"
 #define KEYONGAME						"KEYONGAME"
 #define KEYADS							"KEYADS"
 
@@ -27,15 +31,6 @@ using namespace std;
 #define BITMASK_BULLET_HERO				0x0008
 #define BITMASK_BULLET_ENEMY			0x0010
 #define BITMASK_ITEM					0x0020
-//#define SOLDIER_BITMASK					0x0001
-//#define ENEMY_BITMASK					0x0002
-//#define FLOOR_BITMASK					0x0004
-//#define BULLET_HERO_BITMASK				0x0008
-//#define BULLET_ENEMY_BITMASK			0x0010
-//#define ITEM_BITMASK					0x0020
-//#define BLANK_BITMASK					0x0040
-//#define ALLIGATOR_BITMASK				0x0080
-//#define HIPPO_BITMASK					0x0100
 
 
 // tag
@@ -47,6 +42,7 @@ using namespace std;
 #define TAG_STANDMAN						106
 #define TAG_AUTOGUN							107
 #define TAG_ITEM							108
+#define TAG_BOMB_HERO						109
 
 
 
@@ -97,6 +93,7 @@ using namespace std;
 #define PTM_RATIO							32
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
 #define MAX_BULLET_HERO_POOL				30
+#define MAX_BOMB_HERO_POOL					7
 #define MAX_BULLET_SOLDIER_ENEMY_POOL		3
 
 

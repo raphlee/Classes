@@ -3,8 +3,6 @@
 
 #include "cocos2d.h"
 #include "Box2D\Box2D.h"
-#include "Soldier.h"
-#include "Item.h"
 
 USING_NS_CC;
 using namespace std;

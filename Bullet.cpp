@@ -46,7 +46,7 @@ void Bullet::initPhysic(b2World *world, Point pos)
 
 void Bullet::setAngel(float radian)
 {
-	float vx = SCREEN_SIZE.width / 2 / 32*cosf(radian);
-	float vy = SCREEN_SIZE.width / 2 / 32 *sinf(radian);
+	float vx = SCREEN_SIZE.width / 2 / PTM_RATIO * cosf(radian);
+	float vy = SCREEN_SIZE.width / 2 / PTM_RATIO * sinf(radian);
 	this->body->SetLinearVelocity(b2Vec2(vx, vy));
 }

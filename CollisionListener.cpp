@@ -2,6 +2,10 @@
 #include "Enemy.h"
 #include "Bullet.h"
 
+#include "Soldier.h"
+#include "Item.h"
+#include "BombOfSoldier.h"
+
 CollisionListener::CollisionListener() {
 
 }
@@ -91,6 +95,15 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		auto bullet = sA->getTag() == TAG_BULLET_HERO ? (Bullet *)sA : (Bullet *)sB;
 		enemy->isDie = true;
 		bullet->isDie = true;
+	}
+
+	// neu enemy va cham bomb cua hero
+	else if ((sA->getTag() == TAG_BOMB_HERO && (sB->getTag() == TAG_ENEMY)) ||
+		(sB->getTag() == TAG_BOMB_HERO && (sA->getTag() == TAG_ENEMY))) {
+		auto enemy = sA->getTag() == TAG_ENEMY ? (Enemy *)sA : (Enemy *)sB;
+		auto bomb = sA->getTag() == TAG_BOMB_HERO ? (BombOfSoldier *)sA : (BombOfSoldier *)sB;
+		enemy->isDie = true;
+		bomb->isDie = true;
 	}
 
 }

@@ -33,13 +33,14 @@ public:
 	float angle; // goc de ban dan
 
 	CCArray *bulletPool;
+	CCArray *bombPool = nullptr;
 	int indexBullet;
 
 	Soldier(string jsonFile, string atlasFile, float scale);
 	static Soldier* create(string jsonFile, string atlasFile, float scale);
 	bool onGround = true;
 	bool isGetOriginX = false;
-	bool isTransform = false;
+	bool isOnTheAir = false;		// helicopter, plane
 	
 	Size sizeSoldier;
 	float jump_vel;
@@ -47,7 +48,10 @@ public:
 	State cur_state;
 	State pre_state;
 
-	virtual void move();
+	void move();
+	void moveFollow(Point joystickVel);
+	void blinkTrans();
+
 	virtual void die(Point posOfCammera);
 
 	virtual void listener();
@@ -62,10 +66,11 @@ public:
 	virtual void runningShootUp();
 	virtual void runningShootDown();
 	virtual void createPool();
+	virtual void createBombPool();
 	virtual void shoot(float radian);
-	virtual void createBullet(float radian);
+	virtual void createBullet(float radian, Point posGun);
 	
-	void updateHero(float dt);
+	virtual void updateHero(float dt);
 	virtual void changeBodyBitMask(uint16 mask);
 	virtual Point getGunLocation();
 };

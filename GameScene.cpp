@@ -64,7 +64,7 @@ bool GameScene::init()
 	camera = Follow::create(follow);
 	runAction(camera);
 
-	indexOfCurrentMap = 12;
+	indexOfCurrentMap = 1;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
@@ -84,13 +84,13 @@ bool GameScene::init()
 		}
 	}, 1.0f, "timer");
 
-	choiceControl = UserDefault::sharedUserDefault()->getIntegerForKey(KEY_SELECTION);
+	/*choiceControl = UserDefault::sharedUserDefault()->getIntegerForKey(KEY_SELECTION);
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->setSwallowTouches(false);
 	listener->onTouchBegan = CC_CALLBACK_2(GameScene::onTouchBegan, this);
 	listener->onTouchMoved = CC_CALLBACK_2(GameScene::onTouchMoved, this);
 	listener->onTouchEnded = CC_CALLBACK_2(GameScene::onTouchEnded, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);*/
 
 	this->scheduleUpdate();
 	return true;
@@ -116,7 +116,7 @@ void GameScene::update(float dt)
 	switchItem(dt);
 
 	for (int i = 0; i < existedBullet.size(); i++) {
-		auto bullet = (BulletOfHero*) existedBullet[i];
+		auto bullet = (BulletOfHero*)existedBullet[i];
 		bullet->update(dt);
 		if (abs(bullet->getPositionX() - follow->getPositionX()) > SCREEN_SIZE.width / 2) {
 			listIndexExist.insert(i);
@@ -153,18 +153,34 @@ void GameScene::update(float dt)
 		}
 	}
 
+	if (soldier->bombPool != nullptr) {
+		for (int i = 0; i < soldier->bombPool->count(); i++) {
+			auto bomb = ((BombOfSoldier*)soldier->bombPool->getObjectAtIndex(i));
+			bomb->update(dt);
+			if (bomb->getPositionY() < 0) {
+				bomb->isDie = true;
+			}
 
-	/*for (int i = 0; i < dEnemyPool->count(); i++) {
-		((DynamicHumanEnemy*)dEnemyPool->getObjectAtIndex(i))->updateEnemy(dt);
-	}*/
-
-	if (choiceControl == 0) {
-		controlSneakyJoystick();
-		controlSneakyButtonJump();
-		//controlSneakyButtonFire();
+			if (bomb->isDie) {
+				if (bomb->body != nullptr) {
+					//log("Destroy Bullet");
+					world->DestroyBody(bomb->body);
+				}
+				bomb->body = nullptr;
+				bomb->setPosition(INT_MAX, INT_MAX);
+				bomb->isDie = false;
+			}
+		}
 	}
-	else
-		controlButtonMove();
+	
+
+	//if (choiceControl == 0) {
+	controlSneakyJoystick();
+	controlSneakyButtonJump();
+	controlSneakyButtonFire();
+	//}
+	//else
+		//controlButtonMove();
 
 	loadNextMap();
 	if (follow->getPositionX() <= soldier->getPositionX())
@@ -266,9 +282,8 @@ void GameScene::updateAutoGun(float dt)
 	}*/
 }
 
-void GameScene::transformTank(Point pos)
+void GameScene::removeOlderSoldier()
 {
-	log("Tanker");
 	for (int i = 0; i < soldier->bulletPool->count(); i++) {
 		auto bullet = (BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i);
 		if (abs(bullet->getPositionX() - follow->getPositionX()) < SCREEN_SIZE.width / 2) {
@@ -281,6 +296,12 @@ void GameScene::transformTank(Point pos)
 
 	removeChildByTag(TAG_SOLDIER);
 	soldier = nullptr;
+}
+
+void GameScene::transformTank(Point pos)
+{
+	log("Tanker");
+	removeOlderSoldier();
 
 	if (soldier == nullptr) {
 		soldier = TankSoldier::create("tank/tank.json", "tank/tank.atlas", SCREEN_SIZE.height / 11.0f / 113.0f);
@@ -289,6 +310,7 @@ void GameScene::transformTank(Point pos)
 		soldier->initPhysic(world, soldier->getPosition());
 		soldier->body->SetFixedRotation(true);
 		soldier->createPool();
+		soldier->blinkTrans();
 	}
 
 }
@@ -296,18 +318,7 @@ void GameScene::transformTank(Point pos)
 void GameScene::transformHelicopter(Point pos)
 {
 	log("Helicopter");
-	for (int i = 0; i < soldier->bulletPool->count(); i++) {
-		auto bullet = (BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i);
-		if (abs(bullet->getPositionX() - follow->getPositionX()) < SCREEN_SIZE.width / 2) {
-			existedBullet.push_back((BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i));
-		}
-	}
-
-	soldier->bulletPool->removeAllObjects();
-	world->DestroyBody(soldier->body);
-
-	removeChildByTag(TAG_SOLDIER);
-	soldier = nullptr;
+	removeOlderSoldier();
 
 	if (soldier == nullptr) {
 		soldier = HelicopterSoldier::create("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
@@ -318,11 +329,26 @@ void GameScene::transformHelicopter(Point pos)
 		soldier->createPool();
 		soldier->setScaleX(-1);
 		soldier->idleShoot();
+		soldier->blinkTrans();
 	}
 }
 
 void GameScene::transformPlane(Point pos)
 {
+	log("Plane");
+	removeOlderSoldier();
+
+	if (soldier == nullptr) {
+		soldier = PlaneSoldier::create("plane/plane.json", "plane/plane.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
+		soldier->setPosition(pos);
+		addChild(soldier, ZORDER_SOLDIER);
+		soldier->initPhysic(world, soldier->getPosition());
+		soldier->body->SetFixedRotation(true);
+		soldier->createPool();
+		soldier->createBombPool();
+		soldier->idleShoot();
+		soldier->blinkTrans();
+	}
 }
 
 void GameScene::switchItem(float dt)
@@ -333,7 +359,7 @@ void GameScene::switchItem(float dt)
 			switch (i->type)
 			{
 			case TYPE::TANK: {
-				if (!choiceControl) {
+				if (hud->btnJump->getParent()->isVisible()) {
 					hud->btnJump->getParent()->setVisible(false);
 				}
 				transformTank(i->getPosition() + i->getParent()->getPosition());
@@ -344,7 +370,7 @@ void GameScene::switchItem(float dt)
 				break;
 			}
 			case TYPE::HELICOPTER: {
-				if (!choiceControl) {
+				if (hud->btnJump->getParent()->isVisible()) {
 					hud->btnJump->getParent()->setVisible(false);
 				}
 				transformHelicopter(i->getPosition() + i->getParent()->getPosition());
@@ -363,7 +389,10 @@ void GameScene::switchItem(float dt)
 				break;
 			}
 			case TYPE::PLANE: {
-				log("Plane me");
+				if (hud->btnJump->getParent()->isVisible()) {
+					hud->btnJump->getParent()->setVisible(false);
+				}
+				transformPlane(i->getPosition() + i->getParent()->getPosition());
 				break;
 			}
 			default:
@@ -507,8 +536,6 @@ void GameScene::createInfiniteNode()
 	bg1_2->setScaleY(SCREEN_SIZE.height / bg1_2->getContentSize().height);
 	bg1_2->setAnchorPoint(Point(0, 0.5));
 
-	//bg1->setPosition(SCREEN_SIZE / 2);
-
 	auto bg2_1 = Sprite::create("bg-2.png");
 	bg2_1->setScaleX(SCREEN_SIZE.width / bg2_1->getContentSize().width);
 	bg2_1->setScaleY(SCREEN_SIZE.height / bg2_1->getContentSize().height);
@@ -532,10 +559,10 @@ void GameScene::createInfiniteNode()
 
 	background->addChild(bg1_1, 0, Vec2(0.1, 1), Vec2(0, 0));
 	background->addChild(bg1_2, 0, Vec2(0.1, 1), Vec2(bg1_1->getBoundingBox().size.width, 0));
-	//background->addChild(bg2_1, 0, Vec2(0.5, 1), Vec2(0, 0));
-	//background->addChild(bg2_2, 0, Vec2(0.5, 1), Vec2(bg2_1->getBoundingBox().size.width, 0));
-	//background->addChild(bg3_1, 0, Vec2(1, 1), Vec2(0, 0));
-	//background->addChild(bg3_2, 0, Vec2(1, 1), Vec2(bg3_1->getBoundingBox().size.width, 0));
+	background->addChild(bg2_1, 0, Vec2(0.5, 1), Vec2(0, 0));
+	background->addChild(bg2_2, 0, Vec2(0.5, 1), Vec2(bg2_1->getBoundingBox().size.width, 0));
+	background->addChild(bg3_1, 0, Vec2(1, 1), Vec2(0, 0));
+	background->addChild(bg3_2, 0, Vec2(1, 1), Vec2(bg3_1->getBoundingBox().size.width, 0));
 	background->setPosition(Point(0, SCREEN_SIZE.height / 2));
 	background->setAnchorPoint(Point(0, 0.5f));
 	this->addChild(background, ZORDER_BG_1);
@@ -587,7 +614,7 @@ void GameScene::createMap(TMXTiledMap *map, Point origin, Layer *layer)
 /************************************************************************/
 void GameScene::loadNextMap()
 {
-	if ((soldier->getPosition().x > (originOfLastMap.x + SCREEN_SIZE.width) && indexOfCurrentMap < 18)) {
+	if ((soldier->getPosition().x > (originOfLastMap.x + SCREEN_SIZE.width) && indexOfCurrentMap < 17)) {
 		Point originOfNextmap = Point(originOfLastMap.x + tmxNextMap->getContentSize().width*scaleOfMap, 0);
 
 		freePassedMap(originOfLastMap);
@@ -604,8 +631,8 @@ void GameScene::loadNextMap()
 
 		createMap(tmxNextMap, originOfNextmap, layNextMap);
 
-		originOfLastMap = originOfNextmap;
 		indexOfCurrentMap++;
+		originOfLastMap = originOfNextmap;
 		log("next map: %d", indexOfCurrentMap);
 	}
 }
@@ -773,7 +800,7 @@ void GameScene::buildItem(TMXTiledMap * map, Layer * layer, float scale, string 
 	for (auto e : group->getObjects()) {
 		auto mObject = e.asValueMap();
 		Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
-		
+
 		auto item = Item::create(frameName, type);
 		item->setScale(SCREEN_SIZE.height / 8.0f / item->getContentSize().height);
 		item->size = item->getBoundingBox().size;
@@ -873,7 +900,7 @@ void GameScene::controlSneakyJoystick()
 /************************************************************************/
 void GameScene::controlSneakyButtonJump()
 {
-	if (hud->btnJump->getIsActive() && soldier->onGround) {
+	if (hud->btnJump->getParent()->isVisible() && hud->btnJump->getIsActive() && soldier->onGround) {
 		soldier->cur_state = JUMPING;
 		soldier->onGround = false;
 
@@ -883,8 +910,7 @@ void GameScene::controlSneakyButtonJump()
 
 void GameScene::controlSneakyButtonFire()
 {
-	if (hud->btnFire->getValue()) {
-		log("Shoot");
+	if (hud->btnFire->getIsActive()) {
 		soldier->shoot(soldier->angle);
 	}
 	else if (!soldier->isFirstShoot) {
@@ -894,62 +920,62 @@ void GameScene::controlSneakyButtonFire()
 
 
 // 20/12
-void GameScene::controlButtonMove()
-{
-	bool conflict = hud->btnLeft->isPress & hud->btnRight->isPress;
-	if (conflict) {
-		if (soldier->body->GetLinearVelocity().x != 0.0f)
-			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-
-		soldier->cur_state = IDLE_SHOOT;
-		return;
-	}
-
-	if (hud->btnLeft->isDoubleTap && soldier->onGround) {
-		hud->btnLeft->isDoubleTap = false;
-		soldier->facingRight = false;
-		soldier->cur_state = JUMPING;
-		soldier->onGround = false;
-		soldier->body->SetLinearVelocity(b2Vec2(-soldier->move_vel, soldier->jump_vel));
-	}
-
-	else if (hud->btnRight->isDoubleTap && soldier->onGround) {
-		hud->btnRight->isDoubleTap = false;
-		soldier->facingRight = true;
-		soldier->cur_state = JUMPING;
-		soldier->onGround = false;
-		soldier->body->SetLinearVelocity(b2Vec2(soldier->move_vel, soldier->jump_vel));
-	}
-
-	if (hud->btnLeft->isPress && soldier->onGround) {
-		soldier->angle = PI;
-		soldier->facingRight = false;
-		soldier->move();
-		if (soldier->onGround && !isTouchScreen)
-			soldier->cur_state = RUNNING_SHOOT;
-	}
-	else if (hud->btnRight->isPress && soldier->onGround) {
-		soldier->angle = 0;
-		soldier->facingRight = true;
-		soldier->move();
-		if (soldier->onGround && !isTouchScreen)
-			soldier->cur_state = RUNNING_SHOOT;
-	}
-
-	else if (soldier->onGround && !isTouchScreen) {
-		if (soldier->body->GetLinearVelocity().x != 0.0f)
-			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-		soldier->cur_state = IDLE_SHOOT;
-		if (soldier->facingRight) {
-			soldier->angle = 0;
-		}
-		else {
-			soldier->angle = PI;
-		}
-
-	}
-
-}
+//void GameScene::controlButtonMove()
+//{
+//	bool conflict = hud->btnLeft->isPress & hud->btnRight->isPress;
+//	if (conflict) {
+//		if (soldier->body->GetLinearVelocity().x != 0.0f)
+//			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+//
+//		soldier->cur_state = IDLE_SHOOT;
+//		return;
+//	}
+//
+//	if (hud->btnLeft->isDoubleTap && soldier->onGround) {
+//		hud->btnLeft->isDoubleTap = false;
+//		soldier->facingRight = false;
+//		soldier->cur_state = JUMPING;
+//		soldier->onGround = false;
+//		soldier->body->SetLinearVelocity(b2Vec2(-soldier->move_vel, soldier->jump_vel));
+//	}
+//
+//	else if (hud->btnRight->isDoubleTap && soldier->onGround) {
+//		hud->btnRight->isDoubleTap = false;
+//		soldier->facingRight = true;
+//		soldier->cur_state = JUMPING;
+//		soldier->onGround = false;
+//		soldier->body->SetLinearVelocity(b2Vec2(soldier->move_vel, soldier->jump_vel));
+//	}
+//
+//	if (hud->btnLeft->isPress && soldier->onGround) {
+//		soldier->angle = PI;
+//		soldier->facingRight = false;
+//		soldier->move();
+//		if (soldier->onGround && !isTouchScreen)
+//			soldier->cur_state = RUNNING_SHOOT;
+//	}
+//	else if (hud->btnRight->isPress && soldier->onGround) {
+//		soldier->angle = 0;
+//		soldier->facingRight = true;
+//		soldier->move();
+//		if (soldier->onGround && !isTouchScreen)
+//			soldier->cur_state = RUNNING_SHOOT;
+//	}
+//
+//	else if (soldier->onGround && !isTouchScreen) {
+//		if (soldier->body->GetLinearVelocity().x != 0.0f)
+//			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+//		soldier->cur_state = IDLE_SHOOT;
+//		if (soldier->facingRight) {
+//			soldier->angle = 0;
+//		}
+//		else {
+//			soldier->angle = PI;
+//		}
+//
+//	}
+//
+//}
 
 // xac dinh angle de update ani
 void GameScene::identifyAngle(Point location)
@@ -1068,39 +1094,39 @@ void GameScene::onDraw()
 	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, oldMV);
 }
 
-bool GameScene::onTouchBegan(Touch * touch, Event * unused_event)
-{
-	auto location = touch->getLocation();
-	convertToNodeSpace(location);
-
-	isTouchScreen = true;
-
-	if (choiceControl == 1) {
-		identifyAngle(location);
-		return true;
-	}
-	else {
-		/*if (soldier->onGround && location.x > SCREEN_SIZE.width / 2) {
-			soldier->body->SetLinearVelocity(b2Vec2(0.0f, soldier->jump_vel));
-
-			soldier->onGround = false;
-
-			soldier->cur_state = JUMPING;
-		}*/
-
-		return false;
-	}
-}
-
-void GameScene::onTouchMoved(Touch * touch, Event * unused_event)
-{
-	auto location = touch->getLocation();
-	convertToNodeSpace(location);
-	identifyAngle(location);
-}
-
-void GameScene::onTouchEnded(Touch * touch, Event * unused_event)
-{
-	isTouchScreen = false;
-}
-
+//bool GameScene::onTouchBegan(Touch * touch, Event * unused_event)
+//{
+//	auto location = touch->getLocation();
+//	convertToNodeSpace(location);
+//
+//	isTouchScreen = true;
+//
+//	if (choiceControl == 1) {
+//		identifyAngle(location);
+//		return true;
+//	}
+//	else {
+//		/*if (soldier->onGround && location.x > SCREEN_SIZE.width / 2) {
+//			soldier->body->SetLinearVelocity(b2Vec2(0.0f, soldier->jump_vel));
+//
+//			soldier->onGround = false;
+//
+//			soldier->cur_state = JUMPING;
+//		}*/
+//
+//		return false;
+//	}
+//}
+//
+//void GameScene::onTouchMoved(Touch * touch, Event * unused_event)
+//{
+//	auto location = touch->getLocation();
+//	convertToNodeSpace(location);
+//	identifyAngle(location);
+//}
+//
+//void GameScene::onTouchEnded(Touch * touch, Event * unused_event)
+//{
+//	isTouchScreen = false;
+//}
+//
