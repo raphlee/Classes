@@ -88,6 +88,7 @@ public:
 	void buildFort(TMXTiledMap *map, Layer* layer, float scale);
 	void buildTankEnemy(TMXTiledMap *map, Layer* layer, float scale);
 	void buildHelicopterShoot(TMXTiledMap *map, Layer* layer, float scale);
+	void buildHelicopterBoom(TMXTiledMap *map, Layer* layer, float scale);
 	void buildItem(TMXTiledMap *map, Layer* layer, float scale, string nameTile, string frameName, TYPE type);
 
 

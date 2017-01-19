@@ -20,6 +20,7 @@ TankSoldier * TankSoldier::create(string jsonFile, string atlasFile, float scale
 	tank->canShoot = 1;
 
 	tank->cur_state = IDLE_SHOOT;
+	tank->bulletType = BulletType::Slow;
 
 	tank->angle = 0;
 	tank->isNoDie = -180;		// time to respawn

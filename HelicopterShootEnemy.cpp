@@ -13,7 +13,7 @@ HelicopterShootEnemy * HelicopterShootEnemy::create(float scale, HelicopterType 
 	e->setTag(TAG_ENEMY_HELICOPTER_SHOOT);
 	e->type = type;
 	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
-	e->setAnimation(0, "flying", false);
+	e->setAnimation(0, "flying", true);
 	e->isDie = false;
 	e->update(0.0f);
 	e->health = 1;

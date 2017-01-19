@@ -413,6 +413,7 @@ void Soldier::createBullet(float radian, Point posGun)
 	if (this->bulletType == BulletType::Circle) {
 		bullet->type = Type::circle;
 		bullet->alpha = 3 * PI / 2;
+		bullet->radian = radian;
 	}
 	else {
 		bullet->type = Type::normal;

@@ -2,7 +2,7 @@
 #define __HELICOPTER_BOOM_ENEMY_H__
 
 #include "StaticHumanEnemy.h"
-#include "BulletOfEnemy.h"
+#include "BombOfEnemy.h"
 //#include "Utility.h"
 
 USING_NS_CC;
@@ -10,8 +10,8 @@ USING_NS_CC;
 using namespace spine;
 
 enum HelicopterBoomType {
-	STUPID, // plane boom 
-	SMART//plane boom back
+	SIMPLE, // plane boom 
+	BACK//plane boom back
 };
 
 class HelicopterBoomEnemy : public StaticHumanEnemy
@@ -25,6 +25,7 @@ public:
 	virtual void shoot(Point posOfHero);
 	virtual void die();
 	virtual void updateEnemy(float dt, Point cameraPoint, Point posOfHero);
+	virtual void createPool(int count);
 //	virtual void updateBullet(Point cameraPoint);
 //	virtual void createPool(int count);
 	//	void setAngle(float radian);

@@ -10,6 +10,7 @@ class B2Skeleton : public SkeletonAnimation
 {
 public:
 	Sprite *boom;
+
 	
 	B2Skeleton(string jsonFile, string atlasFile, float scale);
 

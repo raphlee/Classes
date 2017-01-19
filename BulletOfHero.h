@@ -12,6 +12,7 @@ class BulletOfHero : public Bullet
 {
 public:
 	float alpha;
+	float radian;// goc ban
 	Type type;
 	BulletOfHero();
 	~BulletOfHero();

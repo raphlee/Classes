@@ -95,6 +95,7 @@ void PlaneSoldier::createBomb()
 {
 	auto bomb = (BombOfSoldier*)bombPool->getObjectAtIndex(indexBomb);
 	bomb->setPosition(getPositionX(), getPositionY() - sizeSoldier.height / 2);
+	bomb->setVisible(true);
 	bomb->initPhysic(this->body->GetWorld(), bomb->getPosition());
 
 	indexBomb++;
