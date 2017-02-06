@@ -13,7 +13,7 @@ TankSoldier * TankSoldier::create(string jsonFile, string atlasFile, float scale
 	tank->update(0.0f);
 	tank->sizeSoldier = tank->getBoundingBox().size;
 	tank->setTimeScale(1.5f);
-	tank->health = 10000;
+	tank->health = 2;
 	tank->jump_vel = tank->SCREEN_SIZE.height * (4.0f / 3.0f) / PTM_RATIO;
 	tank->move_vel = tank->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	tank->facingRight = true;

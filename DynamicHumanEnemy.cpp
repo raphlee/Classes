@@ -11,7 +11,7 @@ DynamicHumanEnemy * DynamicHumanEnemy::create(float scale)
 	DynamicHumanEnemy *e = new DynamicHumanEnemy("enemy-soldier/soldier.json", "enemy-soldier/soldier.atlas", scale);
 	e->setTag(TAG_ENEMY_SOLDIER);
 	e->update(0.0f);
-	e->health = 1;
+	e->health = 3;
 	e->sizeEnemy = e->getBoundingBox().size;
 	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(-1);

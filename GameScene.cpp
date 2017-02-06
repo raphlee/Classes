@@ -511,14 +511,14 @@ void GameScene::createInfiniteNode()
 {
 	background = InfiniteParallaxNode::create();
 
-	auto bg1_1 = Sprite::create("bg-1.jpg");
-	//auto bg1_1 = Sprite::create("bg-4.png");
+	//auto bg1_1 = Sprite::create("bg-1.jpg");
+	auto bg1_1 = Sprite::create("bg-4.png");
 	bg1_1->setScaleX(SCREEN_SIZE.width / bg1_1->getContentSize().width);
 	bg1_1->setScaleY(SCREEN_SIZE.height / bg1_1->getContentSize().height);
 	bg1_1->setAnchorPoint(Point(0, 0.5f));
 
-	auto bg1_2 = Sprite::create("bg-1.jpg");
-	//auto bg1_2 = Sprite::create("bg-4.png");
+	//auto bg1_2 = Sprite::create("bg-1.jpg");
+	auto bg1_2 = Sprite::create("bg-4.png");
 	bg1_2->setScaleX(SCREEN_SIZE.width / bg1_2->getContentSize().width);
 	bg1_2->setScaleY(SCREEN_SIZE.height / bg1_2->getContentSize().height);
 	bg1_2->setAnchorPoint(Point(0, 0.5f));
@@ -1092,9 +1092,14 @@ void GameScene::controlSneakyJoystick()
 	else if (degree >= 250.0f && degree < 290.0f) {
 		if (soldier->body->GetLinearVelocity().x != 0.0f)
 			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-		soldier->facingRight = true;
-		soldier->angle = 0;
-		if (soldier->onGround)
+		if (soldier->facingRight) {
+			soldier->angle = 0;
+		}
+		else {
+			soldier->angle = PI;
+		}
+
+		if(soldier->onGround)
 			soldier->cur_state = LYING_SHOOT;
 	}
 	else if (degree >= 290.0f && degree < 330.0f) {

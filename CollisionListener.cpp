@@ -94,8 +94,13 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		(sB->getTag() == TAG_BULLET_HERO && (sA->getTag() > 100))) {
 		auto enemy = sA->getTag() == TAG_ENEMY_SOLDIER ? (Enemy *)sA : (Enemy *)sB;
 		auto bullet = sA->getTag() == TAG_BULLET_HERO ? (Bullet *)sA : (Bullet *)sB;
-		enemy->isDie = true;
+		log("%i", enemy->health);
 		bullet->isDie = true;
+
+		enemy->health -= 1;
+		if(enemy->health <= 0)
+			enemy->isDie = true;
+		
 	}
 
 }

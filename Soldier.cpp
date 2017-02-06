@@ -16,6 +16,7 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 	soldier->health = 5;
 	soldier->jump_vel = soldier->SCREEN_SIZE.height * (4.0f / 3.0f) / PTM_RATIO;
 	soldier->move_vel = soldier->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
+	soldier->pre_state = JUMPING;
 	soldier->cur_state = IDLE_SHOOT;
 	soldier->facingRight = true;
 	soldier->canShoot = 1;

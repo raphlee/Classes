@@ -16,6 +16,7 @@ bool Hud::init()
 	/*int choice = ref->getIntegerForKey(KEY_SELECTION);*/
 
 	//if (choice == 0) {
+	
 	float jtXRatio = ref->getFloatForKey(KEYJOYSTICK_X);
 	float jtYRatio = ref->getFloatForKey(KEYJOYSTICK_Y);
 
@@ -25,9 +26,20 @@ bool Hud::init()
 	float fireXRatio = ref->getFloatForKey(KEYBTNFIRE_X);
 	float fireYRatio = ref->getFloatForKey(KEYBTNFIRE_Y);
 
+	if (jtXRatio == NULL) {
+		jtXRatio = 0.17f;
+		jtYRatio = 0.20f;
+		
+		jumpXRatio = 0.73f;
+		jumpYRatio = 0.19f;
+
+		fireXRatio = 0.83f;
+		fireYRatio = 0.38f;
+	}
+
 	addJoystick(Point(origin.x + winSize.width * jtXRatio, origin.y + winSize.height * jtYRatio));
 	addJoystickButtonJump(Point(origin.x + winSize.width * jumpXRatio, origin.y + winSize.height * jumpYRatio));
-	addJoystickButtonFire(Point(winSize.width * fireXRatio, winSize.height * fireYRatio));
+	addJoystickButtonFire(Point(origin.x + winSize.width * fireXRatio, origin.y + winSize.height * fireYRatio));
 
 	/*} else
 		addButton();*/

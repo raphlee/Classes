@@ -25,13 +25,15 @@ void Bullet::initPhysic(b2World *world, Point pos)
 {
 	auto size = this->getContentSize();
 
-	b2PolygonShape shape;
-	shape.SetAsBox(size.width / 4 / PTM_RATIO, size.height/ 4 / PTM_RATIO);
+	//b2PolygonShape shape;
+	b2CircleShape circle;
+	//shape.SetAsBox(size.width / 4 / PTM_RATIO, size.height/ 4 / PTM_RATIO);
+	circle.m_radius = size.width / 4 / PTM_RATIO;
 
 	fixtureDef.density = 0.5f;
 	fixtureDef.friction = 1.0f;
 	fixtureDef.restitution = 0.0f;
-	fixtureDef.shape = &shape;
+	fixtureDef.shape = &circle;
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
@@ -46,14 +48,18 @@ void Bullet::initPhysic(b2World *world, Point pos)
 
 void Bullet::initPhysic(b2World * world, b2Vec2 pos)
 {
-	b2PolygonShape shape;
+	//b2PolygonShape shape;
+	b2CircleShape circle;
 
 	auto size = this->getContentSize();
-	shape.SetAsBox(size.width / 4 / PTM_RATIO, size.height / 4 / PTM_RATIO);
+	//shape.SetAsBox(size.width / 4 / PTM_RATIO, size.height / 4 / PTM_RATIO);
+	circle.m_radius = size.width / 4 / PTM_RATIO;
+
+
 	fixtureDef.density = 0.5f;
 	fixtureDef.friction = 1.0f;
 	fixtureDef.restitution = 0.0f;
-	fixtureDef.shape = &shape;
+	fixtureDef.shape = &circle;
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;
 	bodyDef.userData = this;		// pass sprite to bodyDef with argument: userData
