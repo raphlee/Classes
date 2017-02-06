@@ -31,7 +31,7 @@ void BulletOfHero::update(float dt)
 		if (type == Type::circle) {
 			auto vx = vLenght * cos(alpha)/PTM_RATIO;
 			auto vy = vLenght * sin(alpha)/ PTM_RATIO;
-			this->body->SetLinearVelocity(b2Vec2(vx, vy)+ b2Vec2(SCREEN_SIZE.width/2/PTM_RATIO,0));
+			this->body->SetLinearVelocity(b2Vec2(vx, vy)+ b2Vec2(SCREEN_SIZE.width/2/PTM_RATIO*cosf(radian), SCREEN_SIZE.width / 2 / PTM_RATIO*sinf(radian)));
 		}
 		if (alpha > 2 * PI) alpha = 0;
 	}

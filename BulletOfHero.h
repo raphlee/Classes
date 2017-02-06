@@ -11,7 +11,8 @@ enum Type {
 class BulletOfHero : public Bullet
 {
 public:
-	float alpha;
+	float alpha;//goc quay circle
+	float radian;//goc ban dan
 	Type type;
 	BulletOfHero();
 	~BulletOfHero();
