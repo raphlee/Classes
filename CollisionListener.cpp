@@ -71,10 +71,10 @@ void CollisionListener::BeginContact(b2Contact * contact)
 	}
 
 	// neu nguoi va cham dan enemy
-	else if ((sA->getTag() == TAG_SOLDIER && (sB->getTag() == TAG_BULLET_ENEMY)) ||
-		(sB->getTag() == TAG_SOLDIER && (sA->getTag() == TAG_BULLET_ENEMY))) {
+	else if ((sA->getTag() == TAG_SOLDIER && (sB->getTag() == TAG_BULLET_ENEMY) ||
+		(sB->getTag() == TAG_SOLDIER && (sB->getTag() == TAG_BULLET_ENEMY) ))) {
 		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
-		auto bullet = sA->getTag() == TAG_BULLET_ENEMY ? (Bullet *)sA : (Bullet *)sB;
+		auto bullet = (sA->getTag() == TAG_BULLET_ENEMY)? (Bullet *)sA : (Bullet *)sB;
 		if (soldier->isNoDie >= 0) {
 			soldier->cur_state = State::DIE;
 			bullet->isDie = true;
@@ -102,6 +102,23 @@ void CollisionListener::BeginContact(b2Contact * contact)
 			enemy->isDie = true;
 
 	}
+
+	else if ((sA->getTag() == TAG_SOLDIER && (sB->getTag() == TAG_BOMB_ENEMY) ||
+		(sB->getTag() == TAG_SOLDIER && (sB->getTag() == TAG_BOMB_ENEMY)))) {
+		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
+		auto bullet = (sA->getTag() == TAG_BOMB_ENEMY) ? (Bullet *)sA : (Bullet *)sB;
+		if (soldier->isNoDie >= 0) {
+			soldier->cur_state = State::DIE;
+			bullet->isDie = true;
+		}
+	}
+	else if ((sA->getTag() == TAG_FLOOR && (sB->getTag() == TAG_BOMB_ENEMY) ||
+		(sB->getTag() == TAG_FLOOR && (sB->getTag() == TAG_BOMB_ENEMY)))) {
+		//auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
+		auto bullet = (sA->getTag() == TAG_BOMB_ENEMY) ? (Bullet *)sA : (Bullet *)sB;
+		bullet->isDie = true;
+	}
+	
 
 }
 

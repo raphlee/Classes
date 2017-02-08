@@ -30,6 +30,8 @@ using namespace std;
 #define BITMASK_BULLET_HERO				0x0008
 #define BITMASK_BULLET_ENEMY			0x0010
 #define BITMASK_ITEM					0x0020
+#define BITMASK_BOMB_ENEMY				0x0100
+
 
 
 // tag
@@ -37,6 +39,7 @@ using namespace std;
 #define TAG_FLOOR							51
 #define TAG_BULLET_HERO						52
 #define TAG_BULLET_ENEMY					53
+#define TAG_BOMB_ENEMY						55
 #define TAG_ITEM							54
 
 #define TAG_ENEMY_SOLDIER					101

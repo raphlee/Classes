@@ -103,8 +103,8 @@ void HelicopterBoomEnemy::createPool(int count)
 		bullet->setPosition(INT_MAX, INT_MAX);
 		//this->getParent()->addChild(bullet);
 		this->getParent()->addChild(bullet, ZORDER_BULLET);
-		bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_ENEMY;
-		bullet->fixtureDef.filter.maskBits = BITMASK_SOLDIER;
+		bullet->fixtureDef.filter.categoryBits = BITMASK_BOMB_ENEMY;
+		bullet->fixtureDef.filter.maskBits = BITMASK_SOLDIER|BITMASK_FLOOR;
 		//bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
 		bullet->body = nullptr;
 		bulletPool->addObject(bullet);
