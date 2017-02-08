@@ -17,6 +17,7 @@ BulletOfHero * BulletOfHero::create(float scale)
 	bullet->setTag(TAG_BULLET_HERO);
 	bullet->alpha = PI;
 	bullet->type = Type::normal;
+	bullet->isDie = false;
 	return bullet;
 }
 

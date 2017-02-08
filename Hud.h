@@ -19,6 +19,12 @@ public:
 	SneakyButton *btnJump;
 	SneakyButton *btnFire;
 
+	Sprite *life_1;
+	Sprite *life_2;
+	Sprite *life_3;
+	Sprite *life_4;
+	Sprite *life_5;
+
 	//Button *btnLeft;
 	//Button *btnRight;
 

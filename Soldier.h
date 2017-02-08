@@ -37,7 +37,6 @@ public:
 	BulletType bulletType;
 
 	int canShoot;
-	bool isFirstShoot;
 	int isNoDie;
 	float angle; // goc de ban dan
 
@@ -47,7 +46,7 @@ public:
 
 	Soldier(string jsonFile, string atlasFile, float scale);
 	static Soldier* create(string jsonFile, string atlasFile, float scale);
-	bool onGround = true;
+	bool onGround = false;
 	bool isGetOriginX = false;
 	bool isOnTheAir = false;
 	

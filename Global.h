@@ -12,13 +12,14 @@ using namespace std;
 
 // define
 #define PI								3.1415926
-#define Y_INCREMENT_RATIO				7
+#define Y_INCREMENT_RATIO				100
 #define KEYJOYSTICK_X					"KEYJSX"
 #define KEYJOYSTICK_Y					"KEYJSY"
 #define KEYBTNFIRE_X					"KEYFIREX"
 #define KEYBTNFIRE_Y					"KEYFIREY"
 #define KEYBTNJUMP_X					"KEYJUMPX"
 #define KEYBTNJUMP_Y					"KEYJUMPY"
+#define KEY_CHOICE						"GAMEPLAY"
 #define KEYONGAME						"KEYONGAME"
 #define KEYADS							"KEYADS"
 
@@ -30,6 +31,8 @@ using namespace std;
 #define BITMASK_BULLET_HERO				0x0008
 #define BITMASK_BULLET_ENEMY			0x0010
 #define BITMASK_ITEM					0x0020
+#define BITMASK_BOMB_HERO				0x0040
+#define BITMASK_BLINK					0x0080
 
 
 // tag
@@ -38,6 +41,8 @@ using namespace std;
 #define TAG_BULLET_HERO						52
 #define TAG_BULLET_ENEMY					53
 #define TAG_ITEM							54
+#define TAG_BOMB							55
+#define TAG_BLINK							56
 
 #define TAG_ENEMY_SOLDIER					101
 #define TAG_ENEMY_AUTOGUN					102
@@ -55,23 +60,9 @@ using namespace std;
 #define ZORDER_BG_2						1
 #define ZORDER_BG_3						2
 #define ZORDER_BULLET					3
-#define ZORDER_SHADOW					4
-#define ZORDER_VORTEX					5
 #define ZORDER_ENEMY					6
 #define ZORDER_SOLDIER					7
-#define ZORDER_EFFECT_ON_LEAF			8		// touch leaf
-#define ZORDER_LEAF						9
-#define ZORDER_WATER_EFFECT				10		// frog die
 #define ZORDER_ITEM						11
-#define ZORDER_BRIDGE					12
-#define ZORDER_JUMP_EFFECT				13
-#define ZORDER_FROG						14
-#define ZORDER_DECORATION				15		// tree, wood
-#define ZORDER_SCORE_PLUS				16
-#define ZORDER_PERFECT					17
-#define ZORDER_POONG_EFFECT				18
-#define ZORDER_POONG_TEXT				19
-#define ZORDER_LIGHT					20
 
 
 

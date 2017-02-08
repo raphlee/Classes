@@ -13,10 +13,11 @@ HelicopterSoldier * HelicopterSoldier::create(string jsonFile, string atlasFile,
 	h->update(0.0f);
 	h->sizeSoldier = h->getBoundingBox().size;
 	h->setTimeScale(1.5f);
-	h->health = 10000;
+	h->health = 5;
 	h->move_vel = h->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	h->canShoot = 1;
 
+	h->pre_state = JUMPING;
 	h->cur_state = IDLE_SHOOT;
 	h->isOnTheAir = true;
 
@@ -51,35 +52,22 @@ void HelicopterSoldier::die(Point posOfCammera)
 
 void HelicopterSoldier::idleShoot()
 {
-	if (pre_state != cur_state) {
-
-		clearTracks();
-		addAnimation(0, "flying", true);
-		setToSetupPose();
-		pre_state = IDLE_SHOOT;
-	}
+	clearTracks();
+	addAnimation(0, "flying", true);
+	setToSetupPose();
 }
 
 void HelicopterSoldier::shoot(float radian)
 {
 	if (canShoot < INT_MAX) {
-		if (isFirstShoot) {
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.54f, getPositionY() + sizeSoldier.height * 0.5f));
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.8f, getPositionY() + sizeSoldier.height * 0.35f));
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.4f, getPositionY() + sizeSoldier.height * 0.18f));
-			isFirstShoot = false;
+		if (!canShoot) {
+			if (!canShoot && bulletPool != nullptr) {
+				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.5f, getPositionY() + sizeSoldier.height * 0.4f));
+				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.73f, getPositionY() + sizeSoldier.height * 0.25f));
+				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.51f, getPositionY() + sizeSoldier.height * 0.16f));
+			}
+
 			canShoot = 1;
-		}
-
-		if (!canShoot && bulletPool != nullptr) {
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.5f, getPositionY() + sizeSoldier.height * 0.4f));
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.73f, getPositionY() + sizeSoldier.height * 0.25f));
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.51f, getPositionY() + sizeSoldier.height * 0.16f));
-		}
-
-		canShoot++;
-		if (canShoot == 30) {
-			canShoot = 0;
 		}
 	}
 }
@@ -96,6 +84,11 @@ void HelicopterSoldier::updateHero(float dt)
 	this->setPositionX(body->GetPosition().x * PTM_RATIO);
 	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeSoldier.height / 2.0f);
 
-	//shoot(0);
+	if (canShoot) {
+		canShoot++;
+		if (canShoot == 20) {
+			canShoot = 0;
+		}
+	}
 }
 

@@ -57,8 +57,9 @@ void B2Skeleton::initCirclePhysic(b2World * world, Point pos)
 
 void B2Skeleton::die()
 {
-	this->boom = Sprite::createWithSpriteFrameName("explosion-1.png");
-	this->boom->setPosition(0, this->getBoundingBox().size.height / 2);
+
+	/*boom = Sprite::createWithSpriteFrameName("explosion-1.png");
+	boom->setPosition(0, this->getBoundingBox().size.height / 2);
 	this->addChild(boom);
 	Vector<SpriteFrame*> animFrames;
 	animFrames.reserve(7);
@@ -78,7 +79,7 @@ void B2Skeleton::die()
 		boom->removeFromParentAndCleanup(true);
 	});
 
-	this->runAction(Sequence::create(DelayTime::create(0.5f), callFunc2, nullptr));
+	this->runAction(Sequence::create(DelayTime::create(0.5f), callFunc2, nullptr));*/
 }
 
 void B2Skeleton::changeBodyBitMask(uint16 mask)

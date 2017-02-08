@@ -13,6 +13,7 @@ class BulletOfHero : public Bullet
 public:
 	float alpha;
 	float radian;// goc ban
+	bool isAdded = false;
 	Type type;
 	BulletOfHero();
 	~BulletOfHero();

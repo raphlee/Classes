@@ -40,6 +40,9 @@ bool StartScene::init()
 	SpriteFrameCache::getInstance()->addSpriteFramesWithFile("map1.plist");
 	Director::getInstance()->getTextureCache()->addImage("box/lid.png");
 
+	ref = UserDefault::getInstance()->sharedUserDefault();
+	ref->setIntegerForKey(KEY_CHOICE, 1);
+
 	// sound and effect
 	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/backGroundMenu.mp3");
 
@@ -79,6 +82,26 @@ bool StartScene::init()
 	setting->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.85f);
 	addChild(setting);
 
+	gp1 = Sprite::create("send/GP1.png");
+	gp1->setScale(visibleSize.height / 9.0f / gp1->getContentSize().height);
+	gp1->setPosition(origin.x + visibleSize.width * 0.15f, origin.y + visibleSize.height * 0.4f);
+	addChild(gp1);
+
+	gp2 = Sprite::create("send/GP2.png");
+	gp2->setScale(visibleSize.height / 9.0f / gp2->getContentSize().height);
+	gp2->setPosition(origin.x + visibleSize.width * 0.3f, origin.y + visibleSize.height * 0.4f);
+	addChild(gp2);
+
+	gp3 = Sprite::create("send/GP3.png");
+	gp3->setScale(visibleSize.height / 9.0f / gp3->getContentSize().height);
+	gp3->setPosition(origin.x + visibleSize.width * 0.7f, origin.y + visibleSize.height * 0.4f);
+	addChild(gp3);
+
+	gp4 = Sprite::create("send/GP4.png");
+	gp4->setScale(visibleSize.height / 9.0f / gp4->getContentSize().height);
+	gp4->setPosition(origin.x + visibleSize.width * 0.85f, origin.y + visibleSize.height * 0.4f);
+	addChild(gp4);
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(StartScene::onTouchBegan, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
@@ -95,6 +118,30 @@ bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 
 	if (setting->getBoundingBox().containsPoint(touch->getLocation())) {
 		Director::getInstance()->replaceScene(ControlSettingScene::createScene());
+	}
+
+	if (gp1->getBoundingBox().containsPoint(touch->getLocation())) {
+		ref->setIntegerForKey(KEY_CHOICE, 1);
+		auto scene = GameScene::createScene();
+		Director::getInstance()->replaceScene(scene);
+	}
+
+	if (gp2->getBoundingBox().containsPoint(touch->getLocation())) {
+		ref->setIntegerForKey(KEY_CHOICE, 9);
+		auto scene = GameScene::createScene();
+		Director::getInstance()->replaceScene(scene);
+	}
+
+	if (gp3->getBoundingBox().containsPoint(touch->getLocation())) {
+		ref->setIntegerForKey(KEY_CHOICE, 12);
+		auto scene = GameScene::createScene();
+		Director::getInstance()->replaceScene(scene);
+	}
+
+	if (gp4->getBoundingBox().containsPoint(touch->getLocation())) {
+		ref->setIntegerForKey(KEY_CHOICE, 15);
+		auto scene = GameScene::createScene();
+		Director::getInstance()->replaceScene(scene);
 	}
 
 	return false;

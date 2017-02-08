@@ -134,16 +134,15 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 
 void StaticHumanEnemy::die()
 {
-	Enemy::die();
+	//Enemy::die();
 	auto world = this->body->GetWorld();
 	if (world->IsLocked()) return;
 	world->DestroyBody(body);
 	this->body = nullptr;
-	//this->setVisible(false);
 	this->clearTracks();
 	this->setAnimation(0, "die", false);
 	auto callFunc = CallFunc::create([&]() {
-		this->setVisible(false);//removeFromParentAndCleanup(true);
+		this->setVisible(false);
 		//removeFromParentAndCleanup(true);
 	});
 
@@ -172,9 +171,10 @@ void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 	//}
 	//updateBullet(cameraPoint);
 }
+
 void StaticHumanEnemy::updateBullet(Point cameraPoint)
 {
-	log("Fuking bug in bullet update");
+	//log("Fuking bug in bullet update");
 	if (this->indexBullet >= 0) {
 		for (int i = 0; i < bulletPool->count(); i++) {
 			auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(i);

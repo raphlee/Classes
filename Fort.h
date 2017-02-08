@@ -14,8 +14,9 @@ public:
 
 	Fort(string jsonFile, string atlasFile, float scale);
 	static Fort* create(float scale);
-	virtual	void shoot(float angle);
-	virtual	void updateEnemy(float dt, Point cameraPoint, Point posOfHero);
+	void shoot(float angle);
+	void getHit();
+	void updateEnemy(float dt, Point cameraPoint, Point posOfHero);
 	//void updateBullet();
 	
 };

@@ -20,9 +20,11 @@ public:
 
 	b2Body *body;
 	b2FixtureDef fixtureDef;
+	Sprite* boom;
 
 	virtual void initPhysic(b2World *world, Point pos, b2BodyType type);
 	virtual void update(float dt);
+	void explosion();
 
 };
 

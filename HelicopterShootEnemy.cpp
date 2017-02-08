@@ -16,7 +16,7 @@ HelicopterShootEnemy * HelicopterShootEnemy::create(float scale, HelicopterType 
 	e->setAnimation(0, "flying", true);
 	e->isDie = false;
 	e->update(0.0f);
-	e->health = 1;
+	e->health = 2;
 	e->sizeEnemy = e->getBoundingBox().size;
 	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(1);
@@ -31,14 +31,31 @@ HelicopterShootEnemy * HelicopterShootEnemy::create(float scale, HelicopterType 
 void HelicopterShootEnemy::move(Point posOfSoldier)
 {
 
-	if (body != nullptr)
-		this->body->SetLinearVelocity(b2Vec2(-move_vel*this->getScaleX(), this->body->GetLinearVelocity().y));
+	if (body != nullptr) {
+		if (type == SHOOT_SMART) {
+			if (this->checkCanShoot == 60) {
+				auto vec = posOfSoldier - (this->getPosition() + this->getParent()->getPosition());
+				if (vec.x <= 0) {
+					move_vel = -SCREEN_SIZE.width / 5 / PTM_RATIO;
+				}
+				else {
+					move_vel = SCREEN_SIZE.width / 5 / PTM_RATIO;
+				}
+
+				this->body->SetLinearVelocity(b2Vec2(move_vel, body->GetLinearVelocity().y));
+			}
+		}
+		else {
+			this->body->SetLinearVelocity(b2Vec2(-move_vel*this->getScaleX(), this->body->GetLinearVelocity().y));
+		}
+	}
 
 }
 
 void HelicopterShootEnemy::shoot(Point posOfHero)
 {
 	switch (type) {
+	case HelicopterType::SHOOT_SMART:
 	case HelicopterType::SHOOT_VERTICAL:
 	{
 		posOfHero = posOfHero - this->getParent()->getPosition();
@@ -81,7 +98,7 @@ void HelicopterShootEnemy::shoot(Point posOfHero)
 
 void HelicopterShootEnemy::die()
 {
-	Enemy::die();
+	//Enemy::die();
 	auto world = this->body->GetWorld();
 	if (world->IsLocked()) return;
 	world->DestroyBody(body);

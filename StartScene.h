@@ -21,6 +21,13 @@ public:
 	Sprite *play;
 	Sprite *setting;
 
+	Sprite *gp1;
+	Sprite *gp2;
+	Sprite *gp3;
+	Sprite *gp4;
+
+	UserDefault *ref;
+
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 
 	// implement the "static create()" method manually

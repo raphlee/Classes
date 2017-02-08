@@ -10,6 +10,12 @@ Enemy * Enemy::create(string jsonFile, string atlasFile, float scale)
 	return e;
 }
 
+// run animation get hit by soldier
+void Enemy::getHit()
+{
+}
+
+// moving object
 void Enemy::move()
 {
 	
@@ -25,8 +31,6 @@ void Enemy::shoot(Point posOfHuman)
 
 void Enemy::die()
 {
-	B2Skeleton::die();
-	//isDie = false;
 }
 
 
@@ -46,7 +50,7 @@ void Enemy::initCirclePhysic(b2World * world, Point pos)
 	b2Filter filter= fixture->GetFilterData();
 
 	filter.categoryBits = BITMASK_ENEMY;
-	filter.maskBits = BITMASK_SOLDIER | BITMASK_BULLET_HERO | BITMASK_FLOOR;
+	filter.maskBits = BITMASK_SOLDIER | BITMASK_BULLET_HERO | BITMASK_FLOOR | BITMASK_BOMB_HERO;
 
 	fixture->SetFilterData(filter);
 }

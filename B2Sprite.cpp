@@ -45,5 +45,35 @@ void B2Sprite::update(float dt)
 	this->setRotation(-1 * CC_RADIANS_TO_DEGREES(body->GetAngle()));	// rotate
 }
 
+void B2Sprite::explosion()
+{
+	log("HA");
+	boom = Sprite::createWithSpriteFrameName("explosion-1.png");
+	boom->setTag(10000);
+	//boom->setPosition(0, this->getBoundingBox().size.height / 2);
+	boom->setPosition(this->getPosition());
+	this->getParent()->addChild(boom, 100);
+	Vector<SpriteFrame*> animFrames;
+	animFrames.reserve(7);
+
+	for (int i = 2; i < 8; i++)
+	{
+		auto frame = SpriteFrameCache::getInstance()->getSpriteFrameByName(StringUtils::format("explosion-%d.png", i));
+		animFrames.pushBack(frame);
+	}
+
+	auto animation = Animation::createWithSpriteFrames(animFrames, 0.075f);
+	auto animate = Animate::create(animation);
+	animate->retain();
+	boom->runAction(animate);
+
+	auto callFunc2 = CallFunc::create([&]() {
+		if (this->getParent() != nullptr)
+			this->getParent()->removeChildByTag(boom->getTag());
+	});
+
+	this->runAction(Sequence::create(DelayTime::create(0.5f), callFunc2, nullptr));
+}
+
 
 
