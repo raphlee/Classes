@@ -1,5 +1,4 @@
 #include "TankEnemy.h"
-#include "Utility.h"
 
 TankEnemy::TankEnemy(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {

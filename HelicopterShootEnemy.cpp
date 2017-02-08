@@ -12,7 +12,7 @@ HelicopterShootEnemy * HelicopterShootEnemy::create(float scale, HelicopterType 
 	HelicopterShootEnemy *e = new HelicopterShootEnemy("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", scale);
 	e->setTag(TAG_ENEMY_HELICOPTER_SHOOT);
 	e->type = type;
-	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
+	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 6.0f;
 	e->setAnimation(0, "flying", true);
 	e->isDie = false;
 	e->update(0.0f);
@@ -25,20 +25,36 @@ HelicopterShootEnemy * HelicopterShootEnemy::create(float scale, HelicopterType 
 	//e->setVisible(0);
 	e->indexBullet = -1;
 	return e;
-	
+
 }
 
 void HelicopterShootEnemy::move(Point posOfSoldier)
 {
-	
-		if (body != nullptr)
+	if (body != nullptr) {
+		if (type == SHOOT_SMART) {
+			if (this->checkCanShoot == 60) {
+				auto vec = posOfSoldier - (this->getPosition() + this->getParent()->getPosition());
+				if (vec.x <= 0) {
+					move_vel = -SCREEN_SIZE.width / 5 / PTM_RATIO;
+					//this->body->SetLinearVelocity(b2Vec2(-SCREEN_SIZE.width / 5 / PTM_RATIO, this->body->GetLinearVelocity().y));
+				}
+				else {
+					move_vel = SCREEN_SIZE.width / 5 / PTM_RATIO;
+					//this->body->SetLinearVelocity(b2Vec2(SCREEN_SIZE.width / 5 / PTM_RATIO, this->body->GetLinearVelocity().y));
+				}
+				this->body->SetLinearVelocity(b2Vec2(move_vel, this->body->GetLinearVelocity().y));
+			}
+		}
+		else {
 			this->body->SetLinearVelocity(b2Vec2(-move_vel*this->getScaleX(), this->body->GetLinearVelocity().y));
-	
+		}
+	}
 }
 
 void HelicopterShootEnemy::shoot(Point posOfHero)
 {
 	switch (type) {
+	case HelicopterType::SHOOT_SMART:
 	case HelicopterType::SHOOT_VERTICAL:
 	{
 		posOfHero = posOfHero - this->getParent()->getPosition();
@@ -92,9 +108,9 @@ void HelicopterShootEnemy::die()
 	auto callFunc = CallFunc::create([&]() {
 		this->setVisible(false);//removeFromParentAndCleanup(true);
 	});
-	
 
-	this->runAction(Spawn::createWithTwoActions(Sequence::create(DelayTime::create(0.5f), callFunc, nullptr), Spawn::create(ScaleTo::create(0.5, 0), RotateTo::create(0.5, 360), MoveBy::create(0.5f,Vec2(-SCREEN_SIZE.width/4,-SCREEN_SIZE.height/4)),nullptr)));
+
+	this->runAction(Spawn::createWithTwoActions(Sequence::create(DelayTime::create(0.5f), callFunc, nullptr), Spawn::create(ScaleTo::create(0.5, 0), RotateTo::create(0.5, 360), MoveBy::create(0.5f, Vec2(-SCREEN_SIZE.width / 4, -SCREEN_SIZE.height / 4)), nullptr)));
 }
 
 void HelicopterShootEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)

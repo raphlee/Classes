@@ -4,7 +4,7 @@
 #include "Global.h"
 #include "SneakyButtonSkinnedBase.h"
 #include "SneakyJoystickSkinnedBase.h"
-#include "Button.h"
+//#include "Button.h"
 
 
 
@@ -19,14 +19,14 @@ public:
 	SneakyButton *btnJump;
 	SneakyButton *btnFire;
 
-	Button *btnLeft;
-	Button *btnRight;
+	//Button *btnLeft;
+	//Button *btnRight;
 
 	void addJoystick(Point pos);
 	void addJoystickButtonJump(Point pos);
 	void addJoystickButtonFire(Point pos);
 
-	void addButton();
+	//void addButton();
 
 	CREATE_FUNC(Hud);
 };

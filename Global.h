@@ -12,10 +12,13 @@ using namespace std;
 
 // define
 #define PI								3.1415926
-#define Y_INCREMENT_RATIO				7						
-#define KEY_SELECTION					"KEYSELECTION"
+#define Y_INCREMENT_RATIO				100
 #define KEYJOYSTICK_X					"KEYJSX"
 #define KEYJOYSTICK_Y					"KEYJSY"
+#define KEYBTNFIRE_X					"KEYFIREX"
+#define KEYBTNFIRE_Y					"KEYFIREY"
+#define KEYBTNJUMP_X					"KEYJUMPX"
+#define KEYBTNJUMP_Y					"KEYJUMPY"
 #define KEYONGAME						"KEYONGAME"
 #define KEYADS							"KEYADS"
 
@@ -27,15 +30,6 @@ using namespace std;
 #define BITMASK_BULLET_HERO				0x0008
 #define BITMASK_BULLET_ENEMY			0x0010
 #define BITMASK_ITEM					0x0020
-//#define SOLDIER_BITMASK					0x0001
-//#define ENEMY_BITMASK					0x0002
-//#define FLOOR_BITMASK					0x0004
-//#define BULLET_HERO_BITMASK				0x0008
-//#define BULLET_ENEMY_BITMASK			0x0010
-//#define ITEM_BITMASK					0x0020
-//#define BLANK_BITMASK					0x0040
-//#define ALLIGATOR_BITMASK				0x0080
-//#define HIPPO_BITMASK					0x0100
 
 
 // tag
@@ -52,7 +46,6 @@ using namespace std;
 #define TAG_ENEMY_TANK						105
 #define TAG_ENEMY_HELICOPTER_SHOOT			106
 #define TAG_ENEMY_HELICOPTER_BOOM			107
-					
 
 
 
@@ -80,14 +73,6 @@ using namespace std;
 #define ZORDER_POONG_TEXT				19
 #define ZORDER_LIGHT					20
 
-// timing
-#define TIME_BRIDGE_OCCUR				21
-#define TIME_ALLIGATOR_OCCUR			41
-#define TIME_HIPPO_OCCUR				50
-#define TIME_VORTEX_OCCUR				90
-#define TIME_TREE_OCCUR					6
-#define TIME_WOOD_OCCUR					11
-#define TIME_TO_UPGRADE					11
 
 
 // define scale ratio
@@ -103,6 +88,7 @@ using namespace std;
 #define PTM_RATIO							32
 #define MAX_DYNAMIC_HUMAN_ENEMY				8
 #define MAX_BULLET_HERO_POOL				30
+#define MAX_BOMB_HERO_POOL					7
 #define MAX_BULLET_SOLDIER_ENEMY_POOL		3
 
 #define MAX_BULLET_AUTOGUN_POOL				2
@@ -114,21 +100,33 @@ using namespace std;
 #define Z_BACKGROUND						0
 #define Z_HERO								1
 
+#define	SOUND_BACKGROUND					"sound/theme_music.mp3"
+#define SOUND_BULLET_NORMAL					"sound/normal bullet.mp3"
+#define SOUND_BULLET_CIRCLE					"sound/F bullet.mp3"
+#define SOUND_BULLET_SUPER					"sound/S Bullet.mp3"
+#define SOUND_TANK_SHOOT					"sound/tank shoot .mp3"
+#define SOUND_TANK_EXPLOSION				"sound/tank_explosion.mp3"
+#define SOUND_PLANE_BOMB					"sound/plane_bomb.mp3"
+#define SOUND_PLANE_DROP					"sound/plane_drop.mp3"
 
-	
-// velocity
+#define SOUND_TANK_MOVE						"sound/tank move.mp3"
+#define SOUND_HELICOPTER					"sound/helicopter.mp3"
+#define SOUND_MACHINE_GUN					"sound/machine gun.mp3"
+#define SOUND_ENEMY_BULLET					"sound/enemy bullet.mp3"
+#define SOUND_ENEMY_BOMB					"sound/enemy_bomb.mp3"
 
-const b2Vec2 VELOCITY_TO_UPGRADE		= b2Vec2(0.0f, -0.13f);
+#define SOUND_CANON_SHOOT					"sound/cannon shoot.mp3"
+#define SOUND_ENEMY_BOMB_EXPLOSION			"sound/enemy_bomb_explosion.mp3"
+#define SOUND_BIG_FORT_SHOOT				"sound/boss_explosion.mp3"
+#define SOUND_GET_ITEM						"sound/get item.mp3"
+#define SOUND_MISSLE						"sound/missle.mp3"
+
+#define SOUND_LOSE							"sound/sound_lose.mp3"
+#define SOUND_WIN							"sound/Win.mp3"
+
+#define SOUND_TRANSFORM						"sound/transform.mp3"
+#define SOUND_TRANSFORM2					"sound/transform_2.mp3"
 
 
-// arr to identify freq item
-const int ARR[] = {0, 0, 0, 1, 0, 0, 1, 0, 0, 1};
 
-// arr to random type of leaf: green leaf and yellow green leaf
-const int ARR_RANDOM_TYPE[] = {0, 1, 0, 0, 1};
-
-// arr to random angle crocodile appear
-const float ARR_ANGLE[] = {0, -90, 90, -60, 60};
-
-//const b2World *world;
 #endif // __GLOBAL_H__

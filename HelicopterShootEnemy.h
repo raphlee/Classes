@@ -11,7 +11,8 @@ using namespace spine;
 
 enum HelicopterType {
 	SHOOT_VERTICAL, // plane2
-	SHOOT_HORIZONTAL//plane
+	SHOOT_HORIZONTAL,//plane
+	SHOOT_SMART
 };
 
 class HelicopterShootEnemy : public StaticHumanEnemy

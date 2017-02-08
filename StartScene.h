@@ -4,7 +4,7 @@
 #include "cocos2d.h"
 #include "spine/spine-cocos2dx.h"
 #include "GameScene.h"
-#include "ControlSelectionScene.h"
+#include "ControlSettingScene.h"
 
 
 
@@ -17,10 +17,9 @@ public:
     static cocos2d::Scene* createScene();
 
     virtual bool init();
-	
-	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
 
 	Sprite *play;
+	Sprite *setting;
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 

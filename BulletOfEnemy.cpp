@@ -23,7 +23,8 @@ void BulletOfEnemy::update(float dt)
 {
 	//Bullet::update(dt);
 	if(body != nullptr)
-		this->setPosition(Point(this->body->GetPosition().x*PTM_RATIO- this->getParent()->getPositionX(), this->body->GetPosition().y*PTM_RATIO));
+		this->setPosition(Point(this->body->GetPosition().x*PTM_RATIO- this->getParent()->getPositionX(), 
+			this->body->GetPosition().y*PTM_RATIO));
 	
 }
 

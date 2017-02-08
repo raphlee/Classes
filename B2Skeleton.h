@@ -29,7 +29,7 @@ public:
 	virtual void initBoxPhysic(b2World *world, Point pos);
 	virtual void initCirclePhysic(b2World *world, Point pos);
 	virtual void die();
-	void changeBodyBitMask(uint16 mask);
+	virtual void changeBodyBitMask(uint16 mask);
 
 };
 

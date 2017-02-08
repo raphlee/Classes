@@ -1,5 +1,4 @@
 #include "B2Skeleton.h"
-#include "Utility.h"
 
 
 B2Skeleton::B2Skeleton(string jsonFile, string atlasFile, float scale) : SkeletonAnimation(jsonFile, atlasFile, scale)

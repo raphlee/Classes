@@ -19,10 +19,7 @@ public:
 
 
 	static BulletOfHero* create(float scale);
-
-	// SCREEN_SIZE
 	void update(float dt);
-	//void setAngel(float radian);
 
 };
 

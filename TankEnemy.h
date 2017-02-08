@@ -3,7 +3,6 @@
 
 #include "StaticHumanEnemy.h"
 #include "BulletOfEnemy.h"
-//#include "Utility.h"
 
 USING_NS_CC;
 

@@ -1,5 +1,4 @@
 #include "MiniFort.h"
-#include "Utility.h"
 
 MiniFort::MiniFort(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {

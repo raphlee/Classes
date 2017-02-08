@@ -157,7 +157,7 @@ void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 	//if (!this->checkOutScreen(cameraPoint)) {
 	if (!isDie) {
 		this->setPositionX(body->GetPosition().x * PTM_RATIO - this->getParent()->getPositionX());
-		this->setPositionY(body->GetPosition().y * PTM_RATIO - this->getParent()->getPositionY() - sizeEnemy.height / 2);;
+		this->setPositionY(body->GetPosition().y * PTM_RATIO - this->getParent()->getPositionY() - sizeEnemy.height / 2);
 		checkCanShoot++;
 		if (checkCanShoot == 120) {
 			checkCanShoot = 0;
@@ -174,7 +174,7 @@ void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 }
 void StaticHumanEnemy::updateBullet(Point cameraPoint)
 {
-	log("Fuking bug in bullet update");
+	//log("Fuking bug in bullet update");
 	if (this->indexBullet >= 0) {
 		for (int i = 0; i < bulletPool->count(); i++) {
 			auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(i);
@@ -228,31 +228,13 @@ bool StaticHumanEnemy::checkOutScreen(Point posCamera)
 {
 
 	auto screenSize = Director::getInstance()->getVisibleSize();
-	/*log("begin");
-	log("Pos Cam: %f", posCamera.x);
-	log("Pos Parent: %f", this->getParent()->getPosition().x);
-	log("Pos THis: %f, %f", this->getPosition().x, this->getPosition().y);
-	log("FABS: %f", fabs((this->getPosition().x + this->getParent()->getPosition().x) - posCamera.x));
-	log("Screne/2: %f", screenSize.width / 2);
-	log("End\n");*/
 
 	if ((this->getPosition().y < 0)) {
 		log("This fucking bug!");
 	}
 
-	if ((fabs((this->getPosition().x + this->getParent()->getPosition().x) - posCamera.x) > screenSize.width / 2) 
-		|| (this->getPosition().y < 0)) {
+	if ((fabs((this->getPositionX() + this->getParent()->getPositionX()) - posCamera.x) > screenSize.width / 2)) {
 		return true;
 	}
 	return false;
 }
-
-//void StaticHumanEnemy::resetEnemy()
-//{
-//	this->body->SetTransform(b2Vec2(INT_MAX / PTM_RATIO, INT_MIN / PTM_RATIO), 0);
-//	this->body->SetType(b2_staticBody);
-//}
-
-
-
-

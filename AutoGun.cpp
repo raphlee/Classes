@@ -14,7 +14,7 @@ AutoGun * AutoGun::create(float scale)
 	e->setTag(TAG_ENEMY_AUTOGUN);
 	e->isDie = false;
 	e->update(0.0f);
-	e->health = 1;
+	e->health = 2;
 	e->sizeEnemy = e->getBoundingBox().size;
 	//e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(-1);
@@ -103,7 +103,7 @@ bool AutoGun::checkOutScreen(Point posCamera)
 {
 	auto screenSize = Director::getInstance()->getVisibleSize();
 	// truong hop dac biet khong gian check nho honss
-	if (fabs((this->getPosition().x + this->getParent()->getPosition().x)- posCamera.x)  > screenSize.width/2.2f) {
+	if (fabs((this->getPosition().x + this->getParent()->getPosition().x)- posCamera.x)  > screenSize.width / 2) {
 		return true;
 	}
 	return false;

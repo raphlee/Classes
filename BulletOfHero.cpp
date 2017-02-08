@@ -20,6 +20,7 @@ BulletOfHero * BulletOfHero::create(float scale)
 	return bullet;
 }
 
+
 void BulletOfHero::update(float dt)
 {
 	Bullet::update(dt);
@@ -37,11 +38,3 @@ void BulletOfHero::update(float dt)
 	}
 }
 
-//void BulletOfHero::setAngel(float radian)
-//{
-//	if (body != nullptr) {
-//		auto vecx = VELOCITY_FOR_BULLET_HERO*cosf(radian);
-//		auto vecy = VELOCITY_FOR_BULLET_HERO*sinf(radian);
-//		body->SetLinearVelocity(b2Vec2(vecx, vecy));
-//	}
-//}

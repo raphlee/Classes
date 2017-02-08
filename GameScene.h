@@ -6,7 +6,9 @@
 #include "GLES-Render.h"
 #include "Soldier.h"
 #include "TankSoldier.h"
-//#include "HelicopterSoldier.h"
+#include "HelicopterSoldier.h"
+#include "PlaneSoldier.h"
+
 #include "Enemy.h"
 #include "Floor.h"
 #include "Item.h"
@@ -29,7 +31,7 @@ public:
 	Mat4 _modelViewMV;
 	CustomCommand _customCommand;
 	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
-	int choiceControl;
+
 	b2World *world;
 
 	Follow *camera;
@@ -53,10 +55,7 @@ public:
 	vector<BulletOfHero *> existedBullet;
 	vector<Item*> items;
 
-	/*CCArray *heroBulletPool;
-	int indexHeroBulletPool;*/
-
-	bool isTouchScreen = false;
+	//bool isTouchScreen = false;
 
 public:
 	// main loop in game
@@ -67,8 +66,9 @@ public:
 	void updateMiniFort(float dt);
 	void updateFort(float dt);*/
 
+	void removeOlderSoldier();
 	void transformTank(Point pos);
-	//void transformHelicopter(Point pos);
+	void transformHelicopter(Point pos);
 	void transformPlane(Point pos);
 	void switchItem(float dt);
 
@@ -109,16 +109,16 @@ public:
 	void controlSneakyButtonJump();
 	void controlSneakyButtonFire();
 
-	void controlButtonMove();
+	//void controlButtonMove();
 
-	void identifyAngle(Point location);
+	//void identifyAngle(Point location);
 
 	virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
 	void onDraw();
 
-	bool onTouchBegan(Touch *touch, Event *unused_event);
-	void onTouchMoved(Touch *touch, Event *unused_event);
-	void onTouchEnded(Touch *touch, Event *unused_event);
+	//bool onTouchBegan(Touch *touch, Event *unused_event);
+	//void onTouchMoved(Touch *touch, Event *unused_event);
+	//void onTouchEnded(Touch *touch, Event *unused_event);
 
     // implement the "static create()" method manually
     CREATE_FUNC(GameScene);

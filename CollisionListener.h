@@ -3,8 +3,6 @@
 
 #include "cocos2d.h"
 #include "Box2D\Box2D.h"
-#include "Soldier.h"
-#include "Item.h"
 
 USING_NS_CC;
 using namespace std;
@@ -18,7 +16,7 @@ public:
 	void BeginContact(b2Contact *contact);
 
 	void EndContact(b2Contact* contact);
-	//void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
+	void PreSolve(b2Contact* contact, const b2Manifold* oldManifold);
 	//void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 };
 

@@ -4,15 +4,12 @@ HelicopterBoomEnemy::HelicopterBoomEnemy(string jsonFile, string atlasFile, floa
 {
 }
 
-
-
-
 HelicopterBoomEnemy * HelicopterBoomEnemy::create(float scale, HelicopterBoomType type)
 {
 	HelicopterBoomEnemy *e = new HelicopterBoomEnemy("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", scale);
 	e->setTag(TAG_ENEMY_HELICOPTER_SHOOT);
 	e->type = type;
-	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
+	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 8.0f;
 	e->setAnimation(0, "flying", true);
 	e->isDie = false;
 	e->update(0.0f);
@@ -30,6 +27,7 @@ HelicopterBoomEnemy * HelicopterBoomEnemy::create(float scale, HelicopterBoomTyp
 
 void HelicopterBoomEnemy::move(Point posOfSoldier)
 {
+
 	if (body != nullptr) {
 		if (type == HelicopterBoomType::SIMPLE) {
 			this->body->SetLinearVelocity(b2Vec2(-move_vel, this->body->GetLinearVelocity().y));

@@ -31,8 +31,8 @@ bool StartScene::init()
 
 	// add Start sprite
 	auto backGround = Sprite::create("background.png");
-	backGround->setScaleX(SCREEN_SIZE.width / backGround->getContentSize().width);
-	backGround->setScaleY(SCREEN_SIZE.height / backGround->getContentSize().height);
+	backGround->setScaleX(visibleSize.width / backGround->getContentSize().width);
+	backGround->setScaleY(visibleSize.height / backGround->getContentSize().height);
 	backGround->setPosition(origin + visibleSize / 2);
 	addChild(backGround);
 
@@ -41,38 +41,59 @@ bool StartScene::init()
 	Director::getInstance()->getTextureCache()->addImage("box/lid.png");
 
 	// sound and effect
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/backGroundMenu.mp3");
-
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/riverSound.mp3");
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/frogSound.mp3");		// touch me
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/hippo.wav");			// attack
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/leafSound.mp3");		// on me
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/sound-button.mp3");		// 
-
-	//CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
-	//CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/boss_explosion.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/cannon shoot.mp3");		// touch me
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy bullet.mp3");			// attack
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy_bomb.mp3");		// on me
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy_bomb_explosion.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/F bullet.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/FormatFactoryplane_bomb.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/get item.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/helicopter.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/machine gun.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/missle.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/normal bullet.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/plane_bomb.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/plane_drop.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/S Bullet.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/sound_lose.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank move.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank shoot .mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank_explosion.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/theme_music.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/transform.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/transform_2.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/Win.mp3");
+	//
+	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
+	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
 
 	auto ground = Sprite::createWithSpriteFrameName("ground.png");
 	ground->setAnchorPoint(Vec2(0.5, 0));
 	ground->setPosition(origin.x + visibleSize.width / 2, origin.y);
-	ground->setScale(SCREEN_SIZE.width / ground->getContentSize().width);
+	ground->setScale(visibleSize.width / ground->getContentSize().width);
 	addChild(ground);
 
 	auto rambo = Sprite::createWithSpriteFrameName("title-ramball.png");
 	rambo->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.65f);
-	rambo->setScale(SCREEN_SIZE.width * 0.4f / rambo->getContentSize().width);
+	rambo->setScale(visibleSize.width * 0.4f / rambo->getContentSize().width);
 	addChild(rambo);
 
-	auto skeleton = SkeletonAnimation::createWithFile("soldier/soldier.json", "soldier/soldier.atlas", SCREEN_SIZE.height / 5.0f / 182.0f);
+	auto skeleton = SkeletonAnimation::createWithFile("soldier/soldier.json", "soldier/soldier.atlas", visibleSize.height / 5.0f / 182.0f);
 	skeleton->setPosition(origin.x + visibleSize.width / 2, origin.y + ground->getBoundingBox().size.height);
 	skeleton->addAnimation(0, "running", true);
 	addChild(skeleton);
 
 	play = Sprite::createWithSpriteFrameName("btn-play.png");
-	play->setScale(SCREEN_SIZE.height / 5.0f / play->getContentSize().height);
-	auto posX = SCREEN_SIZE.width / 2 + rambo->getBoundingBox().size.width / 2 + play->getBoundingBox().size.width * 0.7f;
+	play->setScale(visibleSize.height / 5.0f / play->getContentSize().height);
+	auto posX = visibleSize.width / 2 + rambo->getBoundingBox().size.width / 2 + play->getBoundingBox().size.width * 0.7f;
 	play->setPosition(origin.x + posX, origin.y + visibleSize.height * 0.65f);
 	addChild(play);
+
+	setting = Sprite::create("send/setting.png");
+	setting->setScale(visibleSize.height / 5.0f / setting->getContentSize().height);
+	setting->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.85f);
+	addChild(setting);
 
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(StartScene::onTouchBegan, this);
@@ -84,10 +105,12 @@ bool StartScene::init()
 bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 {
 	if (play->getBoundingBox().containsPoint(touch->getLocation())) {
-		auto scene = ControlSelectionScene::createScene();
-		//auto tran = TransitionFade::create(1.0f, scene);
+		auto scene = GameScene::createScene();
 		Director::getInstance()->replaceScene(scene);
-		//Director::getInstance()->replaceScene(TransitionFade::create(0.67f, ControlSelectionScene::createScene()));
+	}
+
+	if (setting->getBoundingBox().containsPoint(touch->getLocation())) {
+		Director::getInstance()->replaceScene(ControlSettingScene::createScene());
 	}
 
 	return false;

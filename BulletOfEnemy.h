@@ -14,7 +14,6 @@ public:
 
 	static BulletOfEnemy* create(float scale);
 
-	// SCREEN_SIZE
 	void update(float dt);
 	bool checkOutOfScreen(Point camera);
 

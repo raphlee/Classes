@@ -13,16 +13,17 @@ TankSoldier * TankSoldier::create(string jsonFile, string atlasFile, float scale
 	tank->update(0.0f);
 	tank->sizeSoldier = tank->getBoundingBox().size;
 	tank->setTimeScale(1.5f);
-	tank->health = 10000;
+	tank->health = 2;
 	tank->jump_vel = tank->SCREEN_SIZE.height * (4.0f / 3.0f) / PTM_RATIO;
 	tank->move_vel = tank->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	tank->facingRight = true;
 	tank->canShoot = 1;
 
 	tank->cur_state = IDLE_SHOOT;
+	tank->bulletType = BulletType::Slow;
 
 	tank->angle = 0;
-	tank->isNoDie = -240;		// time to respawn
+	tank->isNoDie = -180;		// time to respawn
 	return tank;
 }
 
@@ -54,10 +55,13 @@ void TankSoldier::die(Point posOfCammera)
 		this->body->SetTransform(b2Vec2((posOfCammera.x - SCREEN_SIZE.width * 0.35f) / PTM_RATIO,
 			SCREEN_SIZE.height / PTM_RATIO), this->body->GetAngle());
 
-		this->isNoDie = -240;
+		this->isNoDie = -180;
 		this->changeBodyBitMask(BITMASK_ENEMY);
-		auto blink = CCBlink::create(1, 4);
-		auto sequence = Sequence::create(blink, blink, blink, blink, nullptr);
+		auto blink = CCBlink::create(1, 3);
+		auto visible = CallFunc::create([=]{
+			this->setVisible(true);
+		});
+		auto sequence = Sequence::create(blink, blink, blink, visible, nullptr);
 		this->runAction(sequence);
 	}
 }
