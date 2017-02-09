@@ -13,6 +13,7 @@ BombOfSoldier * BombOfSoldier::create()
 	BombOfSoldier *bomb = new BombOfSoldier();
 	bomb->initWithSpriteFrameName("bomb.png");
 	bomb->setTag(TAG_BOMB);
+	bomb->setScale(bomb->SCREEN_SIZE.height / 30.0f / bomb->getContentSize().height);
 	return bomb;
 }
 

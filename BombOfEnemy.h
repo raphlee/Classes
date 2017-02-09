@@ -12,7 +12,7 @@ public:
 	~BombOfEnemy();
 
 
-	static BombOfEnemy* create(float scale);
+	static BombOfEnemy* create();
 
 	// SCREEN_SIZE
 	

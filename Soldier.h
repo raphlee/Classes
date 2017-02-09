@@ -17,6 +17,7 @@ enum BulletType {
 };
 
 enum State {
+	IDLE,
 	IDLE_SHOOT,
 	IDLE_SHOOT_UP,
 	JUMPING,
@@ -66,6 +67,7 @@ public:
 
 	virtual void initPhysic(b2World *world, Point pos);
 
+	virtual void idle();
 	virtual void idleShoot();
 	virtual void idleShootUp();
 	virtual void jumping();

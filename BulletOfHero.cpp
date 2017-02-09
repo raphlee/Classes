@@ -10,13 +10,14 @@ BulletOfHero::~BulletOfHero()
 {
 }
 
-BulletOfHero * BulletOfHero::create(float scale)
+BulletOfHero * BulletOfHero::create()
 {
 	BulletOfHero *bullet = new BulletOfHero();
 	bullet->initWithSpriteFrameName("soldier-bullet.png");
 	bullet->setTag(TAG_BULLET_HERO);
 	bullet->alpha = PI;
 	bullet->type = Type::normal;
+	bullet->setScale(bullet->SCREEN_SIZE.height / 20.0 / bullet->getContentSize().height);
 	bullet->isDie = false;
 	return bullet;
 }

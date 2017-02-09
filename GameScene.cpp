@@ -77,7 +77,7 @@ bool GameScene::init()
 	originOfLastMap = Point(0, 0);
 	createMap(tmxNextMap, originOfLastMap, layNextMap);
 
-	createSoldier(Point(SCREEN_SIZE.width * 0.15f, SCREEN_SIZE.height * 0.75f));
+	createSoldier(Point(SCREEN_SIZE.width * 0.5f, SCREEN_SIZE.height * 0.75f));
 
 	auto world_listener = new CollisionListener();
 	world->SetContactListener(world_listener);
@@ -133,6 +133,7 @@ void GameScene::update(float dt)
 		for (auto i : existedBullet) {
 			if(i->body != nullptr)
 				world->DestroyBody(i->body);
+			i->setVisible(false);
 			removeChildByTag(i->getTag());
 		}
 
@@ -178,9 +179,6 @@ void GameScene::update(float dt)
 		}
 	}
 
-
-	
-	
 
 	//if (choiceControl == 0) {
 	controlSneakyJoystick();
@@ -345,7 +343,7 @@ void GameScene::transformTank(Point pos)
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
-		soldier = TankSoldier::create("tank/tank.json", "tank/tank.atlas", SCREEN_SIZE.height / 11.0f / 113.0f);
+		soldier = TankSoldier::create("tank/tank.json", "tank/tank.atlas", SCREEN_SIZE.height / 8.8f / 113.0f);
 		soldier->setPosition(pos);
 		addChild(soldier, ZORDER_SOLDIER);
 		soldier->initPhysic(world, soldier->getPosition());
@@ -361,7 +359,7 @@ void GameScene::transformHelicopter(Point pos)
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
-		soldier = HelicopterSoldier::create("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
+		soldier = HelicopterSoldier::create("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", SCREEN_SIZE.height / 12.7f / 80.0f);
 		soldier->setPosition(pos);
 		addChild(soldier, ZORDER_SOLDIER);
 		soldier->initPhysic(world, soldier->getPosition());
@@ -840,7 +838,6 @@ void GameScene::buildAutoGun(TMXTiledMap * map, Layer * layer, float scale)
 		gun->initCirclePhysic(world, pos + originThisMap);
 		gun->changeBodyBitMask(BITMASK_SOLDIER);
 		//and set it back
-		gun->setTag(TAG_ENEMY_AUTOGUN);
 		gun->setPosition(pos);
 		layer->addChild(gun, 3);
 		gun->createPool(MAX_BULLET_AUTOGUN_POOL);
@@ -864,7 +861,6 @@ void GameScene::buildMiniFort(TMXTiledMap * map, Layer * layer, float scale)
 		gun->initCirclePhysic(world, pos + originThisMap);
 		//gun->changeBodyBitMask(BITMASK_SOLDIER);
 		//and set it back
-		gun->setTag(TAG_ENEMY_FORTMINI);
 		gun->setPosition(pos);
 		layer->addChild(gun, 3);
 		gun->createPool(MAX_BULLET_FORT_MINI_POOL);
@@ -888,7 +884,6 @@ void GameScene::buildFort(TMXTiledMap * map, Layer * layer, float scale)
 		gun->initCirclePhysic(world, pos + originThisMap);
 		//gun->changeBodyBitMask(BITMASK_SOLDIER);
 		//and set it back
-		gun->setTag(TAG_ENEMY_FORT);
 		gun->setPosition(pos);
 		layer->addChild(gun, 3);
 		gun->createPool(MAX_BULLET_FORT_POOL);
@@ -906,14 +901,13 @@ void GameScene::buildTankEnemy(TMXTiledMap * map, Layer * layer, float scale)
 			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
 			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
 
-			auto gun = TankEnemy::create(SCREEN_SIZE.height / 8.0f / 227.0f, TankType::STUPID);
+			auto gun = TankEnemy::create(SCREEN_SIZE.height / 9.0f / 113.0f, TankType::STUPID);
 
 			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 
 			gun->initCirclePhysic(world, pos + originThisMap);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setTag(TAG_ENEMY_TANK);
 			gun->setPosition(pos);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_TANK_POOL);
@@ -926,14 +920,13 @@ void GameScene::buildTankEnemy(TMXTiledMap * map, Layer * layer, float scale)
 			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
 			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
 
-			auto gun = TankEnemy::create(SCREEN_SIZE.height / 8.0f / 227.0f, TankType::NORMAL);
+			auto gun = TankEnemy::create(SCREEN_SIZE.height / 9.0f / 113.0f, TankType::NORMAL);
 
 			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 
 			gun->initCirclePhysic(world, pos + originThisMap);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setTag(TAG_ENEMY_TANK);
 			gun->setPosition(pos);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_TANK_POOL);
@@ -946,14 +939,13 @@ void GameScene::buildTankEnemy(TMXTiledMap * map, Layer * layer, float scale)
 			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
 			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
 
-			auto gun = TankEnemy::create(SCREEN_SIZE.height / 8.0f / 227.0f, TankType::SMART);
+			auto gun = TankEnemy::create(SCREEN_SIZE.height / 9.0f / 113.0f, TankType::SMART);
 
 			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 
 			gun->initCirclePhysic(world, pos + originThisMap);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setTag(TAG_ENEMY_TANK);
 			gun->setPosition(pos);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_TANK_POOL);
@@ -970,7 +962,7 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
 			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
 
-			auto gun = HelicopterShootEnemy::create(SCREEN_SIZE.height / 8.0f / 167.0f, HelicopterType::SHOOT_HORIZONTAL);
+			auto gun = HelicopterShootEnemy::create(SCREEN_SIZE.height / 13.0f / 80.0f, HelicopterType::SHOOT_HORIZONTAL);
 
 			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 
@@ -991,7 +983,7 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
 			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
 
-			auto gun = HelicopterShootEnemy::create(SCREEN_SIZE.height / 8.0f / 167.0f, HelicopterType::SHOOT_VERTICAL);
+			auto gun = HelicopterShootEnemy::create(SCREEN_SIZE.height / 13.0f / 80.0f, HelicopterType::SHOOT_VERTICAL);
 
 			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 
@@ -999,7 +991,6 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 			gun->body->SetGravityScale(0);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setTag(TAG_ENEMY_HELICOPTER_SHOOT);
 			gun->setPosition(pos);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
@@ -1017,7 +1008,7 @@ void GameScene::buildHelicopterBoom(TMXTiledMap * map, Layer * layer, float scal
 			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
 			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
 
-			auto gun = HelicopterBoomEnemy::create(SCREEN_SIZE.height / 8.0f / 167.0f, HelicopterBoomType::SIMPLE);
+			auto gun = HelicopterBoomEnemy::create(SCREEN_SIZE.height / 13.0f / 80.0f, HelicopterBoomType::SIMPLE);
 
 			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 
@@ -1038,7 +1029,7 @@ void GameScene::buildHelicopterBoom(TMXTiledMap * map, Layer * layer, float scal
 			Point origin = Point(mObject["x"].asFloat() *scale, mObject["y"].asFloat()* scale);
 			//Size sizeOfBound = Size(mObject["width"].asFloat() *scale, mObject["height"].asFloat() *scale);
 
-			auto gun = HelicopterShootEnemy::create(SCREEN_SIZE.height / 8.0f / 167.0f, HelicopterType::SHOOT_SMART);
+			auto gun = HelicopterShootEnemy::create(SCREEN_SIZE.height / 13.0f / 80.0f, HelicopterType::SHOOT_SMART);
 
 			Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 
@@ -1046,7 +1037,6 @@ void GameScene::buildHelicopterBoom(TMXTiledMap * map, Layer * layer, float scal
 			gun->body->SetGravityScale(0);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setTag(TAG_ENEMY_HELICOPTER_BOOM);
 			gun->setPosition(pos);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
@@ -1096,7 +1086,7 @@ void GameScene::controlSneakyJoystick()
 			soldier->facingRight ? soldier->angle = 0 : soldier->angle = PI;
 			if (soldier->body->GetLinearVelocity().x != 0.0f)
 				soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-			soldier->cur_state = IDLE_SHOOT;
+			soldier->cur_state = IDLE;
 
 		}
 	}
@@ -1182,6 +1172,8 @@ void GameScene::controlSneakyButtonJump()
 void GameScene::controlSneakyButtonFire()
 {
 	if (hud->btnFire->getIsActive()) {
+		if (soldier->cur_state == IDLE)
+			soldier->cur_state = IDLE_SHOOT;
 		soldier->shoot(soldier->angle);
 	}
 }

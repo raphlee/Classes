@@ -19,7 +19,7 @@ public:
 	~BulletOfHero();
 
 
-	static BulletOfHero* create(float scale);
+	static BulletOfHero* create();
 	void update(float dt);
 
 };

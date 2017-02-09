@@ -7,7 +7,7 @@ HelicopterBoomEnemy::HelicopterBoomEnemy(string jsonFile, string atlasFile, floa
 HelicopterBoomEnemy * HelicopterBoomEnemy::create(float scale, HelicopterBoomType type)
 {
 	HelicopterBoomEnemy *e = new HelicopterBoomEnemy("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", scale);
-	e->setTag(TAG_ENEMY_HELICOPTER_SHOOT);
+	e->setTag(TAG_ENEMY_HELICOPTER_BOOM);
 	e->type = type;
 	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setAnimation(0, "flying", true);
@@ -99,12 +99,12 @@ void HelicopterBoomEnemy::createPool(int count)
 	bulletPool = CCArray::createWithCapacity(count);
 	bulletPool->retain();
 	for (int i = 0; i < count; i++) {
-		auto bullet = BombOfEnemy::create(1);
+		auto bullet = BombOfEnemy::create();
 		bullet->setPosition(INT_MAX, INT_MAX);
 		//this->getParent()->addChild(bullet);
 		this->getParent()->addChild(bullet, ZORDER_BULLET);
-		bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_ENEMY;
-		bullet->fixtureDef.filter.maskBits = BITMASK_SOLDIER;
+		bullet->fixtureDef.filter.categoryBits = BITMASK_BOMB_ENEMY;
+		bullet->fixtureDef.filter.maskBits = BITMASK_SOLDIER | BITMASK_FLOOR;
 		//bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
 		bullet->body = nullptr;
 		bulletPool->addObject(bullet);

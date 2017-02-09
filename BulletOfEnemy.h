@@ -12,7 +12,7 @@ public:
 	~BulletOfEnemy();
 
 
-	static BulletOfEnemy* create(float scale);
+	static BulletOfEnemy* create();
 
 	void update(float dt);
 	bool checkOutOfScreen(Point camera);

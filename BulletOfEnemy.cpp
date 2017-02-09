@@ -10,12 +10,13 @@ BulletOfEnemy::~BulletOfEnemy()
 {
 }
 
-BulletOfEnemy * BulletOfEnemy::create(float scale)
+BulletOfEnemy * BulletOfEnemy::create()
 {
 	BulletOfEnemy *bullet = new BulletOfEnemy();
 	bullet->initWithSpriteFrameName("enemy-bullet.png");
 	bullet->setTag(TAG_BULLET_ENEMY);
 	bullet->isDie = false;
+	bullet->setScale(bullet->SCREEN_SIZE.height / 20.0f / bullet->getContentSize().height);
 	return bullet;
 }
 

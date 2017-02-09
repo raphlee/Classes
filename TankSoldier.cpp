@@ -52,7 +52,7 @@ void TankSoldier::die(Point posOfCammera)
 		this->cur_state = IDLE_SHOOT;
 		this->onGround = false;
 		this->body->SetLinearVelocity(b2Vec2(0, 0));
-		this->body->SetTransform(b2Vec2((posOfCammera.x - SCREEN_SIZE.width * 0.35f) / PTM_RATIO,
+		this->body->SetTransform(b2Vec2((posOfCammera.x) / PTM_RATIO,
 			SCREEN_SIZE.height / PTM_RATIO), this->body->GetAngle());
 
 		this->isNoDie = -180;
@@ -64,6 +64,11 @@ void TankSoldier::die(Point posOfCammera)
 		auto sequence = Sequence::create(blink, blink, blink, visible, nullptr);
 		this->runAction(sequence);
 	}
+}
+
+void TankSoldier::idle()
+{
+
 }
 
 void TankSoldier::idleShoot()

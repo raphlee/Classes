@@ -47,9 +47,7 @@ void B2Sprite::update(float dt)
 
 void B2Sprite::explosion()
 {
-	log("HA");
 	boom = Sprite::createWithSpriteFrameName("explosion-1.png");
-	boom->setTag(10000);
 	//boom->setPosition(0, this->getBoundingBox().size.height / 2);
 	boom->setPosition(this->getPosition());
 	this->getParent()->addChild(boom, 100);
@@ -68,8 +66,8 @@ void B2Sprite::explosion()
 	boom->runAction(animate);
 
 	auto callFunc2 = CallFunc::create([&]() {
-		if (this->getParent() != nullptr)
-			this->getParent()->removeChildByTag(boom->getTag());
+		if(boom != nullptr)
+			boom->removeFromParentAndCleanup(true);
 	});
 
 	this->runAction(Sequence::create(DelayTime::create(0.5f), callFunc2, nullptr));
