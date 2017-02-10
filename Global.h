@@ -12,7 +12,7 @@ using namespace std;
 
 // define
 #define PI								3.1415926
-#define Y_INCREMENT_RATIO				100
+#define Y_INCREMENT_RATIO				10
 #define KEYJOYSTICK_X					"KEYJSX"
 #define KEYJOYSTICK_Y					"KEYJSY"
 #define KEYBTNFIRE_X					"KEYFIREX"
@@ -34,6 +34,7 @@ using namespace std;
 #define BITMASK_BOMB_ENEMY				0x0100
 #define BITMASK_BOMB_HERO				0x0040
 #define BITMASK_BLINK					0x0080
+#define BITMASK_BOMB_ENEMY				0x0100
 
 
 // tag
@@ -41,18 +42,20 @@ using namespace std;
 #define TAG_FLOOR							51
 #define TAG_BULLET_HERO						52
 #define TAG_BULLET_ENEMY					53
-#define TAG_BOMB_ENEMY						54
-#define TAG_ITEM							55
-#define TAG_BOMB							56
-#define TAG_BLINK							57
+#define TAG_ITEM							54
+#define TAG_BOMB							55
+#define TAG_BLINK							56
+#define TAG_BOMB_ENEMY						57
+
 
 #define TAG_ENEMY_SOLDIER					101
 #define TAG_ENEMY_AUTOGUN					102
 #define TAG_ENEMY_FORTMINI					103
 #define TAG_ENEMY_FORT						104
 #define TAG_ENEMY_TANK						105
-#define TAG_ENEMY_HELICOPTER_SHOOT			106
-#define TAG_ENEMY_HELICOPTER_BOOM			107
+#define TAG_ENEMY_TANK_STUPID				106
+#define TAG_ENEMY_HELICOPTER_SHOOT			107
+#define TAG_ENEMY_HELICOPTER_BOOM			108
 
 
 

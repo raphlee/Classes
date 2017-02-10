@@ -16,7 +16,7 @@ BulletOfEnemy * BulletOfEnemy::create()
 	bullet->initWithSpriteFrameName("enemy-bullet.png");
 	bullet->setTag(TAG_BULLET_ENEMY);
 	bullet->isDie = false;
-	bullet->setScale((Director::getInstance()->getVisibleSize().height / 20) / bullet->getContentSize().height);
+	bullet->setScale(bullet->SCREEN_SIZE.height / 20.0f / bullet->getContentSize().height);
 	return bullet;
 }
 

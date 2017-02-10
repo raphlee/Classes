@@ -20,7 +20,7 @@ void Item::initPhysic(b2World * world, Point pos, b2BodyType type)
 
 	fixtureDef.density = 0.5f;
 	fixtureDef.friction = 1.0f;
-	fixtureDef.restitution = 0.0f;
+	fixtureDef.restitution = 0.3f;
 	fixtureDef.shape = &shape;
 
 	fixtureDef.filter.categoryBits = BITMASK_ITEM;

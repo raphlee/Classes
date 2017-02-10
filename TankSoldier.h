@@ -14,6 +14,7 @@ public:
 
 	void die(Point posOfCammera);
 
+//	void idle();
 	void idleShoot();
 	void idleShootUp();
 	void jumping();
