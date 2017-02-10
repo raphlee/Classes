@@ -134,16 +134,15 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 
 void StaticHumanEnemy::die()
 {
-	Enemy::die();
+	//Enemy::die();
 	auto world = this->body->GetWorld();
 	if (world->IsLocked()) return;
 	world->DestroyBody(body);
 	this->body = nullptr;
-	//this->setVisible(false);
 	this->clearTracks();
 	this->setAnimation(0, "die", false);
 	auto callFunc = CallFunc::create([&]() {
-		this->setVisible(false);//removeFromParentAndCleanup(true);
+		this->setVisible(false);
 		//removeFromParentAndCleanup(true);
 	});
 
@@ -172,6 +171,7 @@ void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 	//}
 	//updateBullet(cameraPoint);
 }
+
 void StaticHumanEnemy::updateBullet(Point cameraPoint)
 {
 	//log("Fuking bug in bullet update");
@@ -207,7 +207,7 @@ void StaticHumanEnemy::createPool(int count)
 	bulletPool = CCArray::createWithCapacity(count);
 	bulletPool->retain();
 	for (int i = 0; i < count; i++) {
-		auto bullet = BulletOfEnemy::create(1);
+		auto bullet = BulletOfEnemy::create();
 		bullet->setPosition(INT_MAX, INT_MAX);
 		//this->getParent()->addChild(bullet);
 		this->getParent()->addChild(bullet, ZORDER_BULLET);
@@ -230,7 +230,7 @@ bool StaticHumanEnemy::checkOutScreen(Point posCamera)
 	auto screenSize = Director::getInstance()->getVisibleSize();
 
 	if ((this->getPosition().y < 0)) {
-		log("This fucking bug!");
+		//log("This fucking bug!");
 	}
 
 	if ((fabs((this->getPositionX() + this->getParent()->getPositionX()) - posCamera.x) > screenSize.width / 2)) {

@@ -13,7 +13,7 @@ HelicopterBoomEnemy * HelicopterBoomEnemy::create(float scale, HelicopterBoomTyp
 	e->setAnimation(0, "flying", true);
 	e->isDie = false;
 	e->update(0.0f);
-	e->health = 1;
+	e->health = 2;
 	e->sizeEnemy = e->getBoundingBox().size;
 	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(1);
@@ -99,7 +99,7 @@ void HelicopterBoomEnemy::createPool(int count)
 	bulletPool = CCArray::createWithCapacity(count);
 	bulletPool->retain();
 	for (int i = 0; i < count; i++) {
-		auto bullet = BombOfEnemy::create(1);
+		auto bullet = BombOfEnemy::create();
 		bullet->setPosition(INT_MAX, INT_MAX);
 		//this->getParent()->addChild(bullet);
 		this->getParent()->addChild(bullet, ZORDER_BULLET);

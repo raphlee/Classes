@@ -12,7 +12,8 @@ BombOfSoldier * BombOfSoldier::create()
 {
 	BombOfSoldier *bomb = new BombOfSoldier();
 	bomb->initWithSpriteFrameName("bomb.png");
-	bomb->setTag(TAG_BULLET_HERO);
+	bomb->setTag(TAG_BOMB);
+	bomb->setScale((Director::getInstance()->getVisibleSize().height / 30) / bomb->getContentSize().height);
 	return bomb;
 }
 
@@ -27,8 +28,8 @@ void BombOfSoldier::initPhysic(b2World * world, Point pos)
 	fixtureDef.friction = 1.0f;
 	fixtureDef.restitution = 0.0f;
 	fixtureDef.shape = &shape;
-	fixtureDef.filter.categoryBits = BITMASK_BULLET_HERO;
-	fixtureDef.filter.maskBits = BITMASK_ENEMY;
+	fixtureDef.filter.categoryBits = BITMASK_BOMB_HERO;
+	fixtureDef.filter.maskBits = BITMASK_ENEMY | BITMASK_FLOOR;
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;

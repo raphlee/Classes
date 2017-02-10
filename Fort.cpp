@@ -13,14 +13,11 @@ Fort* Fort::create(float scale)
 	e->setTag(TAG_ENEMY_FORT);
 	e->isDie = false;
 	e->update(0.0f);
-	e->health = 1;
+	e->health = 2;
 	e->sizeEnemy = e->getBoundingBox().size;
-	//e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(-1);
 	e->facingRight = false;
 	e->setAnimation(0, "standing-shoot", false);
-	//e->setTag(TAG_ENEMY);
-	//e->setVisible(0);
 	e->indexBullet = -1;
 	return e;
 }
@@ -43,6 +40,13 @@ void Fort::shoot(float angle)
 	}
 	
 	bullet->setAngel(angle);
+}
+
+void Fort::getHit()
+{
+	clearTracks();
+	addAnimation(0, "hit", false);
+	setToSetupPose();
 }
 
 void Fort::updateEnemy(float dt, Point cameraPoint, Point posOfHero)

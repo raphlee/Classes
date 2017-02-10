@@ -11,14 +11,15 @@ enum Type {
 class BulletOfHero : public Bullet
 {
 public:
-	float alpha;//goc quay circle
-	float radian;//goc ban dan
+	float alpha;
+	float radian;// goc ban
+	bool isAdded = false;
 	Type type;
 	BulletOfHero();
 	~BulletOfHero();
 
 
-	static BulletOfHero* create(float scale);
+	static BulletOfHero* create();
 	void update(float dt);
 
 };

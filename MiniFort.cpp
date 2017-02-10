@@ -13,16 +13,20 @@ MiniFort * MiniFort::create(float scale)
 	e->setTag(TAG_ENEMY_FORTMINI);
 	e->isDie = false;
 	e->update(0.0f);
-	e->health = 1;
+	e->health = 2;
 	e->sizeEnemy = e->getBoundingBox().size;
-	//e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(-1);
 	e->facingRight = false;
 	e->setAnimation(0, "hit", false);
-	//e->setTag(TAG_ENEMY);
-	//e->setVisible(0);
 	e->indexBullet = -1;
 	return e;
+}
+
+void MiniFort::getHit()
+{
+	clearTracks();
+	addAnimation(0, "hit", false);
+	setToSetupPose();
 }
 
 void MiniFort::shoot(Point posOfHero)
@@ -42,22 +46,21 @@ void MiniFort::shoot(Point posOfHero)
 	if (indexBullet == MAX_BULLET_SOLDIER_ENEMY_POOL) {
 		indexBullet = 0;
 	}
-	
-		auto thisToHero = posOfHero - this->getPosition();
-		thisToHero = thisToHero*(SCREEN_SIZE.width / 3 / thisToHero.length());
-		bullet->body->SetLinearVelocity(b2Vec2(thisToHero.x/PTM_RATIO,thisToHero.y/PTM_RATIO));
-	
+
+	auto thisToHero = posOfHero - this->getPosition();
+	thisToHero = thisToHero*(SCREEN_SIZE.width / 3 / thisToHero.length());
+	bullet->body->SetLinearVelocity(b2Vec2(thisToHero.x / PTM_RATIO, thisToHero.y / PTM_RATIO));
+
 }
 
 
 void MiniFort::die()
 {
-	Enemy::die();
+	//Enemy::die();
 	auto world = this->body->GetWorld();
 	if (world->IsLocked()) return;
 	world->DestroyBody(body);
 	this->body = nullptr;
-	//this->setVisible(false);
 	this->clearTracks();
 	this->setAnimation(0, "destroy", false);
 	auto callFunc = CallFunc::create([&]() {

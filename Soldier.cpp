@@ -18,12 +18,12 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 	soldier->health = 5;
 	soldier->jump_vel = soldier->SCREEN_SIZE.height * (4.0f / 3.0f) / PTM_RATIO;
 	soldier->move_vel = soldier->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
-	soldier->pre_state = JUMPING;
-	soldier->cur_state = IDLE_SHOOT;
+	soldier->pre_state = IDLE_SHOOT;
+	soldier->cur_state = JUMPING;
 	soldier->facingRight = true;
 	soldier->canShoot = 1;
 	soldier->angle = 0;
-	soldier->bulletType = BulletType::Slow;
+	soldier->bulletType = BulletType::Circle;
 	soldier->isNoDie = -180;
 	return soldier;
 }
@@ -174,7 +174,7 @@ void Soldier::die(Point posOfCammera)
 		this->bulletType = BulletType::Slow;
 
 		isNoDie = -180;
-		changeBodyBitMask(BITMASK_ENEMY);
+		changeBodyBitMask(BITMASK_BLINK);
 		auto blink = CCBlink::create(1, 3);
 		auto visible = CallFunc::create([=] {
 			this->setVisible(true);
@@ -314,10 +314,8 @@ void Soldier::createPool()
 	bulletPool = CCArray::createWithCapacity(MAX_BULLET_HERO_POOL);
 	bulletPool->retain();
 	for (int i = 0; i < MAX_BULLET_HERO_POOL; i++) {
-		auto bullet = BulletOfHero::create(this->getScale());
-		bullet->setPosition(INT_MAX, INT_MAX);
+		auto bullet = BulletOfHero::create();
 		bullet->body = nullptr;
-		this->getParent()->addChild(bullet, ZORDER_BULLET);
 		bulletPool->addObject(bullet);
 	}
 
@@ -344,11 +342,6 @@ void Soldier::shoot(float radian)
 				break;
 			}
 			case BulletType::Slow: {
-				/*if (isFirstShoot) {
-					createBullet(radian, getGunLocation());
-					isFirstShoot = false;
-				}*/
-
 				if (!canShoot && bulletPool != nullptr) {
 					//CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(SOUND_BULLET_NORMAL);
 					createBullet(radian, getGunLocation());
@@ -357,11 +350,6 @@ void Soldier::shoot(float radian)
 				break;
 			}
 			case BulletType::Fast: {
-				/*if (isFirstShoot) {
-					createBullet(radian, getGunLocation());
-					isFirstShoot = false;
-
-				}*/
 
 				if (!(canShoot % 10) && bulletPool != nullptr) {
 					createBullet(radian, getGunLocation());
@@ -374,15 +362,6 @@ void Soldier::shoot(float radian)
 			}
 
 			case BulletType::Super: {
-				/*if (isFirstShoot) {
-					createBullet(radian, getGunLocation());
-					createBullet(radian - PI / 10, getGunLocation());
-					createBullet(radian + PI / 10, getGunLocation());
-					createBullet(radian - PI / 5, getGunLocation());
-					createBullet(radian + PI / 5, getGunLocation());
-					isFirstShoot = false;
-
-				}*/
 
 				if (!canShoot && bulletPool != nullptr) {
 					createBullet(radian, getGunLocation());
@@ -409,6 +388,7 @@ void Soldier::shoot(float radian)
 void Soldier::createBullet(float radian, Point posGun)
 {
 	auto bullet = (BulletOfHero*)bulletPool->getObjectAtIndex(indexBullet);
+	
 	if (bullet->body != nullptr) {
 		auto world = bullet->body->GetWorld();
 		world->DestroyBody(bullet->body);
@@ -418,6 +398,11 @@ void Soldier::createBullet(float radian, Point posGun)
 	bullet->fixtureDef.filter.categoryBits = BITMASK_BULLET_HERO;
 	bullet->fixtureDef.filter.maskBits = BITMASK_ENEMY;
 	bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
+
+	if (!bullet->isAdded) {
+		this->getParent()->addChild(bullet, ZORDER_BULLET);
+		bullet->isAdded = true;
+	}
 
 	bullet->setAngel(radian);
 	indexBullet++;

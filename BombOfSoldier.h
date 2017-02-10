@@ -11,6 +11,8 @@ public:
 	~BombOfSoldier();
 
 
+	bool isAdded = false;
+
 	static BombOfSoldier* create();
 	void initPhysic(b2World *world, Point pos);
 };

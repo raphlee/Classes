@@ -13,7 +13,7 @@ PlaneSoldier * PlaneSoldier::create(string jsonFile, string atlasFile, float sca
 	plane->update(0.0f);
 	plane->sizeSoldier = plane->getBoundingBox().size;
 	plane->setTimeScale(1.5f);
-	plane->health = 10000;
+	plane->health = 5;
 	plane->move_vel = plane->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	plane->canShoot = 1;
 
@@ -68,13 +68,9 @@ void PlaneSoldier::die(Point posOfCammera)
 
 void PlaneSoldier::idleShoot()
 {
-	if (pre_state != cur_state) {
-
-		clearTracks();
-		addAnimation(0, "flying-shoot", true);
-		setToSetupPose();
-		pre_state = IDLE_SHOOT;
-	}
+	clearTracks();
+	addAnimation(0, "flying-shoot", true);
+	setToSetupPose();
 }
 
 void PlaneSoldier::createBombPool()
@@ -83,9 +79,7 @@ void PlaneSoldier::createBombPool()
 	bombPool->retain();
 	for (int i = 0; i < MAX_BOMB_HERO_POOL; i++) {
 		auto bomb = BombOfSoldier::create();
-		bomb->setPosition(INT_MAX, INT_MAX);
 		bomb->body = nullptr;
-		this->getParent()->addChild(bomb, ZORDER_BULLET);
 		bombPool->addObject(bomb);
 	}
 	indexBomb = 0;
@@ -98,6 +92,12 @@ void PlaneSoldier::createBomb()
 	bomb->setVisible(true);
 	bomb->initPhysic(this->body->GetWorld(), bomb->getPosition());
 
+	if (!bomb->isAdded) {
+		this->getParent()->addChild(bomb, ZORDER_BULLET);
+		bomb->isAdded = true;
+	}
+
+
 	indexBomb++;
 	if (indexBomb == MAX_BOMB_HERO_POOL) {
 		indexBomb = 0;
@@ -107,21 +107,13 @@ void PlaneSoldier::createBomb()
 void PlaneSoldier::shoot(float radian)
 {
 	if (canShoot < INT_MAX) {
-		if (isFirstShoot) {
-			createBullet(radian, getGunLoc("bshoot"));
-			createBullet(radian, getGunLoc("fshoot"));
-			isFirstShoot = false;
+		if (!canShoot) {
+			if (!canShoot && bulletPool != nullptr) {
+				createBullet(radian, getGunLoc("bshoot"));
+				createBullet(radian, getGunLoc("fshoot"));
+			}
+
 			canShoot = 1;
-		}
-
-		if (!canShoot && bulletPool != nullptr) {
-			createBullet(radian, getGunLoc("bshoot"));
-			createBullet(radian, getGunLoc("fshoot"));
-		}
-
-		canShoot++;
-		if (canShoot == 30) {
-			canShoot = 0;
 		}
 	}
 }
@@ -157,5 +149,14 @@ void PlaneSoldier::updateHero(float dt)
 	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeSoldier.height / 3.2f);
 
 	dropLittleBoy();
+
+	// update canshoot
+	if (canShoot) {
+		canShoot++;
+		if (canShoot == 20) {
+			canShoot = 0;
+		}
+
+	}
 }
 

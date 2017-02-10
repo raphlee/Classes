@@ -23,6 +23,7 @@
 class GameScene : public cocos2d::Layer
 {
 public:
+	int controlGenMoveEnemy=0;
     static cocos2d::Scene* createScene();
 
     virtual bool init();

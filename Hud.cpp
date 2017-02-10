@@ -43,6 +43,34 @@ bool Hud::init()
 
 	/*} else
 		addButton();*/
+	life_1 = Sprite::create("send/item-life.png");
+	life_1->setScale(SCREEN_SIZE.height / 12 / life_1->getContentSize().height);
+	life_1->setPosition(Point(origin.x + winSize.width * 0.05f, origin.y + winSize.height * 0.9f));
+	addChild(life_1);
+
+
+	life_2 = Sprite::create("send/item-life.png");
+	life_2->setScale(SCREEN_SIZE.height / 12 / life_2->getContentSize().height);
+	life_2->setPosition(Point(origin.x + winSize.width * 0.077f, origin.y + winSize.height * 0.9f));
+	addChild(life_2);
+
+
+	life_3 = Sprite::create("send/item-life.png");
+	life_3->setScale(SCREEN_SIZE.height / 12 / life_3->getContentSize().height);
+	life_3->setPosition(Point(origin.x + winSize.width * 0.104f, origin.y + winSize.height * 0.9f));
+	addChild(life_3);
+
+
+	life_4 = Sprite::create("send/item-life.png");
+	life_4->setScale(SCREEN_SIZE.height / 12 / life_4->getContentSize().height);
+	life_4->setPosition(Point(origin.x + winSize.width * 0.131f, origin.y + winSize.height * 0.9f));
+	addChild(life_4);
+
+
+	life_5 = Sprite::create("send/item-life.png");
+	life_5->setScale(SCREEN_SIZE.height / 12 / life_5->getContentSize().height);
+	life_5->setPosition(Point(origin.x + winSize.width * 0.158f, origin.y + winSize.height * 0.9f));
+	addChild(life_5);
 
 	return true;
 }

@@ -2,6 +2,7 @@
 #define __BOOM_OF_ENEMY_H__
 
 #include "BulletOfEnemy.h"
+#include "Global.h"
 
 
 class BombOfEnemy : public BulletOfEnemy
@@ -12,7 +13,7 @@ public:
 	~BombOfEnemy();
 
 
-	static BombOfEnemy* create(float scale);
+	static BombOfEnemy* create();
 
 	// SCREEN_SIZE
 	

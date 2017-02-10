@@ -15,6 +15,7 @@ public:
 	static Enemy* create(string jsonFile, string atlasFile, float scale);
 	Size sizeEnemy;
 
+	virtual void getHit();
 	virtual void move();
 	virtual void shoot();
 	virtual void shoot(Point posOfHuman);

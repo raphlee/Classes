@@ -35,7 +35,7 @@ TankEnemy * TankEnemy::create(float scale, TankType type)
 	}
 	e->isDie = false;
 	e->update(0.0f);
-	e->health = 1;
+	e->health = 2;
 	e->sizeEnemy = e->getBoundingBox().size;
 	//e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(-1);
@@ -85,6 +85,13 @@ void TankEnemy::move(Point posOfSoldier)
 	}
 
 	}
+}
+
+void TankEnemy::getHit()
+{
+	clearTracks();
+	addAnimation(0, "hit", false);
+	setToSetupPose();
 }
 
 void TankEnemy::shoot(Point posOfHero)
@@ -240,7 +247,7 @@ bool TankEnemy::checkOutScreen(Point posCamera)
 	log("End\n");*/
 
 	if ((this->getPosition().y < 0)) {
-		log("This fucking bug!");
+		//log("This fucking bug!");
 	}
 
 	if ((fabs((this->getPosition().x + this->getParent()->getPosition().x) - posCamera.x) > screenSize.width*2/3 ) || (this->getPosition().y < 0)) {
