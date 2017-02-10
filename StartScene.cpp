@@ -55,6 +55,12 @@ bool StartScene::init()
 	//CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
 	//CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
 
+	auto labelVer = Label::createWithTTF("Version 1.0-Build XX", "fonts/Marker Felt.ttf", 200);
+	labelVer->setScale(visibleSize.width / 7.5f / labelVer->getContentSize().width);
+	labelVer->setPosition(origin.x + visibleSize.width * 0.08f, origin.y + visibleSize.height * 0.97f);
+	addChild(labelVer);
+				
+
 	auto ground = Sprite::createWithSpriteFrameName("ground.png");
 	ground->setAnchorPoint(Vec2(0.5, 0));
 	ground->setPosition(origin.x + visibleSize.width / 2, origin.y);
