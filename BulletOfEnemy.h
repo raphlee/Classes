@@ -2,6 +2,7 @@
 #define __BULLET_OF_ENEMY_H__
 
 #include "Bullet.h"
+#include "Global.h"
 
 
 class BulletOfEnemy : public Bullet

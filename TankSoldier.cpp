@@ -66,10 +66,10 @@ void TankSoldier::die(Point posOfCammera)
 	}
 }
 
-void TankSoldier::idle()
-{
-
-}
+//void TankSoldier::idle()
+//{
+//
+//}
 
 void TankSoldier::idleShoot()
 {
@@ -115,7 +115,8 @@ void TankSoldier::runningShoot()
 	if (pre_state != cur_state) {
 
 		clearTracks();
-		addAnimation(0, "running-shoot", true);
+		//addAnimation(0, "running-shoot", true);
+		addAnimation(0, "moving", true);
 		setToSetupPose();
 		pre_state = RUNNING_SHOOT;
 	}

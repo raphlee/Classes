@@ -66,12 +66,12 @@ void PlaneSoldier::die(Point posOfCammera)
 	}
 }
 
-void PlaneSoldier::idle()
-{
-	if (pre_state != cur_state) {
-
-	}
-}
+//void PlaneSoldier::idle()
+//{
+//	if (pre_state != cur_state) {
+//
+//	}
+//}
 
 void PlaneSoldier::idleShoot()
 {

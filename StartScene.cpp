@@ -44,16 +44,32 @@ bool StartScene::init()
 	ref->setIntegerForKey(KEY_CHOICE, 1);
 
 	// sound and effect
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadBackgroundMusic("sound/backGroundMenu.mp3");
-
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/riverSound.mp3");
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/frogSound.mp3");		// touch me
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/hippo.wav");			// attack
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/leafSound.mp3");		// on me
-	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/sound-button.mp3");		// 
-
-	//CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
-	//CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/boss_explosion.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/cannon shoot.mp3");		// touch me
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy bullet.mp3");			// attack
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy_bomb.mp3");		// on me
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy_bomb_explosion.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/F bullet.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/FormatFactoryplane_bomb.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/get item.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/helicopter.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/machine gun.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/missle.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/normal bullet.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/plane_bomb.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/plane_drop.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/S Bullet.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/sound_lose.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank move.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank shoot .mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank_explosion.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/theme_music.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/transform.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/transform_2.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/Win.mp3");
+	//
+	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
+	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
 
 	auto labelVer = Label::createWithTTF("Version 1.0-Build XX", "fonts/Marker Felt.ttf", 200);
 	labelVer->setScale(visibleSize.width / 7.5f / labelVer->getContentSize().width);

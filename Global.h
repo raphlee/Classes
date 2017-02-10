@@ -31,6 +31,7 @@ using namespace std;
 #define BITMASK_BULLET_HERO				0x0008
 #define BITMASK_BULLET_ENEMY			0x0010
 #define BITMASK_ITEM					0x0020
+#define BITMASK_BOMB_ENEMY				0x0100
 #define BITMASK_BOMB_HERO				0x0040
 #define BITMASK_BLINK					0x0080
 #define BITMASK_BOMB_ENEMY				0x0100
@@ -45,6 +46,7 @@ using namespace std;
 #define TAG_BOMB							55
 #define TAG_BLINK							56
 #define TAG_BOMB_ENEMY						57
+
 
 #define TAG_ENEMY_SOLDIER					101
 #define TAG_ENEMY_AUTOGUN					102
@@ -93,5 +95,34 @@ using namespace std;
 
 #define Z_BACKGROUND						0
 #define Z_HERO								1
+
+#define	SOUND_BACKGROUND					"sound/theme_music.mp3"
+#define SOUND_BULLET_NORMAL					"sound/normal bullet.mp3"
+#define SOUND_BULLET_CIRCLE					"sound/F bullet.mp3"
+#define SOUND_BULLET_SUPER					"sound/S Bullet.mp3"
+#define SOUND_TANK_SHOOT					"sound/tank shoot .mp3"
+#define SOUND_TANK_EXPLOSION				"sound/tank_explosion.mp3"
+#define SOUND_PLANE_BOMB					"sound/plane_bomb.mp3"
+#define SOUND_PLANE_DROP					"sound/plane_drop.mp3"
+
+#define SOUND_TANK_MOVE						"sound/tank move.mp3"
+#define SOUND_HELICOPTER					"sound/helicopter.mp3"
+#define SOUND_MACHINE_GUN					"sound/machine gun.mp3"
+#define SOUND_ENEMY_BULLET					"sound/enemy bullet.mp3"
+#define SOUND_ENEMY_BOMB					"sound/enemy_bomb.mp3"
+
+#define SOUND_CANON_SHOOT					"sound/cannon shoot.mp3"
+#define SOUND_ENEMY_BOMB_EXPLOSION			"sound/enemy_bomb_explosion.mp3"
+#define SOUND_BIG_FORT_SHOOT				"sound/boss_explosion.mp3"
+#define SOUND_GET_ITEM						"sound/get item.mp3"
+#define SOUND_MISSLE						"sound/missle.mp3"
+
+#define SOUND_LOSE							"sound/sound_lose.mp3"
+#define SOUND_WIN							"sound/Win.mp3"
+
+#define SOUND_TRANSFORM						"sound/transform.mp3"
+#define SOUND_TRANSFORM2					"sound/transform_2.mp3"
+
+
 
 #endif // __GLOBAL_H__

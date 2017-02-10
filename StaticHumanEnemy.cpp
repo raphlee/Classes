@@ -230,7 +230,7 @@ bool StaticHumanEnemy::checkOutScreen(Point posCamera)
 	auto screenSize = Director::getInstance()->getVisibleSize();
 
 	if ((this->getPosition().y < 0)) {
-		log("This fucking bug!");
+		//log("This fucking bug!");
 	}
 
 	if ((fabs((this->getPositionX() + this->getParent()->getPositionX()) - posCamera.x) > screenSize.width / 2)) {

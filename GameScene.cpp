@@ -84,12 +84,19 @@ bool GameScene::init()
 
 	this->schedule([&](float dt) {
 		if (posGenDEnemy != Point(INT_MAX, INT_MAX)) {
-			genDEnemy();
+			if (controlGenMoveEnemy < 3) {
+				genDEnemy();
+			}
+			controlGenMoveEnemy++;
+			if (controlGenMoveEnemy >= 10) {
+				controlGenMoveEnemy = 0;
+			}
 			if ((soldier->getPositionX() + SCREEN_SIZE.width / 2) > posGenDEnemy.x) {
 				posGenDEnemy = Point(INT_MAX, INT_MAX);
+				controlGenMoveEnemy = 0;
 			}
 		}
-	}, 1.0f, "timer");
+	}, 0.5f, "timer");
 
 	/*choiceControl = UserDefault::sharedUserDefault()->getIntegerForKey(KEY_SELECTION);
 	auto listener = EventListenerTouchOneByOne::create();
@@ -273,7 +280,7 @@ void GameScene::updateSoldier(float dt)
 		break;
 	}
 	default:
-		log("End game");
+		//log("End game");
 		break;
 	}
 }
@@ -676,7 +683,7 @@ void GameScene::loadNextMap()
 		string nameOfNextMap = "map" + StringUtils::toString(indexOfCurrentMap + 1) + ".tmx";
 		tmxNextMap = TMXTiledMap::create(nameOfNextMap);
 		tmxNextMap->setVisible(false);
-		layNextMap->addChild(tmxNextMap);
+		layNextMap->addChild(tmxNextMap, -100);
 		layNextMap->setContentSize(tmxNextMap->getContentSize()*scaleOfMap);
 
 		createMap(tmxNextMap, originOfNextmap, layNextMap);
@@ -955,7 +962,7 @@ void GameScene::buildTankEnemy(TMXTiledMap * map, Layer * layer, float scale)
 void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float scale)
 {
 	auto originThisMap = layer->getPosition();
-	auto group = map->getObjectGroup("plane2");
+	auto group = map->getObjectGroup("plane");
 	if (group != nullptr)
 		for (auto e : group->getObjects()) {
 			auto mObject = e.asValueMap();
@@ -968,6 +975,7 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 
 			gun->initCirclePhysic(world, pos + originThisMap);
 			gun->body->SetGravityScale(0);
+			gun->body->GetFixtureList()->SetSensor(true);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
 			//gun->setTag(TAG_ENEMY_TANK);
@@ -976,7 +984,7 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
 		}
 
-	auto group2 = map->getObjectGroup("plane");
+	auto group2 = map->getObjectGroup("plane2");
 	if (group2 != nullptr)
 		for (auto e : group2->getObjects()) {
 			auto mObject = e.asValueMap();
@@ -989,6 +997,7 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 
 			gun->initCirclePhysic(world, pos + originThisMap);
 			gun->body->SetGravityScale(0);
+			gun->body->GetFixtureList()->SetSensor(true);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
 			gun->setPosition(pos);
@@ -1014,6 +1023,7 @@ void GameScene::buildHelicopterBoom(TMXTiledMap * map, Layer * layer, float scal
 
 			gun->initCirclePhysic(world, pos + originThisMap);
 			gun->body->SetGravityScale(0);
+			gun->body->GetFixtureList()->SetSensor(true);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
 			//gun->setTag(TAG_ENEMY_TANK);
@@ -1035,6 +1045,7 @@ void GameScene::buildHelicopterBoom(TMXTiledMap * map, Layer * layer, float scal
 
 			gun->initCirclePhysic(world, pos + originThisMap);
 			gun->body->SetGravityScale(0);
+			gun->body->GetFixtureList()->SetSensor(true);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
 			gun->setPosition(pos);

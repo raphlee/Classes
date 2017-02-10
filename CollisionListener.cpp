@@ -2,6 +2,8 @@
 #include "Enemy.h"
 #include "Bullet.h"
 #include "Item.h"
+#include "BulletOfEnemy.h"
+#include "BombOfEnemy.h"
 
 #include "Soldier.h"
 #include "Item.h"
@@ -22,26 +24,29 @@ void CollisionListener::BeginContact(b2Contact * contact)
 	b2Body *bodyA = contact->GetFixtureA()->GetBody();
 	b2Body *bodyB = contact->GetFixtureB()->GetBody();
 
-	// dùng để tính toán các vị trí contact
+	//// dùng để tính toán các vị trí contact
 	b2WorldManifold	worldManifold;
 	contact->GetWorldManifold(&worldManifold);
 	auto collidePoint = worldManifold.points[0];
+	//worldManifold.
+	//log("sau");
 
 
 	B2Skeleton* sA = (B2Skeleton*)bodyA->GetUserData();
 	B2Skeleton* sB = (B2Skeleton*)bodyB->GetUserData();
 
+
 	if ((sA->getTag() == TAG_SOLDIER && sB->getTag() == TAG_FLOOR) ||
 		(sB->getTag() == TAG_SOLDIER && sA->getTag() == TAG_FLOOR)
 		) {
-
 		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 
 		if (sA->getTag() != TAG_SOLDIER) {
+			auto point = bodyB->GetPosition();
 			auto dentaX = fabs(collidePoint.x - bodyB->GetPosition().x);
 			auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
 			if (bodyB->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
-				
+
 			}
 			else {
 				soldier->onGround = true;
@@ -50,8 +55,8 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		else {
 			auto dentaX = fabs(collidePoint.x - bodyA->GetPosition().x);
 			auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
-			if (bodyA->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
-				
+			if (bodyA->GetPosition().y < collidePoint.y  || dentaX > radius / 2) {
+			
 			}
 			else {
 				soldier->onGround = true;
@@ -69,10 +74,10 @@ void CollisionListener::BeginContact(b2Contact * contact)
 	}
 
 	// neu nguoi va cham dan enemy
-	else if ((sA->getTag() == TAG_SOLDIER && (sB->getTag() == TAG_BULLET_ENEMY)) ||
-		(sB->getTag() == TAG_SOLDIER && (sA->getTag() == TAG_BULLET_ENEMY))) {
+	else if ((sA->getTag() == TAG_SOLDIER && sB->getTag() == TAG_BULLET_ENEMY) ||
+			(sB->getTag() == TAG_SOLDIER && sA->getTag() == TAG_BULLET_ENEMY)) {
 		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
-		auto bullet = sA->getTag() == TAG_BULLET_ENEMY ? (Bullet *)sA : (Bullet *)sB;
+		auto bullet = sA->getTag() == TAG_BULLET_ENEMY? (Bullet *)sA : (Bullet *)sB;
 		if (soldier->isNoDie >= 0) {
 			soldier->cur_state = State::DIE;
 			bullet->explosion();
@@ -97,12 +102,12 @@ void CollisionListener::BeginContact(b2Contact * contact)
 	// neu enemy va cham dan cua hero
 	else if ((sA->getTag() == TAG_BULLET_HERO && (sB->getTag() > 100)) ||
 		(sB->getTag() == TAG_BULLET_HERO && (sA->getTag() > 100))) {
+
 		auto enemy = sA->getTag() > 100 ? (Enemy *)sA : (Enemy *)sB;
 		auto bullet = sA->getTag() == TAG_BULLET_HERO ? (BulletOfHero *)sA : (BulletOfHero *)sB;
 		bullet->explosion();
 		bullet->isDie = true;
 		
-
 		enemy->health--;
 		if(enemy->getTag() != TAG_ENEMY_TANK_STUPID)
 			enemy->getHit();
@@ -110,7 +115,7 @@ void CollisionListener::BeginContact(b2Contact * contact)
 			enemy->isDie = true;
 	}
 
-	// neu enemy va cham dan cua hero
+	// neu enemy va cham bom cua hero
 	else if ((sA->getTag() == TAG_BOMB && (sB->getTag() > 100)) ||
 		(sB->getTag() == TAG_BOMB && (sA->getTag() > 100))) {
 		auto enemy = sA->getTag() > 100 ? (Enemy *)sA : (Enemy *)sB;
@@ -127,8 +132,8 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		auto bomb = sA->getTag() == TAG_BOMB ? (BombOfSoldier *)sA : (BombOfSoldier *)sB;
 		bomb->explosion();
 		bomb->isDie = true;
-		
 	}
+
 
 	else if ((sA->getTag() == TAG_BOMB_ENEMY && (sB->getTag() == TAG_FLOOR)) ||
 		(sB->getTag() == TAG_BOMB_ENEMY && (sA->getTag() == TAG_FLOOR))) {
@@ -171,27 +176,27 @@ void CollisionListener::PreSolve(b2Contact * contact, const b2Manifold * oldMani
 
 	B2Skeleton* sA = (B2Skeleton*)bodyA->GetUserData();
 	B2Skeleton* sB = (B2Skeleton*)bodyB->GetUserData();
-	auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 
-	if (sA->getTag() != TAG_SOLDIER) {
-		auto dentaX = fabs(collidePoint.x - bodyB->GetPosition().x);
-		auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
-		if (bodyB->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
-			contact->SetEnabled(false);
-		}
-		
-	}
-	else {
-		auto dentaX = fabs(collidePoint.x - bodyA->GetPosition().x);
-		auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
-		if (bodyA->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
-			contact->SetEnabled(false);
-			
-		}
-	}
+	if ((sA->getTag() == TAG_SOLDIER && sB->getTag() == TAG_FLOOR) ||
+		(sB->getTag() == TAG_SOLDIER && sA->getTag() == TAG_FLOOR)
+		) {
+		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 
+		if (sA->getTag() != TAG_SOLDIER) {
+			auto dentaX = fabs(collidePoint.x - bodyB->GetPosition().x);
+			auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
+			if (bodyB->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
+				contact->SetEnabled(false);
+			}
+		}
+		else {
+			auto dentaX = fabs(collidePoint.x - bodyA->GetPosition().x);
+			auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
+			if (bodyA->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
+				contact->SetEnabled(false);
+			}
+		}
+
+	}
 }
-
-
-
 

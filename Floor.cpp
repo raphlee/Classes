@@ -37,7 +37,6 @@ void Floor::initPhysic(b2World * world, Point pos, b2BodyType type)
 
 	filter.categoryBits = BITMASK_FLOOR;
 	filter.maskBits = BITMASK_SOLDIER | BITMASK_ENEMY | BITMASK_ITEM | BITMASK_BOMB_HERO | BITMASK_BOMB_ENEMY | BITMASK_BLINK;
-
 	fixture->SetFilterData(filter);
 }
 

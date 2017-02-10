@@ -248,7 +248,7 @@ bool TankEnemy::checkOutScreen(Point posCamera)
 	log("End\n");*/
 
 	if ((this->getPosition().y < 0)) {
-		log("This fucking bug!");
+		//log("This fucking bug!");
 	}
 
 	if ((fabs((this->getPosition().x + this->getParent()->getPosition().x) - posCamera.x) > screenSize.width*2/3 ) || (this->getPosition().y < 0)) {

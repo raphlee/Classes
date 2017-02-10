@@ -10,6 +10,7 @@ Enemy * Enemy::create(string jsonFile, string atlasFile, float scale)
 	return e;
 }
 
+
 // run animation get hit by soldier
 void Enemy::getHit()
 {

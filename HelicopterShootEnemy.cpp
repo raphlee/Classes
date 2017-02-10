@@ -12,7 +12,7 @@ HelicopterShootEnemy * HelicopterShootEnemy::create(float scale, HelicopterType 
 	HelicopterShootEnemy *e = new HelicopterShootEnemy("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", scale);
 	e->setTag(TAG_ENEMY_HELICOPTER_SHOOT);
 	e->type = type;
-	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
+	e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 6.0f;
 	e->setAnimation(0, "flying", true);
 	e->isDie = false;
 	e->update(0.0f);
@@ -38,6 +38,7 @@ void HelicopterShootEnemy::move(Point posOfSoldier)
 				if (vec.x <= 0) {
 					move_vel = -SCREEN_SIZE.width / 5 / PTM_RATIO;
 				}
+
 				else {
 					move_vel = SCREEN_SIZE.width / 5 / PTM_RATIO;
 				}
@@ -49,13 +50,31 @@ void HelicopterShootEnemy::move(Point posOfSoldier)
 			this->body->SetLinearVelocity(b2Vec2(-move_vel*this->getScaleX(), this->body->GetLinearVelocity().y));
 		}
 	}
-
 }
 
 void HelicopterShootEnemy::shoot(Point posOfHero)
 {
 	switch (type) {
 	case HelicopterType::SHOOT_SMART:
+	{
+		posOfHero = posOfHero - this->getParent()->getPosition();
+		auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
+		bullet->isDie = false;
+		auto pos = this->body->GetPosition();
+		bullet->initPhysic(this->body->GetWorld(), pos);
+		bullet->setVisible(true);
+		bullet->body->SetGravityScale(0);
+		auto thisToHero = posOfHero - this->getPosition();
+		thisToHero = thisToHero*(SCREEN_SIZE.width / 3 / thisToHero.length());
+		bullet->body->SetLinearVelocity(b2Vec2(thisToHero.x / PTM_RATIO, thisToHero.y / PTM_RATIO));
+
+		indexBullet++;
+		if (indexBullet == MAX_BULLET_HELICOPTER_POOL) {
+			indexBullet = 0;
+		}
+		//bullet->setAngel(PI);
+		break;
+	}
 	case HelicopterType::SHOOT_VERTICAL:
 	{
 		posOfHero = posOfHero - this->getParent()->getPosition();
