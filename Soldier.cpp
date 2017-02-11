@@ -346,6 +346,7 @@ void Soldier::createPool()
 	for (int i = 0; i < MAX_BULLET_HERO_POOL; i++) {
 		auto bullet = BulletOfHero::create();
 		bullet->body = nullptr;
+		bullet->boom = nullptr;
 		bulletPool->addObject(bullet);
 	}
 
