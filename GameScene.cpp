@@ -50,15 +50,15 @@ bool GameScene::init()
 	world = new b2World(b2Vec2(0, -visibleSize.height * 8.0f / 3.0f / PTM_RATIO));
 
 	// draw debug
-	//debugDraw = new (std::nothrow) GLESDebugDraw(PTM_RATIO);
-	//world->SetDebugDraw(debugDraw);
+	/*debugDraw = new (std::nothrow) GLESDebugDraw(PTM_RATIO);
+	world->SetDebugDraw(debugDraw);
 	uint32 flags = 0;
 	flags += b2Draw::e_shapeBit;
 	flags += b2Draw::e_jointBit;
-	// flags += b2Draw::e_aabbBit;
-	// flags += b2Draw::e_pairBit;
-	// flags += b2Draw::e_centerOfMassBit;
-	//debugDraw->SetFlags(flags);
+	flags += b2Draw::e_aabbBit;
+	flags += b2Draw::e_pairBit;
+	flags += b2Draw::e_centerOfMassBit;
+	debugDraw->SetFlags(flags);*/
 
 	world->SetAllowSleeping(true);
 	world->SetContinuousPhysics(true);
@@ -76,6 +76,7 @@ bool GameScene::init()
 	auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
 
 	indexOfCurrentMap = indexMap;
+	//indexOfCurrentMap = 2;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
@@ -469,7 +470,8 @@ void GameScene::createPool()
 	for (int i = 0; i < 8; i++) {
 		auto enemy = DynamicHumanEnemy::create(SCREEN_SIZE.height / 11.0f / 242.0f);
 		enemy->setPosition(INT_MAX, INT_MAX);
-		enemy->initCirclePhysic(world, Point(INT_MAX, INT_MAX));
+		//enemy->initCirclePhysic(world, Point(INT_MAX, INT_MAX));
+		enemy->body = nullptr;
 		this->addChild(enemy, ZORDER_ENEMY);
 		dEnemyPool->addObject(enemy);
 	}
@@ -499,7 +501,13 @@ void GameScene::genDEnemy()
 	enemy->setPosition(posGenDEnemy);
 	//enemy->body->SetTransform(b2Vec2(posGenDEnemy.x / PTM_RATIO, posGenDEnemy.y / PTM_RATIO), 0);
 	//enemy->body->SetType(b2_dynamicBody);
+	if (enemy->body != nullptr) {
+		world->DestroyBody(enemy->body);
+	}
 	enemy->initCirclePhysic(world, posGenDEnemy);
+	enemy->body->SetFixedRotation(false);
+	auto fixture = enemy->body->GetFixtureList();
+	fixture->SetFriction(0);
 	indexDEnemy++;
 	if (indexDEnemy == dEnemyPool->count()) {
 		indexDEnemy = 0;
@@ -1127,6 +1135,7 @@ void GameScene::controlSneakyJoystick()
 		soldier->angle = PI / 2;
 		if (soldier->body->GetLinearVelocity().x != 0.0f)
 			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
+
 		if (soldier->onGround)
 			soldier->cur_state = IDLE_SHOOT_UP;
 	}
