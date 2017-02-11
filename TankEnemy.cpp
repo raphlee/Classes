@@ -24,7 +24,7 @@ TankEnemy * TankEnemy::create(float scale, TankType type)
 	{
 		e->setTag(TAG_ENEMY_TANK);
 		e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
-		e->setAnimation(0, "runing-shoot", false);
+		e->setAnimation(0, "running-shoot", false);
 		break;
 	}
 
@@ -32,7 +32,7 @@ TankEnemy * TankEnemy::create(float scale, TankType type)
 	{
 		e->setTag(TAG_ENEMY_TANK);
 		e->move_vel = e->SCREEN_SIZE.width / 5 / PTM_RATIO;;
-		e->setAnimation(0, "runing-shoot", false);
+		e->setAnimation(0, "running-shoot", false);
 		break;
 	}
 	}

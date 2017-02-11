@@ -17,7 +17,8 @@ PlaneSoldier * PlaneSoldier::create(string jsonFile, string atlasFile, float sca
 	plane->move_vel = plane->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	plane->canShoot = 1;
 
-	plane->cur_state = IDLE_SHOOT;
+	plane->pre_state = IDLE_SHOOT;
+	plane->cur_state = IDLE;
 	plane->isOnTheAir = true;
 
 	plane->angle = 0;
@@ -53,7 +54,7 @@ void PlaneSoldier::initPhysic(b2World * world, Point pos)
 void PlaneSoldier::die(Point posOfCammera)
 {
 	if (isNoDie >= 0) {
-		this->cur_state = IDLE_SHOOT;
+		this->cur_state = IDLE;
 
 		this->isNoDie = -180;
 		this->changeBodyBitMask(BITMASK_ENEMY);
@@ -62,22 +63,32 @@ void PlaneSoldier::die(Point posOfCammera)
 			this->setVisible(true);
 		});
 		auto sequence = Sequence::create(blink, blink, blink, visible, nullptr);
-		this->runAction(sequence);;
+		this->runAction(sequence);
 	}
 }
 
-//void PlaneSoldier::idle()
-//{
-//	if (pre_state != cur_state) {
-//
-//	}
-//}
+void PlaneSoldier::idle()
+{
+	if (pre_state != cur_state) {
+		clearTracks();
+		addAnimation(0, "idle", true);
+		setToSetupPose();
+
+		pre_state = IDLE;
+	}
+}
 
 void PlaneSoldier::idleShoot()
 {
-	clearTracks();
-	addAnimation(0, "flying-shoot", true);
-	setToSetupPose();
+	if (pre_state != cur_state) {
+		log("AHHIHIHIH");
+		clearTracks();
+		addAnimation(0, "flying-shoot", true);
+		setToSetupPose();
+
+		pre_state = IDLE_SHOOT;
+	}
+	
 }
 
 void PlaneSoldier::createBombPool()
@@ -156,6 +167,18 @@ void PlaneSoldier::updateHero(float dt)
 	this->setPositionY(body->GetPosition().y * PTM_RATIO - sizeSoldier.height / 3.2f);
 
 	dropLittleBoy();
+
+	switch (cur_state)
+	{
+	case IDLE:
+		idle();
+		break;
+	case IDLE_SHOOT:
+		idleShoot();
+		break;
+	default:
+		break;
+	}
 
 	// update canshoot
 	if (canShoot) {

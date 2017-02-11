@@ -50,6 +50,10 @@ void HelicopterSoldier::die(Point posOfCammera)
 	}
 }
 
+void HelicopterSoldier::idle()
+{
+}
+
 void HelicopterSoldier::idleShoot()
 {
 	clearTracks();
@@ -65,7 +69,8 @@ void HelicopterSoldier::shoot(float radian)
 				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.5f, getPositionY() + sizeSoldier.height * 0.4f));
 				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.73f, getPositionY() + sizeSoldier.height * 0.25f));
 				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.51f, getPositionY() + sizeSoldier.height * 0.16f));
-			}
+			
+}
 
 			canShoot = 1;
 		}

@@ -128,6 +128,7 @@ void Soldier::move()
 
 void Soldier::moveFollow(Point joystickVel)
 {
+
 	if (getPositionY() + sizeSoldier.height > SCREEN_SIZE.height && isGetOriginX) {
 		if (joystickVel.x < 0 && joystickVel.y > 0)
 			body->SetLinearVelocity(b2Vec2(0, 0));
@@ -206,7 +207,7 @@ void Soldier::listener()
 {
 	this->setCompleteListener([&](int trackIndex, int loopCount) {
 		if (strcmp(getCurrent()->animation->name, "jumping") == 0 && loopCount == 6) {
-			cur_state = IDLE_SHOOT;
+			cur_state = IDLE;
 		}
 	});
 }

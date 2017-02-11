@@ -71,9 +71,9 @@ bool StartScene::init()
 	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
 	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
 
-	auto labelVer = Label::createWithTTF("Version 1.0-Build XX", "fonts/Marker Felt.ttf", 200);
+	auto labelVer = Label::createWithTTF("2017-02-10-Build 1", "fonts/Marker Felt.ttf", 200);
 	labelVer->setScale(visibleSize.width / 7.5f / labelVer->getContentSize().width);
-	labelVer->setPosition(origin.x + visibleSize.width * 0.08f, origin.y + visibleSize.height * 0.97f);
+	labelVer->setPosition(origin.x + visibleSize.width * 0.90f, origin.y + visibleSize.height * 0.96f);
 	addChild(labelVer);
 				
 

@@ -49,7 +49,7 @@ void TankSoldier::die(Point posOfCammera)
 	if (isNoDie >= 0) {
 		this->facingRight = true;
 		this->setScaleX(1);
-		this->cur_state = IDLE_SHOOT;
+		this->cur_state = IDLE;
 		this->onGround = false;
 		this->body->SetLinearVelocity(b2Vec2(0, 0));
 		this->body->SetTransform(b2Vec2((posOfCammera.x) / PTM_RATIO,

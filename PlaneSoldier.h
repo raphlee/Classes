@@ -18,7 +18,7 @@ public:
 	int indexBomb;
 	int canDrop = 1;
 
-	//void idle();
+	void idle();
 	void idleShoot();
 	void createBombPool();
 	void createBomb();

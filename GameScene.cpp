@@ -18,7 +18,11 @@ Scene* GameScene::createScene()
 
 	// 'layer' is an autorelease object
 	hud = Hud::create();
+	hud->setAnchorPoint(Vec2(0.0f, 0.0f));
+	hud->setPosition(0.0f, 0.0f);
+
 	auto layer = GameScene::create();
+
 
 	// add layer as a child to scene
 	scene->addChild(layer);
@@ -390,7 +394,7 @@ void GameScene::transformPlane(Point pos)
 		soldier->body->SetFixedRotation(true);
 		soldier->createPool();
 		soldier->createBombPool();
-		soldier->idleShoot();
+		//soldier->idle();
 		soldier->blinkTrans();
 	}
 }
@@ -398,7 +402,7 @@ void GameScene::transformPlane(Point pos)
 void GameScene::switchItem(float dt)
 {
 	for (auto i : items) {
-		i->update(dt);
+		
 		if (i->isTaken) {
 			switch (i->type)
 			{
@@ -447,8 +451,10 @@ void GameScene::switchItem(float dt)
 
 			i->isTaken = false;
 			world->DestroyBody(i->body);
-			i->setVisible(false);
+			i->removeFromParentAndCleanup(true);
 		}
+		else
+			i->update(dt);
 	}
 }
 
@@ -1087,6 +1093,8 @@ void GameScene::controlSneakyJoystick()
 	float degree = hud->joystick->getDegrees();
 	auto joystickVel = hud->joystick->getVelocity();
 	if (soldier->isOnTheAir) {
+		if(soldier->cur_state != IDLE)
+			soldier->cur_state = IDLE;
 		soldier->moveFollow(joystickVel);
 		return;
 	}
@@ -1119,7 +1127,6 @@ void GameScene::controlSneakyJoystick()
 		soldier->angle = PI / 2;
 		if (soldier->body->GetLinearVelocity().x != 0.0f)
 			soldier->body->SetLinearVelocity(b2Vec2(0.0f, 0.0f));
-		soldier->facingRight = true;
 		if (soldier->onGround)
 			soldier->cur_state = IDLE_SHOOT_UP;
 	}
@@ -1183,8 +1190,10 @@ void GameScene::controlSneakyButtonJump()
 void GameScene::controlSneakyButtonFire()
 {
 	if (hud->btnFire->getIsActive()) {
-		if (soldier->cur_state == IDLE)
+		if (soldier->cur_state == IDLE) {
 			soldier->cur_state = IDLE_SHOOT;
+		}
+			
 		soldier->shoot(soldier->angle);
 	}
 }
