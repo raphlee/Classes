@@ -1,5 +1,4 @@
 #include "Soldier.h"
-#include "SimpleAudioEngine.h"
 #include "AudioEngine.h"
 #include "Global.h"
 
@@ -368,7 +367,7 @@ void Soldier::shoot(float radian)
 			{
 			case BulletType::Circle:{
 				if (!canShoot && bulletPool != nullptr) {
-					//CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(SOUND_BULLET_CIRCLE);
+					experimental::AudioEngine::play2d(SOUND_BULLET_CIRCLE);
 					createBullet(radian, getGunLocation());
 					
 				}
@@ -376,8 +375,8 @@ void Soldier::shoot(float radian)
 			}
 			case BulletType::Slow: {
 				if (!canShoot && bulletPool != nullptr) {
-					//CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(SOUND_BULLET_NORMAL);
-					//experimental::AudioEngine::play2d("sound/normal bullet.mp3");
+					experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
+
 					createBullet(radian, getGunLocation());
 
 				}
@@ -387,8 +386,8 @@ void Soldier::shoot(float radian)
 
 				if (!(canShoot % 10) && bulletPool != nullptr) {
 					createBullet(radian, getGunLocation());
-					//CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(SOUND_BULLET_NORMAL);
-					//CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(SOUND_BULLET_NORMAL);
+					experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
+					//experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
 
 				}
 
@@ -403,7 +402,7 @@ void Soldier::shoot(float radian)
 					createBullet(radian + PI / 10, getGunLocation());
 					createBullet(radian - PI / 5, getGunLocation());
 					createBullet(radian + PI / 5, getGunLocation());
-					//CocosDenshion::SimpleAudioEngine::getInstance()->playEffect(SOUND_BULLET_SUPER);
+					experimental::AudioEngine::play2d(SOUND_BULLET_SUPER);
 
 				}
 

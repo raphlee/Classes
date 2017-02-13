@@ -1,5 +1,5 @@
 #include "AutoGun.h"
-//#include "Global.h"
+#include "AudioEngine.h"
 
 AutoGun::AutoGun(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {
@@ -32,6 +32,11 @@ void AutoGun::getHit()
 
 void AutoGun::shoot()
 {
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	bool checkSound = ref->getBoolForKey(KEYSOUND);
+	if (checkSound) {
+		experimental::AudioEngine::play2d(SOUND_MACHINE_GUN);
+	}
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;
 	this->clearTracks();

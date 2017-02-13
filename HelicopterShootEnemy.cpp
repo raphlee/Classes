@@ -1,4 +1,5 @@
 #include "HelicopterShootEnemy.h"
+#include "AudioEngine.h"
 
 HelicopterShootEnemy::HelicopterShootEnemy(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {
@@ -30,7 +31,6 @@ HelicopterShootEnemy * HelicopterShootEnemy::create(float scale, HelicopterType 
 
 void HelicopterShootEnemy::move(Point posOfSoldier)
 {
-
 	if (body != nullptr) {
 		if (type == SHOOT_SMART) {
 			if (this->checkCanShoot == 60) {
@@ -54,6 +54,11 @@ void HelicopterShootEnemy::move(Point posOfSoldier)
 
 void HelicopterShootEnemy::shoot(Point posOfHero)
 {
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	bool checkSound = ref->getBoolForKey(KEYSOUND);
+	if (checkSound) {
+		experimental::AudioEngine::play2d(SOUND_HELICOPTER);
+	}
 	switch (type) {
 	case HelicopterType::SHOOT_SMART:
 	{

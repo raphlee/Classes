@@ -1,7 +1,6 @@
 #include "ControlSettingScene.h"
-#include "SimpleAudioEngine.h"
 #include "StartScene.h"
-
+#include "AudioEngine.h"
 
 Scene* ControlSettingScene::createScene()
 {

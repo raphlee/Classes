@@ -1,5 +1,5 @@
 #include "GameScene.h"
-#include "SimpleAudioEngine.h"
+#include "AudioEngine.h"
 #include "DynamicHumanEnemy.h"
 #include "MiniFort.h"
 #include "Fort.h"
@@ -390,11 +390,15 @@ void GameScene::removeOlderSoldier()
 void GameScene::transformTank(Point pos)
 {
 	hud->defense->setVisible(true);
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	bool checkSound = ref->getBoolForKey(KEYSOUND);
+	if (checkSound) {
+		experimental::AudioEngine::play2d(SOUND_TRANSFORM);
+	}
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
 		soldier = TankSoldier::create("tank/tank.json", "tank/tank.atlas", SCREEN_SIZE.height / 8.8f / 113.0f);
-		auto ref = UserDefault::getInstance()->sharedUserDefault();
 		soldier->health = ref->getIntegerForKey(KEY_HEALTH);
 		soldier->setPosition(pos);
 		addChild(soldier, ZORDER_SOLDIER);
@@ -410,7 +414,11 @@ void GameScene::transformHelicopter(Point pos)
 {
 	hud->defense->setVisible(false);
 	removeOlderSoldier();
-
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	bool checkSound = ref->getBoolForKey(KEYSOUND);
+	if (checkSound) {
+		experimental::AudioEngine::play2d(SOUND_TRANSFORM2);
+	}
 	if (soldier == nullptr) {
 		soldier = HelicopterSoldier::create("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", SCREEN_SIZE.height / 12.7f / 80.0f);
 		soldier->setPosition(pos);
@@ -428,7 +436,11 @@ void GameScene::transformPlane(Point pos)
 {
 	hud->defense->setVisible(false);
 	removeOlderSoldier();
-
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	bool checkSound = ref->getBoolForKey(KEYSOUND);
+	if (checkSound) {
+		experimental::AudioEngine::play2d(SOUND_TRANSFORM2);
+	}
 	if (soldier == nullptr) {
 		soldier = PlaneSoldier::create("plane/plane.json", "plane/plane.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
 		soldier->setPosition(pos);
@@ -447,6 +459,11 @@ void GameScene::switchItem(float dt)
 	for (auto i : items) {
 
 		if (i->isTaken) {
+			auto ref = UserDefault::getInstance()->sharedUserDefault();
+			bool checkSound = ref->getBoolForKey(KEYSOUND);
+			if (checkSound) {
+				experimental::AudioEngine::play2d(SOUND_GET_ITEM);
+			}
 			switch (i->type)
 			{
 			case TYPE::TANK: {
@@ -749,7 +766,7 @@ void GameScene::loadNextMap()
 
 		indexOfCurrentMap++;
 		originOfLastMap = originOfNextmap;
-		log("next map: %d", indexOfCurrentMap);
+		//log("next map: %d", indexOfCurrentMap);
 	}
 }
 
@@ -763,14 +780,14 @@ void GameScene::freePassedMap()
 			vector <b2Body*> toDestroy;
 
 			for (auto body = world->GetBodyList(); body; body = body->GetNext()) {
-				log("POS BODY: %f", body->GetPosition().x*PTM_RATIO);
-				log("POS ORIGIN: %f", layNextMap->getPositionX());
+				//log("POS BODY: %f", body->GetPosition().x*PTM_RATIO);
+				//log("POS ORIGIN: %f", layNextMap->getPositionX());
 				if (body->GetPosition().x*PTM_RATIO < layNextMap->getPositionX()) {
 					toDestroy.push_back(body);
 				}
 			}
 			for (auto a : toDestroy) {
-				log("Destroy layout");
+				//log("Destroy layout");
 				world->DestroyBody(a);
 			}
 			layCurrentMap->removeAllChildrenWithCleanup(true);

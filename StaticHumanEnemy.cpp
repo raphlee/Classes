@@ -1,5 +1,6 @@
 #include "StaticHumanEnemy.h"
 #include "BulletOfEnemy.h"
+#include "AudioEngine.h"
 
 
 StaticHumanEnemy::StaticHumanEnemy(string jsonFile, string atlasFile, float scale) : Enemy(jsonFile, atlasFile, scale)
@@ -29,6 +30,12 @@ StaticHumanEnemy * StaticHumanEnemy::create(float scale)
 
 void StaticHumanEnemy::shoot(Point posOfHero)
 {
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	bool checkSound = ref->getBoolForKey(KEYSOUND);
+	if (checkSound) {
+		experimental::AudioEngine::play2d(SOUND_ENEMY_BULLET);
+	}
+
 	posOfHero = posOfHero - this->getParent()->getPosition();
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;
@@ -36,7 +43,7 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 	
 	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition());
 	bullet->setVisible(true);
-
+	experimental::AudioEngine::play2d(SOUND_ENEMY_BULLET);
 	indexBullet++;
 	if (indexBullet == MAX_BULLET_SOLDIER_ENEMY_POOL) {
 		indexBullet = 0;
@@ -44,7 +51,7 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 	if (!checkCanShoot) {
 		auto thisToHero = posOfHero - this->getPosition();
 		auto tmp = thisToHero.y / thisToHero.x;// vecto toi hero
-		log("Fabs this to hero: %f", fabs(tmp));
+		//log("Fabs this to hero: %f", fabs(tmp));
 
 		if (fabs(tmp) < 0.5f) {
 			if (thisToHero.x < 0) {
@@ -180,10 +187,10 @@ void StaticHumanEnemy::updateBullet(Point cameraPoint)
 			auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(i);
 			if (bullet->checkOutOfScreen(cameraPoint)) {
 				bullet->isDie = true;
-				log("Fk bug1");
+				//log("Fk bug1");
 			}
 			if (bullet->isDie) {
-				log("Fk bug2");
+				//log("Fk bug2");
 				/*	bullet->body->SetTransform(b2Vec2(INT_MAX, INT_MAX), 0);
 				bullet->isDie = false;*/
 				auto world = bullet->body->GetWorld();
