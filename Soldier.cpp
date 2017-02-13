@@ -128,46 +128,46 @@ void Soldier::move()
 
 void Soldier::moveFollow(Point joystickVel)
 {
-
+	auto vel = move_vel * 1.1f;
 	if (getPositionY() + sizeSoldier.height > SCREEN_SIZE.height && isGetOriginX) {
 		if (joystickVel.x < 0 && joystickVel.y > 0)
 			body->SetLinearVelocity(b2Vec2(0, 0));
 		else if (joystickVel.x < 0) {
-			body->SetLinearVelocity(b2Vec2(0, joystickVel.y * move_vel));
+			body->SetLinearVelocity(b2Vec2(0, joystickVel.y * vel));
 		}
 		else if (joystickVel.y > 0) {
-			body->SetLinearVelocity(b2Vec2(joystickVel.x * move_vel, 0));
+			body->SetLinearVelocity(b2Vec2(joystickVel.x * vel, 0));
 		}
 	}
 	else if (getPositionY() < SCREEN_SIZE.height / 5 && isGetOriginX) {
 		if (joystickVel.x < 0 && joystickVel.y < 0)
 			body->SetLinearVelocity(b2Vec2(0, 0));
 		else if (joystickVel.x < 0) {
-			body->SetLinearVelocity(b2Vec2(0, joystickVel.y * move_vel));
+			body->SetLinearVelocity(b2Vec2(0, joystickVel.y * vel));
 		}
 		else if (joystickVel.y < 0) {
-			body->SetLinearVelocity(b2Vec2(joystickVel.x * move_vel, 0));
+			body->SetLinearVelocity(b2Vec2(joystickVel.x * vel, 0));
 		}
 	}
 	else if (getPositionY() + sizeSoldier.height > SCREEN_SIZE.height) {
 		if (joystickVel.y > 0)
-			body->SetLinearVelocity(b2Vec2(joystickVel.x * move_vel, 0));
+			body->SetLinearVelocity(b2Vec2(joystickVel.x * vel, 0));
 		else
-			body->SetLinearVelocity(b2Vec2(joystickVel.x * move_vel, joystickVel.y * move_vel));
+			body->SetLinearVelocity(b2Vec2(joystickVel.x * vel, joystickVel.y * vel));
 	}
 	else if (isGetOriginX) {
 		if (joystickVel.x < 0)
-			body->SetLinearVelocity(b2Vec2(0, joystickVel.y * move_vel));
+			body->SetLinearVelocity(b2Vec2(0, joystickVel.y * vel));
 		else
-			body->SetLinearVelocity(b2Vec2(joystickVel.x * move_vel, joystickVel.y * move_vel));
+			body->SetLinearVelocity(b2Vec2(joystickVel.x * vel, joystickVel.y * vel));
 	}
 	else if (getPositionY() < SCREEN_SIZE.height / 5) {
 		if (joystickVel.y < 0)
-			body->SetLinearVelocity(b2Vec2(joystickVel.x * move_vel, 0));
+			body->SetLinearVelocity(b2Vec2(joystickVel.x * vel, 0));
 		else
-			body->SetLinearVelocity(b2Vec2(joystickVel.x * move_vel, joystickVel.y * move_vel));
+			body->SetLinearVelocity(b2Vec2(joystickVel.x * vel, joystickVel.y * vel));
 	} else
-		body->SetLinearVelocity(b2Vec2(joystickVel.x * move_vel, joystickVel.y * move_vel));
+		body->SetLinearVelocity(b2Vec2(joystickVel.x * vel, joystickVel.y * vel));
 }
 
 void Soldier::blinkTrans()
@@ -367,7 +367,8 @@ void Soldier::shoot(float radian)
 			{
 			case BulletType::Circle:{
 				if (!canShoot && bulletPool != nullptr) {
-					experimental::AudioEngine::play2d(SOUND_BULLET_CIRCLE);
+					
+					AudioManager::playSound(SOUND_BULLET_CIRCLE);
 					createBullet(radian, getGunLocation());
 					
 				}
@@ -375,8 +376,7 @@ void Soldier::shoot(float radian)
 			}
 			case BulletType::Slow: {
 				if (!canShoot && bulletPool != nullptr) {
-					experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
-
+					AudioManager::playSound(SOUND_BULLET_NORMAL);
 					createBullet(radian, getGunLocation());
 
 				}
@@ -386,8 +386,7 @@ void Soldier::shoot(float radian)
 
 				if (!(canShoot % 10) && bulletPool != nullptr) {
 					createBullet(radian, getGunLocation());
-					experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
-					//experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
+					AudioManager::playSound(SOUND_BULLET_NORMAL);
 
 				}
 
@@ -402,7 +401,7 @@ void Soldier::shoot(float radian)
 					createBullet(radian + PI / 10, getGunLocation());
 					createBullet(radian - PI / 5, getGunLocation());
 					createBullet(radian + PI / 5, getGunLocation());
-					experimental::AudioEngine::play2d(SOUND_BULLET_SUPER);
+					AudioManager::playSound(SOUND_BULLET_SUPER);
 
 				}
 

@@ -21,6 +21,7 @@ HelicopterSoldier * HelicopterSoldier::create(string jsonFile, string atlasFile,
 	h->cur_state = IDLE_SHOOT;
 	h->isOnTheAir = true;
 
+	h->bulletType = BulletType::Slow;
 	h->angle = 0;
 	h->isNoDie = 0;		// time to respawn
 	return h;
@@ -40,7 +41,7 @@ void HelicopterSoldier::die(Point posOfCammera)
 	if (isNoDie >= 0) {
 		isNoDie = -180;
 		cur_state = IDLE_SHOOT;
-		changeBodyBitMask(BITMASK_ENEMY);
+		changeBodyBitMask(BITMASK_BLINK);
 		auto blink = CCBlink::create(1, 3);
 		auto visible = CallFunc::create([=] {
 			this->setVisible(true);

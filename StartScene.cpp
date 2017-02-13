@@ -31,6 +31,8 @@ bool StartScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	experimental::AudioEngine::stopAll();
+
 	// add Start sprite
 	auto backGround = Sprite::create("background.png");
 	backGround->setScaleX(visibleSize.width / backGround->getContentSize().width);
@@ -216,7 +218,8 @@ bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 	}
 
 	if (soundOn->getBoundingBox().containsPoint(touch->getLocation())) {
-		if (soundOn->isVisible()) {
+		//if (soundOn->isVisible()) {
+		if (ref->getBoolForKey(KEYSOUND, true)) {
 			soundOn->setVisible(false);
 			soundOff->setVisible(true);
 			ref->setBoolForKey(KEYSOUND, false);

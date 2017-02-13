@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
 #include "StartScene.h"
+#include "AudioEngine.h"
 
 USING_NS_CC;
 
@@ -89,6 +90,7 @@ void AppDelegate::applicationDidEnterBackground() {
 
     // if you use SimpleAudioEngine, it must be pause
     // SimpleAudioEngine::getInstance()->pauseBackgroundMusic();
+	experimental::AudioEngine::pauseAll();
 }
 
 // this function will be called when the app is active again
@@ -97,4 +99,6 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
+	if(UserDefault::sharedUserDefault()->getBoolForKey(KEYSOUND))
+		experimental::AudioEngine::resumeAll();
 }

@@ -25,11 +25,12 @@ Fort* Fort::create(float scale)
 
 void Fort::shoot(float angle)
 {
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_BIG_FORT_SHOOT);
-	}
+	}*/
+
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;
 	//bullet->body->SetTransform(this->body->GetPosition(), 0);
@@ -62,7 +63,8 @@ void Fort::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 		this->setPositionY(body->GetPosition().y * PTM_RATIO - this->getParent()->getPositionY() - sizeEnemy.height / 2);;
 		
 		if (checkCanShoot % 10 == 0  && checkCanShoot > 119) {
-			
+			if(checkCanShoot == 120)
+				AudioManager::playSound(SOUND_CANON_SHOOT);
 			shoot(2*PI*(float)checkCanShoot/60);
 			if (checkCanShoot == 180) {
 				checkCanShoot = 0;

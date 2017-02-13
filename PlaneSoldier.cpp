@@ -21,6 +21,7 @@ PlaneSoldier * PlaneSoldier::create(string jsonFile, string atlasFile, float sca
 	plane->cur_state = IDLE;
 	plane->isOnTheAir = true;
 
+	plane->bulletType = BulletType::Slow;
 	plane->angle = 0;
 	plane->isNoDie = 0;		// time to respawn
 	return plane;
@@ -57,7 +58,7 @@ void PlaneSoldier::die(Point posOfCammera)
 		this->cur_state = IDLE;
 
 		this->isNoDie = -180;
-		this->changeBodyBitMask(BITMASK_ENEMY);
+		this->changeBodyBitMask(BITMASK_BLINK);
 		auto blink = CCBlink::create(1, 3);
 		auto visible = CallFunc::create([=] {
 			this->setVisible(true);

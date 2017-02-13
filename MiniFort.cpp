@@ -32,11 +32,12 @@ void MiniFort::getHit()
 
 void MiniFort::shoot(Point posOfHero)
 {
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_CANON_SHOOT);
-	}
+	}*/
+	AudioManager::playSound(SOUND_CANON_SHOOT);
 	posOfHero = posOfHero - this->getParent()->getPosition();
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;

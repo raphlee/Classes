@@ -3,6 +3,7 @@
 
 #include "Global.h"
 #include <spine/spine-cocos2dx.h>
+#include "AudioManager.h"
 
 using namespace spine;
 

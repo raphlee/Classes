@@ -106,11 +106,12 @@ void TankEnemy::shoot(Point posOfHero)
 	}
 	case TankType::NORMAL:
 	{
-		auto ref = UserDefault::getInstance()->sharedUserDefault();
+		/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 		bool checkSound = ref->getBoolForKey(KEYSOUND);
 		if (checkSound) {
 			experimental::AudioEngine::play2d(SOUND_TANK_SHOOT);
-		}
+		}*/
+		AudioManager::playSound(SOUND_TANK_SHOOT);
 		auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 		bullet->isDie = false;
 		this->clearTracks();

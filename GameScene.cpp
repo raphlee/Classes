@@ -136,19 +136,25 @@ void GameScene::update(float dt)
 	switchItem(dt);
 
 	for (int i = 0; i < existedBullet.size(); i++) {
+		log("AAA %i", i);
 		auto bullet = (BulletOfHero*)existedBullet[i];
 		bullet->update(dt);
-		if (abs(bullet->getPositionX() - follow->getPositionX()) > SCREEN_SIZE.width / 2) {
+		if (fabs(bullet->getPositionX() - follow->getPositionX()) > SCREEN_SIZE.width / 2 ||
+			bullet->getPositionY() < 0 || bullet->getPositionY() > SCREEN_SIZE.height
+			) {
+			bullet->setVisible(false);
 			listIndexExist.insert(i);
 		}
 	}
 
 	if (listIndexExist.size() != 0 && listIndexExist.size() == existedBullet.size()) {
 		for (auto i : existedBullet) {
+			log("BBB");
 			if (i->body != nullptr)
 				world->DestroyBody(i->body);
-			i->setVisible(false);
-			removeChildByTag(i->getTag());
+			i->body = nullptr;
+			
+			i->removeFromParentAndCleanup(true);
 		}
 
 		existedBullet.clear();
@@ -158,7 +164,7 @@ void GameScene::update(float dt)
 	for (int i = 0; i < soldier->bulletPool->count(); i++) {
 		auto bullet = ((BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i));
 		bullet->update(dt);
-		if (abs(bullet->getPositionX() - follow->getPositionX()) > SCREEN_SIZE.width / 2) {
+		if (fabs(bullet->getPositionX() - follow->getPositionX()) > SCREEN_SIZE.width / 2) {
 			bullet->isDie = true;
 		}
 
@@ -375,7 +381,9 @@ void GameScene::removeOlderSoldier()
 	ref->setIntegerForKey(KEY_HEALTH, soldier->health); ref->flush();
 	for (int i = 0; i < soldier->bulletPool->count(); i++) {
 		auto bullet = (BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i);
-		if (abs(bullet->getPositionX() - follow->getPositionX()) < SCREEN_SIZE.width / 2) {
+		if (fabs(bullet->getPositionX() - follow->getPositionX()) < SCREEN_SIZE.width / 2 ||
+			bullet->getPositionY() < 0 || bullet->getPositionY() > SCREEN_SIZE.height
+			) {
 			existedBullet.push_back((BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i));
 		}
 	}
@@ -391,10 +399,7 @@ void GameScene::transformTank(Point pos)
 {
 	hud->defense->setVisible(true);
 	auto ref = UserDefault::getInstance()->sharedUserDefault();
-	bool checkSound = ref->getBoolForKey(KEYSOUND);
-	if (checkSound) {
-		experimental::AudioEngine::play2d(SOUND_TRANSFORM);
-	}
+	AudioManager::playSound(SOUND_TRANSFORM);
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
@@ -414,11 +419,13 @@ void GameScene::transformHelicopter(Point pos)
 {
 	hud->defense->setVisible(false);
 	removeOlderSoldier();
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_TRANSFORM2);
-	}
+	}*/
+	AudioManager::playSound(SOUND_TRANSFORM2);
+
 	if (soldier == nullptr) {
 		soldier = HelicopterSoldier::create("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", SCREEN_SIZE.height / 12.7f / 80.0f);
 		soldier->setPosition(pos);
@@ -436,11 +443,12 @@ void GameScene::transformPlane(Point pos)
 {
 	hud->defense->setVisible(false);
 	removeOlderSoldier();
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_TRANSFORM2);
-	}
+	}*/
+	AudioManager::playSound(SOUND_TRANSFORM2);
 	if (soldier == nullptr) {
 		soldier = PlaneSoldier::create("plane/plane.json", "plane/plane.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
 		soldier->setPosition(pos);
@@ -458,12 +466,13 @@ void GameScene::switchItem(float dt)
 {
 	for (auto i : items) {
 
-		if (i->isTaken) {
-			auto ref = UserDefault::getInstance()->sharedUserDefault();
+		if (i != nullptr && i->isTaken) {
+			/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 			bool checkSound = ref->getBoolForKey(KEYSOUND);
 			if (checkSound) {
 				experimental::AudioEngine::play2d(SOUND_GET_ITEM);
-			}
+			}*/
+			AudioManager::playSound(SOUND_GET_ITEM);
 			switch (i->type)
 			{
 			case TYPE::TANK: {
@@ -514,6 +523,7 @@ void GameScene::switchItem(float dt)
 			i->body = nullptr;
 			i->setVisible(false);
 			i->removeFromParentAndCleanup(true);
+			//i = nullptr;
 		}
 		else
 			i->update(dt);

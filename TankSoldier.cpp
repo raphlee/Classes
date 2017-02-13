@@ -19,7 +19,7 @@ TankSoldier * TankSoldier::create(string jsonFile, string atlasFile, float scale
 	tank->facingRight = true;
 	tank->canShoot = 1;
 
-	tank->defense = 2;
+	tank->defense = 5;
 	tank->cur_state = IDLE_SHOOT;
 	tank->bulletType = BulletType::Slow;
 
@@ -99,7 +99,7 @@ void TankSoldier::lyingShoot()
 	if (pre_state != cur_state) {
 
 		clearTracks();
-		addAnimation(0, "standing-shoot", true);
+		addAnimation(0, "idle", true);
 		setToSetupPose();
 		pre_state = LYING_SHOOT;
 	}
