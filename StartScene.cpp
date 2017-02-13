@@ -99,7 +99,7 @@ bool StartScene::init()
 	experimental::AudioEngine::preload("sound/Win.mp3");
 
 
-	auto labelVer = Label::createWithTTF("2017-02-10-Build 1", "fonts/Marker Felt.ttf", 200);
+	auto labelVer = Label::createWithTTF("2017-02-13-Build 1", "fonts/Marker Felt.ttf", 200);
 	labelVer->setScale(visibleSize.height / 24.0f / labelVer->getContentSize().height);
 	labelVer->setPosition(origin.x + visibleSize.width * 0.90f, origin.y + visibleSize.height * 0.96f);
 	addChild(labelVer);
