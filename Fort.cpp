@@ -25,11 +25,13 @@ Fort* Fort::create(float scale)
 
 void Fort::shoot(float angle)
 {
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_BIG_FORT_SHOOT);
-	}
+	}*/
+
+	AudioManager::playSound(SOUND_BIG_FORT_SHOOT);
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;
 	//bullet->body->SetTransform(this->body->GetPosition(), 0);

@@ -352,11 +352,12 @@ void GameScene::removeOlderSoldier()
 
 void GameScene::transformTank(Point pos)
 {
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_TRANSFORM);
-	}
+	}*/
+	AudioManager::playSound(SOUND_TRANSFORM);
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
@@ -374,11 +375,13 @@ void GameScene::transformTank(Point pos)
 void GameScene::transformHelicopter(Point pos)
 {
 	removeOlderSoldier();
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_TRANSFORM2);
-	}
+	}*/
+	AudioManager::playSound(SOUND_TRANSFORM2);
+
 	if (soldier == nullptr) {
 		soldier = HelicopterSoldier::create("enemy-helicopter/helicopter.json", "enemy-helicopter/helicopter.atlas", SCREEN_SIZE.height / 12.7f / 80.0f);
 		soldier->setPosition(pos);
@@ -395,11 +398,12 @@ void GameScene::transformHelicopter(Point pos)
 void GameScene::transformPlane(Point pos)
 {
 	removeOlderSoldier();
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_TRANSFORM2);
-	}
+	}*/
+	AudioManager::playSound(SOUND_TRANSFORM2);
 	if (soldier == nullptr) {
 		soldier = PlaneSoldier::create("plane/plane.json", "plane/plane.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
 		soldier->setPosition(pos);
@@ -418,11 +422,12 @@ void GameScene::switchItem(float dt)
 	for (auto i : items) {
 		
 		if (i->isTaken) {
-			auto ref = UserDefault::getInstance()->sharedUserDefault();
+			/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 			bool checkSound = ref->getBoolForKey(KEYSOUND);
 			if (checkSound) {
 				experimental::AudioEngine::play2d(SOUND_GET_ITEM);
-			}
+			}*/
+			AudioManager::playSound(SOUND_GET_ITEM);
 			switch (i->type)
 			{
 			case TYPE::TANK: {

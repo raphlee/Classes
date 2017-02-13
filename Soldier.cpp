@@ -367,7 +367,8 @@ void Soldier::shoot(float radian)
 			{
 			case BulletType::Circle:{
 				if (!canShoot && bulletPool != nullptr) {
-					experimental::AudioEngine::play2d(SOUND_BULLET_CIRCLE);
+					
+					AudioManager::playSound(SOUND_BULLET_CIRCLE);
 					createBullet(radian, getGunLocation());
 					
 				}
@@ -375,7 +376,7 @@ void Soldier::shoot(float radian)
 			}
 			case BulletType::Slow: {
 				if (!canShoot && bulletPool != nullptr) {
-					experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
+					AudioManager::playSound(SOUND_BULLET_NORMAL);
 					createBullet(radian, getGunLocation());
 
 				}
@@ -385,7 +386,7 @@ void Soldier::shoot(float radian)
 
 				if (!(canShoot % 10) && bulletPool != nullptr) {
 					createBullet(radian, getGunLocation());
-					experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
+					AudioManager::playSound(SOUND_BULLET_NORMAL);
 					//experimental::AudioEngine::play2d(SOUND_BULLET_NORMAL);
 
 				}
@@ -401,7 +402,7 @@ void Soldier::shoot(float radian)
 					createBullet(radian + PI / 10, getGunLocation());
 					createBullet(radian - PI / 5, getGunLocation());
 					createBullet(radian + PI / 5, getGunLocation());
-					experimental::AudioEngine::play2d(SOUND_BULLET_SUPER);
+					AudioManager::playSound(SOUND_BULLET_SUPER);
 
 				}
 

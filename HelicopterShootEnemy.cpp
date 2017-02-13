@@ -54,11 +54,12 @@ void HelicopterShootEnemy::move(Point posOfSoldier)
 
 void HelicopterShootEnemy::shoot(Point posOfHero)
 {
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_HELICOPTER);
-	}
+	}*/
+	AudioManager::playSound(SOUND_HELICOPTER);
 	switch (type) {
 	case HelicopterType::SHOOT_SMART:
 	{

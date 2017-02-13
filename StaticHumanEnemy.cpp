@@ -30,11 +30,12 @@ StaticHumanEnemy * StaticHumanEnemy::create(float scale)
 
 void StaticHumanEnemy::shoot(Point posOfHero)
 {
-	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 	bool checkSound = ref->getBoolForKey(KEYSOUND);
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_ENEMY_BULLET);
-	}
+	}*/
+	AudioManager::playSound(SOUND_ENEMY_BULLET);
 
 	posOfHero = posOfHero - this->getParent()->getPosition();
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
@@ -43,7 +44,7 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 	
 	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition());
 	bullet->setVisible(true);
-	experimental::AudioEngine::play2d(SOUND_ENEMY_BULLET);
+	//AudioManager::playSound(SOUND_ENEMY_BULLET);
 	indexBullet++;
 	if (indexBullet == MAX_BULLET_SOLDIER_ENEMY_POOL) {
 		indexBullet = 0;

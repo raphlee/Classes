@@ -54,11 +54,13 @@ void B2Sprite::explosion()
 	//va tao hai vu no nhung chi giai phong duoc 1
 
 	if (!boom) {
-		auto ref = UserDefault::getInstance()->sharedUserDefault();
+		/*auto ref = UserDefault::getInstance()->sharedUserDefault();
 		bool checkSound = ref->getBoolForKey(KEYSOUND);
 		if (checkSound) {
 			experimental::AudioEngine::play2d(SOUND_ENEMY_BOMB_EXPLOSION);
-		}
+		}*/
+		AudioManager::playSound(SOUND_ENEMY_BOMB_EXPLOSION);  
+
 		boom = Sprite::createWithSpriteFrameName("explosion-1.png");
 		//boom->setPosition(0, this->getBoundingBox().size.height / 2);
 		//log("Boom-----------------------");
