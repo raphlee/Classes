@@ -1,4 +1,5 @@
 #include "B2Sprite.h"
+#include "AudioEngine.h"
 
 B2Sprite::B2Sprite()
 {
@@ -51,11 +52,16 @@ void B2Sprite::explosion()
 	// phai kiem tra boom = null moi tao vu no 
 	//vi co the dan va cham cung luc voi hai body 
 	//va tao hai vu no nhung chi giai phong duoc 1
-	if (boom) {}
-	else {
+
+	if (!boom) {
+		auto ref = UserDefault::getInstance()->sharedUserDefault();
+		bool checkSound = ref->getBoolForKey(KEYSOUND);
+		if (checkSound) {
+			experimental::AudioEngine::play2d(SOUND_ENEMY_BOMB_EXPLOSION);
+		}
 		boom = Sprite::createWithSpriteFrameName("explosion-1.png");
 		//boom->setPosition(0, this->getBoundingBox().size.height / 2);
-		log("Boom-----------------------");
+		//log("Boom-----------------------");
 		boom->setPosition(this->getPosition());
 		this->getParent()->addChild(boom, 100);
 		Vector<SpriteFrame*> animFrames;
@@ -77,14 +83,14 @@ void B2Sprite::explosion()
 				boom->removeFromParentAndCleanup(true);
 				boom->release();
 				boom = nullptr;
-				log("destroy Boom-----------------------");
+				//log("destroy Boom-----------------------");
 			}
 		});
 		this->runAction(Sequence::create(DelayTime::create(0.5f), callFunc2, nullptr));
 		//boom->runAction(Sequence::create(animate, callFunc2, nullptr));
 	}
 
-	
+
 }
 
 

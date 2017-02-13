@@ -81,7 +81,7 @@ void PlaneSoldier::idle()
 void PlaneSoldier::idleShoot()
 {
 	if (pre_state != cur_state) {
-		log("AHHIHIHIH");
+		//log("AHHIHIHIH");
 		clearTracks();
 		addAnimation(0, "flying-shoot", true);
 		setToSetupPose();

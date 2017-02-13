@@ -133,7 +133,7 @@ void GB2ShapeCache::addShapesWithFile(const std::string &plist, float scale) {
     
     //int format = metadataDict.at("format").asInt();
     ptmRatio = metadataDict.at("ptm_ratio").asFloat();
-    log("ptmRatio = %f",ptmRatio);
+    //log("ptmRatio = %f",ptmRatio);
 	//CCAssert(format == 1, "Format not supported");
     
     

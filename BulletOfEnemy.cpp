@@ -4,6 +4,7 @@
 
 BulletOfEnemy::BulletOfEnemy()
 {
+	this->boom = nullptr;
 }
 
 BulletOfEnemy::~BulletOfEnemy()

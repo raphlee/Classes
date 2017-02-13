@@ -26,6 +26,9 @@ public:
 	Sprite *gp3;
 	Sprite *gp4;
 
+	Sprite *soundOn;
+	Sprite *soundOff;
+	int backgroudSoundID;
 	UserDefault *ref;
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);

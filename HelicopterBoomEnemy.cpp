@@ -1,4 +1,5 @@
 #include "HelicopterBoomEnemy.h"
+#include "AudioEngine.h"
 
 HelicopterBoomEnemy::HelicopterBoomEnemy(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {
@@ -52,7 +53,11 @@ void HelicopterBoomEnemy::move(Point posOfSoldier)
 
 void HelicopterBoomEnemy::shoot(Point posOfHero)
 {
-
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	bool checkSound = ref->getBoolForKey(KEYSOUND);
+	if (checkSound) {
+		experimental::AudioEngine::play2d(SOUND_HELICOPTER);
+	}
 	posOfHero = posOfHero - this->getParent()->getPosition();
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;

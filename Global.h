@@ -22,6 +22,7 @@ using namespace std;
 #define KEY_CHOICE						"GAMEPLAY"
 #define KEYONGAME						"KEYONGAME"
 #define KEYADS							"KEYADS"
+#define KEYSOUND						"KEYSOUND"
 
 
 // bitmask
@@ -122,7 +123,6 @@ using namespace std;
 
 #define SOUND_TRANSFORM						"sound/transform.mp3"
 #define SOUND_TRANSFORM2					"sound/transform_2.mp3"
-
 
 
 #endif // __GLOBAL_H__

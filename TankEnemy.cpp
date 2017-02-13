@@ -1,4 +1,5 @@
 #include "TankEnemy.h"
+#include "AudioEngine.h"
 
 TankEnemy::TankEnemy(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {
@@ -105,6 +106,11 @@ void TankEnemy::shoot(Point posOfHero)
 	}
 	case TankType::NORMAL:
 	{
+		auto ref = UserDefault::getInstance()->sharedUserDefault();
+		bool checkSound = ref->getBoolForKey(KEYSOUND);
+		if (checkSound) {
+			experimental::AudioEngine::play2d(SOUND_TANK_SHOOT);
+		}
 		auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 		bullet->isDie = false;
 		this->clearTracks();
@@ -151,7 +157,7 @@ void TankEnemy::shoot(Point posOfHero)
 		if (!checkCanShoot) {
 			auto thisToHero = posOfHero - this->getPosition();
 			auto tmp = thisToHero.y / thisToHero.x;// vecto toi hero
-			log("Fabs this to hero: %f", fabs(tmp));
+			//log("Fabs this to hero: %f", fabs(tmp));
 
 			if (fabs(tmp) < 0.5f) {
 				if (thisToHero.x < 0) {
