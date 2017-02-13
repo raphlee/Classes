@@ -1,5 +1,6 @@
 #include "ControlSettingScene.h"
 #include "SimpleAudioEngine.h"
+#include "StartScene.h"
 
 
 Scene* ControlSettingScene::createScene()
@@ -27,6 +28,8 @@ bool ControlSettingScene::init()
 	{
 		return false;
 	}
+
+	setKeyboardEnabled(true);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -100,14 +103,14 @@ bool ControlSettingScene::onTouchBegan(Touch * touch, Event * unused_event)
 
 	if (submit->getBoundingBox().containsPoint(location)) {
 
-		reference->setFloatForKey(KEYJOYSTICK_X, joystick->getPositionX());
-		reference->setFloatForKey(KEYJOYSTICK_Y, joystick->getPositionY());
+		reference->setFloatForKey(KEYJOYSTICK_X, joystick->getPositionX()); reference->flush();
+		reference->setFloatForKey(KEYJOYSTICK_Y, joystick->getPositionY()); reference->flush();
 
-		reference->setFloatForKey(KEYBTNJUMP_X, btnJump->getPositionX());
-		reference->setFloatForKey(KEYBTNJUMP_Y, btnJump->getPositionY());
+		reference->setFloatForKey(KEYBTNJUMP_X, btnJump->getPositionX()); reference->flush();
+		reference->setFloatForKey(KEYBTNJUMP_Y, btnJump->getPositionY()); reference->flush();
 
-		reference->setFloatForKey(KEYBTNFIRE_X, btnFire->getPositionX());
-		reference->setFloatForKey(KEYBTNFIRE_Y, btnFire->getPositionY());
+		reference->setFloatForKey(KEYBTNFIRE_X, btnFire->getPositionX()); reference->flush();
+		reference->setFloatForKey(KEYBTNFIRE_Y, btnFire->getPositionY()); reference->flush();
 
 
 		Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
@@ -129,6 +132,13 @@ void ControlSettingScene::onTouchMoved(Touch * touch, Event * unused_event)
 	}
 	else if (btnFire->getBoundingBox().containsPoint(location)) {
 		btnFire->setPosition(location);
+	}
+}
+
+void ControlSettingScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
+{
+	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
+		Director::getInstance()->replaceScene(StartScene::createScene());
 	}
 }
 

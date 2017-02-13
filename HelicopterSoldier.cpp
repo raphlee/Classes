@@ -22,7 +22,7 @@ HelicopterSoldier * HelicopterSoldier::create(string jsonFile, string atlasFile,
 	h->isOnTheAir = true;
 
 	h->angle = 0;
-	h->isNoDie = -180;		// time to respawn
+	h->isNoDie = 0;		// time to respawn
 	return h;
 }
 

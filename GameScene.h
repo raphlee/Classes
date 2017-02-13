@@ -121,6 +121,8 @@ public:
 	//void onTouchMoved(Touch *touch, Event *unused_event);
 	//void onTouchEnded(Touch *touch, Event *unused_event);
 
+	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
+
     // implement the "static create()" method manually
     CREATE_FUNC(GameScene);
 };

@@ -4,6 +4,7 @@
 
 BombOfEnemy::BombOfEnemy()
 {
+	boom = nullptr;
 }
 
 BombOfEnemy::~BombOfEnemy()

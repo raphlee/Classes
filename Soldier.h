@@ -51,6 +51,8 @@ public:
 	bool isGetOriginX = false;
 	bool isOnTheAir = false;
 	
+	int defense = 0;
+
 	Size sizeSoldier;
 	float jump_vel;
 

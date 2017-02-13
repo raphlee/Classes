@@ -20,6 +20,7 @@ using namespace std;
 #define KEYBTNJUMP_X					"KEYJUMPX"
 #define KEYBTNJUMP_Y					"KEYJUMPY"
 #define KEY_CHOICE						"GAMEPLAY"
+#define KEY_HEALTH						"KEYHEALTH"
 #define KEYONGAME						"KEYONGAME"
 #define KEYADS							"KEYADS"
 

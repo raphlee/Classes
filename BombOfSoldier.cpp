@@ -2,6 +2,7 @@
 
 BombOfSoldier::BombOfSoldier()
 {
+	boom = nullptr;
 }
 
 BombOfSoldier::~BombOfSoldier()

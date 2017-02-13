@@ -22,7 +22,7 @@ PlaneSoldier * PlaneSoldier::create(string jsonFile, string atlasFile, float sca
 	plane->isOnTheAir = true;
 
 	plane->angle = 0;
-	plane->isNoDie = -180;		// time to respawn
+	plane->isNoDie = 0;		// time to respawn
 	return plane;
 }
 
@@ -81,7 +81,7 @@ void PlaneSoldier::idle()
 void PlaneSoldier::idleShoot()
 {
 	if (pre_state != cur_state) {
-		log("AHHIHIHIH");
+		//log("AHHIHIHIH");
 		clearTracks();
 		addAnimation(0, "flying-shoot", true);
 		setToSetupPose();

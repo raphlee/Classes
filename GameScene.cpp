@@ -5,6 +5,7 @@
 #include "Fort.h"
 #include "HelicopterShootEnemy.h"
 #include "HelicopterBoomEnemy.h"
+#include "StartScene.h"
 
 
 USING_NS_CC;
@@ -46,6 +47,8 @@ bool GameScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	setKeyboardEnabled(true);
+
 	// world
 	world = new b2World(b2Vec2(0, -visibleSize.height * 8.0f / 3.0f / PTM_RATIO));
 
@@ -76,7 +79,6 @@ bool GameScene::init()
 	auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
 
 	indexOfCurrentMap = indexMap;
-	//indexOfCurrentMap = 2;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
@@ -143,7 +145,7 @@ void GameScene::update(float dt)
 
 	if (listIndexExist.size() != 0 && listIndexExist.size() == existedBullet.size()) {
 		for (auto i : existedBullet) {
-			if(i->body != nullptr)
+			if (i->body != nullptr)
 				world->DestroyBody(i->body);
 			i->setVisible(false);
 			removeChildByTag(i->getTag());
@@ -166,7 +168,7 @@ void GameScene::update(float dt)
 				world->DestroyBody(bullet->body);
 				bullet->body = nullptr;
 			}
-			
+
 			bullet->setVisible(false);
 			bullet->isDie = false;
 		}
@@ -234,8 +236,37 @@ void GameScene::updateSoldier(float dt)
 	}
 
 	if (soldier->cur_state == State::DIE) {
-		soldier->health--;
-		soldier->die(follow->getPosition());
+		if (hud->defense->isVisible()) {
+			soldier->defense--;
+			soldier->die(follow->getPosition());
+			if (soldier->defense < 0) {
+
+				auto lastPos = soldier->getPosition();
+				auto sizeSoldier = soldier->sizeSoldier;
+
+				//auto callFunc = CallFunc::create([&]() {
+				removeOlderSoldier();
+				createSoldier(Point(lastPos.x, lastPos.y + sizeSoldier.height));
+
+				//soldier->die(Point(lastPos.x, lastPos.y + sizeSoldier.height));
+				auto ref = UserDefault::getInstance()->sharedUserDefault();
+				soldier->health = ref->getIntegerForKey(KEY_HEALTH);
+				soldier->body->SetLinearVelocity(b2Vec2(0.0f, soldier->jump_vel));
+
+				hud->btnJump->getParent()->setVisible(true);
+				hud->defense->setVisible(false);
+				//});
+
+				//soldier->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));
+
+			}
+		}
+		else {
+			soldier->health--;
+			soldier->die(follow->getPosition());
+		}
+
+
 	}
 
 	switch (soldier->health)
@@ -248,7 +279,7 @@ void GameScene::updateSoldier(float dt)
 			hud->life_2->setVisible(true);
 			hud->life_1->setVisible(true);
 		}
-			
+
 		break;
 	}
 	case 4: {
@@ -287,6 +318,10 @@ void GameScene::updateSoldier(float dt)
 	default:
 		//log("End game");
 		break;
+	}
+
+	if (hud->defense->isVisible()) {
+		hud->defense->setString("Defense: " + StringUtils::toString(soldier->defense));
 	}
 }
 
@@ -336,6 +371,8 @@ void GameScene::updateStandMan(float dt)
 
 void GameScene::removeOlderSoldier()
 {
+	auto ref = UserDefault::getInstance()->sharedUserDefault();
+	ref->setIntegerForKey(KEY_HEALTH, soldier->health); ref->flush();
 	for (int i = 0; i < soldier->bulletPool->count(); i++) {
 		auto bullet = (BulletOfHero*)soldier->bulletPool->getObjectAtIndex(i);
 		if (abs(bullet->getPositionX() - follow->getPositionX()) < SCREEN_SIZE.width / 2) {
@@ -352,10 +389,13 @@ void GameScene::removeOlderSoldier()
 
 void GameScene::transformTank(Point pos)
 {
+	hud->defense->setVisible(true);
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
 		soldier = TankSoldier::create("tank/tank.json", "tank/tank.atlas", SCREEN_SIZE.height / 8.8f / 113.0f);
+		auto ref = UserDefault::getInstance()->sharedUserDefault();
+		soldier->health = ref->getIntegerForKey(KEY_HEALTH);
 		soldier->setPosition(pos);
 		addChild(soldier, ZORDER_SOLDIER);
 		soldier->initPhysic(world, soldier->getPosition());
@@ -368,6 +408,7 @@ void GameScene::transformTank(Point pos)
 
 void GameScene::transformHelicopter(Point pos)
 {
+	hud->defense->setVisible(false);
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
@@ -385,6 +426,7 @@ void GameScene::transformHelicopter(Point pos)
 
 void GameScene::transformPlane(Point pos)
 {
+	hud->defense->setVisible(false);
 	removeOlderSoldier();
 
 	if (soldier == nullptr) {
@@ -403,7 +445,7 @@ void GameScene::transformPlane(Point pos)
 void GameScene::switchItem(float dt)
 {
 	for (auto i : items) {
-		
+
 		if (i->isTaken) {
 			switch (i->type)
 			{
@@ -415,7 +457,7 @@ void GameScene::switchItem(float dt)
 				break;
 			}
 			case TYPE::HEALTH: {
-				if(soldier->health < 5)
+				if (soldier->health < 5)
 					soldier->health++;
 				break;
 			}
@@ -424,7 +466,7 @@ void GameScene::switchItem(float dt)
 					hud->btnJump->getParent()->setVisible(false);
 				}
 				transformHelicopter(i->getPosition() + i->getParent()->getPosition());
-				
+
 				break;
 			}
 			case TYPE::FAST_BULLET: {
@@ -452,6 +494,8 @@ void GameScene::switchItem(float dt)
 
 			i->isTaken = false;
 			world->DestroyBody(i->body);
+			i->body = nullptr;
+			i->setVisible(false);
 			i->removeFromParentAndCleanup(true);
 		}
 		else
@@ -508,6 +552,7 @@ void GameScene::genDEnemy()
 	enemy->body->SetFixedRotation(false);
 	auto fixture = enemy->body->GetFixtureList();
 	fixture->SetFriction(0);
+
 	indexDEnemy++;
 	if (indexDEnemy == dEnemyPool->count()) {
 		indexDEnemy = 0;
@@ -1101,7 +1146,7 @@ void GameScene::controlSneakyJoystick()
 	float degree = hud->joystick->getDegrees();
 	auto joystickVel = hud->joystick->getVelocity();
 	if (soldier->isOnTheAir) {
-		if(soldier->cur_state != IDLE)
+		if (soldier->cur_state != IDLE)
 			soldier->cur_state = IDLE;
 		soldier->moveFollow(joystickVel);
 		return;
@@ -1171,7 +1216,7 @@ void GameScene::controlSneakyJoystick()
 			soldier->angle = PI;
 		}
 
-		if(soldier->onGround)
+		if (soldier->onGround)
 			soldier->cur_state = LYING_SHOOT;
 	}
 	else if (degree >= 290.0f && degree < 330.0f) {
@@ -1202,7 +1247,7 @@ void GameScene::controlSneakyButtonFire()
 		if (soldier->cur_state == IDLE) {
 			soldier->cur_state = IDLE_SHOOT;
 		}
-			
+
 		soldier->shoot(soldier->angle);
 	}
 }
@@ -1381,6 +1426,13 @@ void GameScene::onDraw()
 	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, _modelViewMV);
 	world->DrawDebugData();
 	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, oldMV);
+}
+
+void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
+{
+	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
+		Director::getInstance()->replaceScene(StartScene::createScene());
+	}
 }
 
 //bool GameScene::onTouchBegan(Touch * touch, Event * unused_event)

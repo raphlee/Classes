@@ -51,8 +51,7 @@ void B2Sprite::explosion()
 	// phai kiem tra boom = null moi tao vu no 
 	//vi co the dan va cham cung luc voi hai body 
 	//va tao hai vu no nhung chi giai phong duoc 1
-	if (boom) {}
-	else {
+	if (!boom) {
 		boom = Sprite::createWithSpriteFrameName("explosion-1.png");
 		//boom->setPosition(0, this->getBoundingBox().size.height / 2);
 		log("Boom-----------------------");
@@ -75,16 +74,16 @@ void B2Sprite::explosion()
 		auto callFunc2 = CallFunc::create([&]() {
 			if (boom != nullptr) {
 				boom->removeFromParentAndCleanup(true);
-				boom->release();
+				//boom->release();
 				boom = nullptr;
 				log("destroy Boom-----------------------");
 			}
 		});
-		this->runAction(Sequence::create(DelayTime::create(0.5f), callFunc2, nullptr));
-		//boom->runAction(Sequence::create(animate, callFunc2, nullptr));
+		//this->runAction(Sequence::create(DelayTime::create(0.5f), callFunc2, nullptr));
+		boom->runAction(Sequence::create(animate, callFunc2, nullptr));
 	}
 
-	
+
 }
 
 

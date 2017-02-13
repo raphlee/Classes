@@ -1,5 +1,6 @@
 #include "StartScene.h"
 #include "SimpleAudioEngine.h"
+#include "AudioEngine.h"
 
 
 Scene* StartScene::createScene()
@@ -41,38 +42,40 @@ bool StartScene::init()
 	Director::getInstance()->getTextureCache()->addImage("box/lid.png");
 
 	ref = UserDefault::getInstance()->sharedUserDefault();
-	ref->setIntegerForKey(KEY_CHOICE, 1);
+	ref->setIntegerForKey(KEY_CHOICE, 1); ref->flush();
 
 	// sound and effect
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/boss_explosion.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/cannon shoot.mp3");		// touch me
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy bullet.mp3");			// attack
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy_bomb.mp3");		// on me
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy_bomb_explosion.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/F bullet.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/FormatFactoryplane_bomb.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/get item.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/helicopter.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/machine gun.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/missle.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/normal bullet.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/plane_bomb.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/plane_drop.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/S Bullet.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/sound_lose.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank move.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank shoot .mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank_explosion.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/theme_music.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/transform.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/transform_2.mp3");
-	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/Win.mp3");
-	//
-	CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
-	CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/boss_explosion.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/cannon shoot.mp3");		// touch me
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy bullet.mp3");			// attack
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy_bomb.mp3");		// on me
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/enemy_bomb_explosion.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/F bullet.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/FormatFactoryplane_bomb.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/get item.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/helicopter.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/machine gun.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/missle.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/normal bullet.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/plane_bomb.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/plane_drop.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/S Bullet.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/sound_lose.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank move.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank shoot .mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/tank_explosion.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/theme_music.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/transform.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/transform_2.mp3");
+	//CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("sound/Win.mp3");
+	////
+	//CocosDenshion::SimpleAudioEngine::getInstance()->setBackgroundMusicVolume(0.75f);
+	//CocosDenshion::SimpleAudioEngine::getInstance()->setEffectsVolume(0.75f);
 
-	auto labelVer = Label::createWithTTF("2017-02-10-Build 1", "fonts/Marker Felt.ttf", 200);
-	labelVer->setScale(visibleSize.width / 7.5f / labelVer->getContentSize().width);
+	experimental::AudioEngine::preload("sound/normal bullet.mp3");
+
+	auto labelVer = Label::createWithTTF("2017-02-13-Build 1", "fonts/Marker Felt.ttf", 200);
+	labelVer->setScale(visibleSize.height / 24.0f / labelVer->getContentSize().height);
 	labelVer->setPosition(origin.x + visibleSize.width * 0.90f, origin.y + visibleSize.height * 0.96f);
 	addChild(labelVer);
 				
@@ -143,25 +146,25 @@ bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 	}
 
 	if (gp1->getBoundingBox().containsPoint(touch->getLocation())) {
-		ref->setIntegerForKey(KEY_CHOICE, 1);
+		ref->setIntegerForKey(KEY_CHOICE, 1); ref->flush();
 		auto scene = GameScene::createScene();
 		Director::getInstance()->replaceScene(scene);
 	}
 
 	if (gp2->getBoundingBox().containsPoint(touch->getLocation())) {
-		ref->setIntegerForKey(KEY_CHOICE, 9);
+		ref->setIntegerForKey(KEY_CHOICE, 9); ref->flush();
 		auto scene = GameScene::createScene();
 		Director::getInstance()->replaceScene(scene);
 	}
 
 	if (gp3->getBoundingBox().containsPoint(touch->getLocation())) {
-		ref->setIntegerForKey(KEY_CHOICE, 12);
+		ref->setIntegerForKey(KEY_CHOICE, 12); ref->flush();
 		auto scene = GameScene::createScene();
 		Director::getInstance()->replaceScene(scene);
 	}
 
 	if (gp4->getBoundingBox().containsPoint(touch->getLocation())) {
-		ref->setIntegerForKey(KEY_CHOICE, 15);
+		ref->setIntegerForKey(KEY_CHOICE, 15); ref->flush();
 		auto scene = GameScene::createScene();
 		Director::getInstance()->replaceScene(scene);
 	}

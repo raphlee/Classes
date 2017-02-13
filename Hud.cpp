@@ -72,6 +72,13 @@ bool Hud::init()
 	life_5->setPosition(Point(origin.x + winSize.width * 0.158f, origin.y + winSize.height * 0.9f));
 	addChild(life_5);
 
+	defense = Label::createWithTTF("Defense: 10", "fonts/Marker Felt.ttf", 200);
+	defense->setScale(SCREEN_SIZE.height / 24.0f / defense->getContentSize().height);
+	defense->setPosition(origin.x + SCREEN_SIZE.width * 0.90f, origin.y + SCREEN_SIZE.height * 0.9f);
+	defense->setVisible(false);
+	addChild(defense);
+
+
 	return true;
 }
 
@@ -82,6 +89,7 @@ void Hud::addJoystick(float px, float py)
 
 	SneakyJoystickSkinnedBase *joystickBase = new SneakyJoystickSkinnedBase();
 	joystickBase->init();
+	joystickBase->setAnchorPoint(Vec2::ZERO);
 	joystickBase->setPosition(px, py);
 
 	auto joystick_thumb = Sprite::create("send/btn-move.png");
@@ -108,6 +116,7 @@ void Hud::addJoystickButtonJump(float px, float py)
 	joystickButtonBase->init();
 	auto b = Sprite::create("send/btn-jump.png");
 
+	joystickButtonBase->setAnchorPoint(Vec2::ZERO);
 	joystickButtonBase->setPosition(px, py);
 	joystickButtonBase->setDefaultSprite(b);
 	joystickButtonBase->setActivatedSprite(Sprite::create("send/btn-jump.png"));
@@ -133,6 +142,7 @@ void Hud::addJoystickButtonFire(float px, float py)
 	joystickButtonBase->init();
 	auto b = Sprite::create("send/btn-shoot.png");
 
+	joystickButtonBase->setAnchorPoint(Vec2::ZERO);
 	joystickButtonBase->setPosition(px, py);
 	joystickButtonBase->setDefaultSprite(b);
 

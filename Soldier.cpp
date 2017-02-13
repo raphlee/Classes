@@ -1,5 +1,6 @@
 #include "Soldier.h"
 #include "SimpleAudioEngine.h"
+#include "AudioEngine.h"
 #include "Global.h"
 
 
@@ -24,7 +25,7 @@ Soldier * Soldier::create(string jsonFile, string atlasFile, float scale)
 	soldier->canShoot = 1;
 	soldier->angle = 0;
 	soldier->bulletType = BulletType::Slow;
-	soldier->isNoDie = -180;
+	soldier->isNoDie = 0;
 	return soldier;
 }
 
@@ -376,6 +377,7 @@ void Soldier::shoot(float radian)
 			case BulletType::Slow: {
 				if (!canShoot && bulletPool != nullptr) {
 					//CocosDenshion::SimpleAudioEngine::sharedEngine()->playEffect(SOUND_BULLET_NORMAL);
+					//experimental::AudioEngine::play2d("sound/normal bullet.mp3");
 					createBullet(radian, getGunLocation());
 
 				}

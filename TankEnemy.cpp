@@ -223,7 +223,8 @@ void TankEnemy::die()
 	this->clearTracks();
 	this->setAnimation(0, "destroy", false);
 	auto callFunc = CallFunc::create([&]() {
-		this->setVisible(false);//removeFromParentAndCleanup(true);
+		this->setVisible(false);
+		//removeFromParentAndCleanup(true);
 	});
 
 	this->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));

@@ -25,6 +25,8 @@ public:
 	Sprite *life_4;
 	Sprite *life_5;
 
+	Label* defense;
+
 	//Button *btnLeft;
 	//Button *btnRight;
 
