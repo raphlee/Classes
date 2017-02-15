@@ -101,7 +101,7 @@ bool StartScene::init()
 	experimental::AudioEngine::preload("sound/Win.mp3");
 
 
-	auto labelVer = Label::createWithTTF("2017-02-13-Build 1", "fonts/Marker Felt.ttf", 200);
+	auto labelVer = Label::createWithTTF("2017-02-15-Build 1", "fonts/Marker Felt.ttf", 200);
 	labelVer->setScale(visibleSize.height / 24.0f / labelVer->getContentSize().height);
 	labelVer->setPosition(origin.x + visibleSize.width * 0.90f, origin.y + visibleSize.height * 0.96f);
 	addChild(labelVer);
@@ -129,8 +129,8 @@ bool StartScene::init()
 	play->setPosition(origin.x + posX, origin.y + visibleSize.height * 0.65f);
 	addChild(play);
 
-	setting = Sprite::create("send/setting.png");
-	setting->setScale(visibleSize.height / 5.0f / setting->getContentSize().height);
+	setting = Sprite::create("send/btn-setting.png");
+	setting->setScale(visibleSize.height / 9.0f / setting->getContentSize().height);
 	setting->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.85f);
 	addChild(setting);
 
@@ -162,7 +162,7 @@ bool StartScene::init()
 
 	this->addChild(soundOn);
 	this->addChild(soundOff);
-	float scaleOfSound = (visibleSize.height / 15) / soundOn->getContentSize().height;
+	float scaleOfSound = (visibleSize.height / 13) / soundOn->getContentSize().height;
 	soundOn->setScale(scaleOfSound);
 	soundOff->setScale(scaleOfSound);
 

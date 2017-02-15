@@ -39,9 +39,10 @@ bool ControlSettingScene::init()
 	bg->setPosition(origin + visibleSize / 2);
 	addChild(bg);
 
-	auto label = Label::createWithTTF("Control Setting", "fonts/Marker Felt.ttf", 200);
+	auto label = Label::createWithTTF("Control Setting", "fonts/Roboto_Light.ttf", 200);
 	label->setScale(visibleSize.height / 14.0f / label->getBoundingBox().size.height);
 	label->setColor(Color3B::WHITE);
+	label->enableBold();
 	label->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.83f);
 	addChild(label);
 
@@ -60,10 +61,10 @@ bool ControlSettingScene::init()
 	joystick->setScale(visibleSize.height / 2.4f / joystick->getContentSize().height);
 
 	btnJump = Sprite::create("send/btn-jump.png");
-	btnJump->setScale(visibleSize.height / 5.0f / btnJump->getContentSize().height);
+	btnJump->setScale(visibleSize.height / 6.0f / btnJump->getContentSize().height);
 
 	btnFire = Sprite::create("send/btn-shoot.png");
-	btnFire->setScale(visibleSize.height / 5.0f / btnFire->getContentSize().height);
+	btnFire->setScale(visibleSize.height / 6.0f / btnFire->getContentSize().height);
 
 	if (jtXRatio == NULL) {
 		joystick->setPosition(visibleSize.width * 0.17f, visibleSize.height * 0.2f);

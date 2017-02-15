@@ -54,15 +54,15 @@ bool GameScene::init()
 	world = new b2World(b2Vec2(0, -visibleSize.height * 8.0f / 3.0f / PTM_RATIO));
 
 	// draw debug
-	debugDraw = new (std::nothrow) GLESDebugDraw(PTM_RATIO);
-	world->SetDebugDraw(debugDraw);
-	uint32 flags = 0;
-	flags += b2Draw::e_shapeBit;
-	flags += b2Draw::e_jointBit;
+	//debugDraw = new (std::nothrow) GLESDebugDraw(PTM_RATIO);
+	//world->SetDebugDraw(debugDraw);
+	//uint32 flags = 0;
+	//flags += b2Draw::e_shapeBit;
+	//flags += b2Draw::e_jointBit;
 	//flags += b2Draw::e_aabbBit;
 	//flags += b2Draw::e_pairBit;
 	//flags += b2Draw::e_centerOfMassBit;
-	debugDraw->SetFlags(flags);
+	//debugDraw->SetFlags(flags);
 
 	world->SetAllowSleeping(true);
 	world->SetContinuousPhysics(true);
@@ -154,7 +154,7 @@ void GameScene::update(float dt)
 			if (i->body != nullptr)
 				world->DestroyBody(i->body);
 			i->body = nullptr;
-			
+
 			i->removeFromParentAndCleanup(true);
 		}
 
@@ -248,6 +248,8 @@ void GameScene::updateSoldier(float dt)
 			soldier->die(follow->getPosition());
 			if (soldier->defense < 0) {
 
+				hud->shield->setOpacity(50);
+
 				auto lastPos = soldier->getPosition();
 				auto sizeSoldier = soldier->sizeSoldier;
 
@@ -328,7 +330,7 @@ void GameScene::updateSoldier(float dt)
 	}
 
 	if (hud->defense->isVisible()) {
-		hud->defense->setString("Defense: " + StringUtils::toString(soldier->defense));
+		hud->defense->setString(StringUtils::toString(soldier->defense));
 	}
 }
 
@@ -399,6 +401,7 @@ void GameScene::removeOlderSoldier()
 void GameScene::transformTank(Point pos)
 {
 	hud->defense->setVisible(true);
+	hud->shield->setOpacity(255);
 	auto ref = UserDefault::getInstance()->sharedUserDefault();
 	AudioManager::playSound(SOUND_TRANSFORM);
 	removeOlderSoldier();
@@ -465,69 +468,200 @@ void GameScene::transformPlane(Point pos)
 
 void GameScene::switchItem(float dt)
 {
-	for (auto i : items) {
+	//for (auto i : items) {
 
-		if (i != nullptr && i->isTaken) {
-			/*auto ref = UserDefault::getInstance()->sharedUserDefault();
-			bool checkSound = ref->getBoolForKey(KEYSOUND);
-			if (checkSound) {
-				experimental::AudioEngine::play2d(SOUND_GET_ITEM);
-			}*/
-			AudioManager::playSound(SOUND_GET_ITEM);
-			switch (i->type)
-			{
-			case TYPE::TANK: {
-				if (hud->btnJump->getParent()->isVisible()) {
-					hud->btnJump->getParent()->setVisible(false);
-				}
-				transformTank(i->getPosition() + i->getParent()->getPosition());
-				break;
-			}
-			case TYPE::HEALTH: {
-				if (soldier->health < 5)
-					soldier->health++;
-				break;
-			}
-			case TYPE::HELICOPTER: {
-				if (hud->btnJump->getParent()->isVisible()) {
-					hud->btnJump->getParent()->setVisible(false);
-				}
-				transformHelicopter(i->getPosition() + i->getParent()->getPosition());
+	//	if (i != nullptr && i->isTaken) {
+	//		/*auto ref = UserDefault::getInstance()->sharedUserDefault();
+	//		bool checkSound = ref->getBoolForKey(KEYSOUND);
+	//		if (checkSound) {
+	//			experimental::AudioEngine::play2d(SOUND_GET_ITEM);
+	//		}*/
+	//		AudioManager::playSound(SOUND_GET_ITEM);
+	//		switch (i->type)
+	//		{
+	//		case TYPE::TANK: {
+	//			if (hud->btnJump->getParent()->isVisible()) {
+	//				hud->btnJump->getParent()->setVisible(false);
+	//			}
+	//			transformTank(i->getPosition() + i->getParent()->getPosition());
+	//			break;
+	//		}
+	//		case TYPE::HEALTH: {
+	//			if (soldier->health < 5)
+	//				soldier->health++;
+	//			break;
+	//		}
+	//		case TYPE::HELICOPTER: {
+	//			if (hud->btnJump->getParent()->isVisible()) {
+	//				hud->btnJump->getParent()->setVisible(false);
+	//			}
+	//			transformHelicopter(i->getPosition() + i->getParent()->getPosition());
 
-				break;
-			}
-			case TYPE::FAST_BULLET: {
-				soldier->bulletType = BulletType::Fast;
-				break;
-			}
-			case TYPE::MULT_BULLET: {
-				soldier->bulletType = BulletType::Super;
-				break;
-			}
-			case TYPE::ORBIT_BULLET: {
-				soldier->bulletType = BulletType::Circle;
-				break;
-			}
-			case TYPE::PLANE: {
-				if (hud->btnJump->getParent()->isVisible()) {
-					hud->btnJump->getParent()->setVisible(false);
-				}
-				transformPlane(i->getPosition() + i->getParent()->getPosition());
-				break;
-			}
-			default:
-				break;
-			}
+	//			break;
+	//		}
+	//		case TYPE::FAST_BULLET: {
+	//			soldier->bulletType = BulletType::Fast;
+	//			break;
+	//		}
+	//		case TYPE::MULT_BULLET: {
+	//			soldier->bulletType = BulletType::Super;
+	//			break;
+	//		}
+	//		case TYPE::ORBIT_BULLET: {
+	//			soldier->bulletType = BulletType::Circle;
+	//			break;
+	//		}
+	//		case TYPE::PLANE: {
+	//			if (hud->btnJump->getParent()->isVisible()) {
+	//				hud->btnJump->getParent()->setVisible(false);
+	//			}
+	//			transformPlane(i->getPosition() + i->getParent()->getPosition());
+	//			break;
+	//		}
+	//		default:
+	//			break;
+	//		}
+	//		i->isTaken = false;
+	//		world->DestroyBody(i->body);
+	//		i->body = nullptr;
+	//		i->setVisible(false);
+	//		i->removeFromParentAndCleanup(true);
+	//		//i = nullptr;
+	//	}
+	//	else
+	//		i->update(dt);
+	//}
 
-			i->isTaken = false;
-			world->DestroyBody(i->body);
-			i->body = nullptr;
-			i->setVisible(false);
-			i->removeFromParentAndCleanup(true);
-			i = nullptr;
+	if (layCurrentMap != nullptr) {
+		auto listObj = layCurrentMap->getChildren();
+		for (auto e : listObj) {
+			if (e->getTag() == TAG_ITEM) {
+				auto tmp = (Item*)e;
+				if (tmp->isTaken) {
+					AudioManager::playSound(SOUND_GET_ITEM);
+					switch (tmp->type)
+					{
+					case TYPE::TANK: {
+						if (hud->btnJump->getParent()->isVisible()) {
+							hud->btnJump->getParent()->setVisible(false);
+						}
+						transformTank(tmp->getPosition() + tmp->getParent()->getPosition());
+						break;
+					}
+					case TYPE::HEALTH: {
+						if (soldier->health < 5)
+							soldier->health++;
+						break;
+					}
+					case TYPE::HELICOPTER: {
+						if (hud->btnJump->getParent()->isVisible()) {
+							hud->btnJump->getParent()->setVisible(false);
+						}
+						transformHelicopter(tmp->getPosition() + tmp->getParent()->getPosition());
+
+						break;
+					}
+					case TYPE::FAST_BULLET: {
+						soldier->bulletType = BulletType::Fast;
+						break;
+					}
+					case TYPE::MULT_BULLET: {
+						soldier->bulletType = BulletType::Super;
+						break;
+					}
+					case TYPE::ORBIT_BULLET: {
+						soldier->bulletType = BulletType::Circle;
+						break;
+					}
+					case TYPE::PLANE: {
+						if (hud->btnJump->getParent()->isVisible()) {
+							hud->btnJump->getParent()->setVisible(false);
+						}
+						transformPlane(tmp->getPosition() + tmp->getParent()->getPosition());
+						break;
+					}
+					default:
+						break;
+					}
+
+					tmp->isTaken = false;
+					world->DestroyBody(tmp->body);
+					tmp->body = nullptr;
+					tmp->setVisible(false);
+					tmp->removeFromParentAndCleanup(true);
+				}
+
+				else {
+					tmp->update(dt);
+				}
+			}
 		}
-		else
-			i->update(dt);
+	}
+
+	if (layNextMap != nullptr) {
+		auto listObj = layNextMap->getChildren();
+		for (auto e : listObj) {
+			if (e->getTag() == TAG_ITEM) {
+				auto tmp = (Item*)e;
+				if (tmp->isTaken) {
+					AudioManager::playSound(SOUND_GET_ITEM);
+					switch (tmp->type)
+					{
+					case TYPE::TANK: {
+						if (hud->btnJump->getParent()->isVisible()) {
+							hud->btnJump->getParent()->setVisible(false);
+						}
+						transformTank(tmp->getPosition() + tmp->getParent()->getPosition());
+						break;
+					}
+					case TYPE::HEALTH: {
+						if (soldier->health < 5)
+							soldier->health++;
+						break;
+					}
+					case TYPE::HELICOPTER: {
+						if (hud->btnJump->getParent()->isVisible()) {
+							hud->btnJump->getParent()->setVisible(false);
+						}
+						transformHelicopter(tmp->getPosition() + tmp->getParent()->getPosition());
+
+						break;
+					}
+					case TYPE::FAST_BULLET: {
+						soldier->bulletType = BulletType::Fast;
+						break;
+					}
+					case TYPE::MULT_BULLET: {
+						soldier->bulletType = BulletType::Super;
+						break;
+					}
+					case TYPE::ORBIT_BULLET: {
+						soldier->bulletType = BulletType::Circle;
+						break;
+					}
+					case TYPE::PLANE: {
+						if (hud->btnJump->getParent()->isVisible()) {
+							hud->btnJump->getParent()->setVisible(false);
+						}
+						transformPlane(tmp->getPosition() + tmp->getParent()->getPosition());
+						break;
+					}
+					default:
+						break;
+					}
+
+					tmp->isTaken = false;
+					world->DestroyBody(tmp->body);
+					tmp->body = nullptr;
+					tmp->setVisible(false);
+					tmp->removeFromParentAndCleanup(true);
+				}
+
+				else {
+					tmp->update(dt);
+				}
+			}
+		}
 	}
 }
 
@@ -658,14 +792,14 @@ void GameScene::createInfiniteNode()
 {
 	background = InfiniteParallaxNode::create();
 
-	//auto bg1_1 = Sprite::create("bg-1.jpg");
-	auto bg1_1 = Sprite::create("bg-4.png");
+	auto bg1_1 = Sprite::create("bg-1.jpg");
+	//auto bg1_1 = Sprite::create("bg-4.png");
 	bg1_1->setScaleX(SCREEN_SIZE.width / bg1_1->getContentSize().width);
 	bg1_1->setScaleY(SCREEN_SIZE.height / bg1_1->getContentSize().height);
 	bg1_1->setAnchorPoint(Point(0, 0.5f));
 
-	//auto bg1_2 = Sprite::create("bg-1.jpg");
-	auto bg1_2 = Sprite::create("bg-4.png");
+	auto bg1_2 = Sprite::create("bg-1.jpg");
+	//auto bg1_2 = Sprite::create("bg-4.png");
 	bg1_2->setScaleX(SCREEN_SIZE.width / bg1_2->getContentSize().width);
 	bg1_2->setScaleY(SCREEN_SIZE.height / bg1_2->getContentSize().height);
 	bg1_2->setAnchorPoint(Point(0, 0.5f));
@@ -1160,7 +1294,7 @@ void GameScene::buildItem(TMXTiledMap * map, Layer * layer, float scale, string 
 		item->initPhysic(world, pos + originThisMap, b2_dynamicBody);
 		layer->addChild(item, ZORDER_ENEMY);
 
-		items.push_back(item);
+		//items.push_back(item);
 	}
 
 }
