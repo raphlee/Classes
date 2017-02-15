@@ -367,9 +367,29 @@ void Soldier::shoot(float radian)
 			{
 			case BulletType::Circle:{
 				if (!canShoot && bulletPool != nullptr) {
-					
+					//srand(time(NULL));
 					AudioManager::playSound(SOUND_BULLET_CIRCLE);
 					createBullet(radian, getGunLocation());
+					int randBullet = indexBullet % 5;
+					switch (randBullet)
+					{
+					case 0:
+						createBullet(radian+PI/15, getGunLocation());
+						break;
+					case 1:
+						createBullet(radian + PI / 15, getGunLocation());
+						break;
+					case 2:
+						createBullet(radian - PI / 15, getGunLocation());
+						break;
+					case 3:
+						createBullet(radian - PI / 15, getGunLocation());
+						break;
+					case 4:
+						createBullet(radian + PI / 15, getGunLocation());
+						break;
+					
+					}
 					
 				}
 				break;
@@ -397,10 +417,10 @@ void Soldier::shoot(float radian)
 
 				if (!canShoot && bulletPool != nullptr) {
 					createBullet(radian, getGunLocation());
-					createBullet(radian - PI / 10, getGunLocation());
-					createBullet(radian + PI / 10, getGunLocation());
-					createBullet(radian - PI / 5, getGunLocation());
-					createBullet(radian + PI / 5, getGunLocation());
+					createBullet(radian - PI / 15, getGunLocation());
+					createBullet(radian + PI / 15, getGunLocation());
+					createBullet(radian - PI / 7, getGunLocation());
+					createBullet(radian + PI / 7, getGunLocation());
 					AudioManager::playSound(SOUND_BULLET_SUPER);
 
 				}

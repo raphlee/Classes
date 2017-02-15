@@ -54,7 +54,7 @@ public:
 
 	set<int> listIndexExist;
 	vector<BulletOfHero *> existedBullet;
-	vector<Item*> items;
+	//vector<Item*> items;
 
 	//bool isTouchScreen = false;
 
