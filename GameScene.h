@@ -117,6 +117,9 @@ public:
 	virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
 	void onDraw();
 
+	void resumeGame();
+	void pauseGame();
+
 	//bool onTouchBegan(Touch *touch, Event *unused_event);
 	//void onTouchMoved(Touch *touch, Event *unused_event);
 	//void onTouchEnded(Touch *touch, Event *unused_event);

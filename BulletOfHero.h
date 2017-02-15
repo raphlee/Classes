@@ -14,6 +14,7 @@ public:
 	float alpha;
 	float radian;// goc ban
 	bool isAdded = false;
+	int damage;
 	Type type;
 	BulletOfHero();
 	~BulletOfHero();

@@ -60,12 +60,12 @@ void HelicopterBoomEnemy::shoot(Point posOfHero)
 	}*/
 	AudioManager::playSound(SOUND_HELICOPTER);
 	posOfHero = posOfHero - this->getParent()->getPosition();
-	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
+	auto bullet = (BombOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;
 	auto pos = this->body->GetPosition();
 	bullet->initPhysic(this->body->GetWorld(), pos);
 	bullet->setVisible(true);
-	bullet->body->SetGravityScale(1);
+	//bullet->body->SetGravityScale(1);
 
 	indexBullet++;
 	if (indexBullet == MAX_BULLET_HELICOPTER_POOL) {
@@ -88,7 +88,8 @@ void HelicopterBoomEnemy::die()
 	this->clearTracks();
 	this->setAnimation(0, "destroy", false);
 	auto callFunc = CallFunc::create([&]() {
-		this->setVisible(false);//removeFromParentAndCleanup(true);
+		this->setVisible(false);
+		//removeFromParentAndCleanup(true);
 	});
 
 	this->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));
@@ -109,8 +110,6 @@ void HelicopterBoomEnemy::createPool(int count)
 		bullet->setPosition(INT_MAX, INT_MAX);
 		//this->getParent()->addChild(bullet);
 		this->getParent()->addChild(bullet, ZORDER_BULLET);
-		bullet->fixtureDef.filter.categoryBits = BITMASK_BOMB_ENEMY;
-		bullet->fixtureDef.filter.maskBits = BITMASK_SOLDIER | BITMASK_FLOOR;
 		//bullet->initPhysic(this->body->GetWorld(), bullet->getPosition());
 		bullet->body = nullptr;
 		bulletPool->addObject(bullet);

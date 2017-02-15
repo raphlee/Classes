@@ -33,11 +33,9 @@ using namespace std;
 #define BITMASK_BULLET_HERO				0x0008
 #define BITMASK_BULLET_ENEMY			0x0010
 #define BITMASK_ITEM					0x0020
-#define BITMASK_BOMB_ENEMY				0x0100
 #define BITMASK_BOMB_HERO				0x0040
 #define BITMASK_BLINK					0x0080
 #define BITMASK_BOMB_ENEMY				0x0100
-
 
 // tag
 #define TAG_SOLDIER							50
@@ -48,6 +46,7 @@ using namespace std;
 #define TAG_BOMB							55
 #define TAG_BLINK							56
 #define TAG_BOMB_ENEMY						57
+#define TAG_GAME							58
 
 
 #define TAG_ENEMY_SOLDIER					101

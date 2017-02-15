@@ -38,7 +38,7 @@ void PlaneSoldier::initPhysic(b2World * world, Point pos)
 	fixtureDef.restitution = 0.0f;
 	fixtureDef.shape = &box_shape;
 	fixtureDef.filter.categoryBits = BITMASK_SOLDIER;
-	fixtureDef.filter.maskBits = BITMASK_ENEMY | BITMASK_BULLET_ENEMY | BITMASK_FLOOR | BITMASK_ITEM;
+	fixtureDef.filter.maskBits = BITMASK_ENEMY | BITMASK_BULLET_ENEMY | BITMASK_FLOOR | BITMASK_ITEM | BITMASK_BOMB_ENEMY;
 
 	b2BodyDef bodyDef;
 	bodyDef.type = b2_dynamicBody;

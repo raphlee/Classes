@@ -16,7 +16,7 @@ void Item::initPhysic(b2World * world, Point pos, b2BodyType type)
 	b2BodyDef bodyDef;	// defination of body like: shape,...// first
 	b2CircleShape shape;
 	
-	shape.m_radius = size.width / 2 / PTM_RATIO;
+	shape.m_radius = getBoundingBox().size.width / 2 / PTM_RATIO;
 
 	fixtureDef.density = 0.5f;
 	fixtureDef.friction = 1.0f;

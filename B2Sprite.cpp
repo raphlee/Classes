@@ -62,6 +62,7 @@ void B2Sprite::explosion()
 		AudioManager::playSound(SOUND_ENEMY_BOMB_EXPLOSION);  
 
 		boom = Sprite::createWithSpriteFrameName("explosion-1.png");
+		boom->setScale(SCREEN_SIZE.height / 6.0f / boom->getContentSize().height);
 		//boom->setPosition(0, this->getBoundingBox().size.height / 2);
 		//log("Boom-----------------------");
 		boom->setPosition(this->getPosition());

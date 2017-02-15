@@ -12,9 +12,8 @@ public:
 	BombOfEnemy();
 	~BombOfEnemy();
 
-
 	static BombOfEnemy* create();
-
+	void initPhysic(b2World *world, b2Vec2 pos);
 	// SCREEN_SIZE
 	
 

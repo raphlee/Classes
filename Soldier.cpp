@@ -206,8 +206,12 @@ void Soldier::die(Point posOfCammera)
 void Soldier::listener()
 {
 	this->setCompleteListener([&](int trackIndex, int loopCount) {
-		if (strcmp(getCurrent()->animation->name, "jumping") == 0 && loopCount == 6) {
-			cur_state = IDLE;
+		if (strcmp(getCurrent()->animation->name, "jumping") == 0) {
+			this->setTimeScale(1);
+			if (loopCount == 4) {
+				this->setTimeScale(1.5f);
+				cur_state = IDLE;
+			}
 		}
 	});
 }
@@ -442,12 +446,14 @@ void Soldier::createBullet(float radian, Point posGun)
 		indexBullet = 0;
 	}
 	if (this->bulletType == BulletType::Circle) {
+		bullet->damage = 2;
 		bullet->type = Type::circle;
 		bullet->alpha = 3*PI/2;
 		bullet->radian = radian;
 	}
 	else {
 		bullet->type = Type::normal;
+		bullet->damage = 1;
 	}
 
 }

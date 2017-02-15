@@ -33,6 +33,12 @@ bool ControlSettingScene::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 
+	auto bg = Sprite::create("background.png");
+	bg->setScaleX(visibleSize.width / bg->getContentSize().width);
+	bg->setScaleY(visibleSize.height / bg->getContentSize().height);
+	bg->setPosition(origin + visibleSize / 2);
+	addChild(bg);
+
 	auto label = Label::createWithTTF("Control Setting", "fonts/Marker Felt.ttf", 200);
 	label->setScale(visibleSize.height / 14.0f / label->getBoundingBox().size.height);
 	label->setColor(Color3B::WHITE);

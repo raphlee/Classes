@@ -33,7 +33,7 @@ void TankSoldier::initPhysic(b2World * world, Point pos)
 {
 	initCirclePhysic(world, pos);
 	fixtureDef.filter.categoryBits = BITMASK_SOLDIER;
-	fixtureDef.filter.maskBits = BITMASK_ENEMY | BITMASK_BULLET_ENEMY | BITMASK_FLOOR;
+	fixtureDef.filter.maskBits = BITMASK_ENEMY | BITMASK_BULLET_ENEMY | BITMASK_FLOOR | BITMASK_BOMB_ENEMY | BITMASK_ITEM;
 }
 
 

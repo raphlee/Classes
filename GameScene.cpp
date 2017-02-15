@@ -6,11 +6,13 @@
 #include "HelicopterShootEnemy.h"
 #include "HelicopterBoomEnemy.h"
 #include "StartScene.h"
+//#include "Dialog.h"
 
 
 USING_NS_CC;
 
 Hud *hud;
+//Dialog *dialog;
 
 Scene* GameScene::createScene()
 {
@@ -19,16 +21,15 @@ Scene* GameScene::createScene()
 
 	// 'layer' is an autorelease object
 	hud = Hud::create();
-	hud->setAnchorPoint(Vec2(0.0f, 0.0f));
-	hud->setPosition(0.0f, 0.0f);
-
+	//dialog = Dialog::create();
 	auto layer = GameScene::create();
+	layer->setTag(TAG_GAME);
 
 
 	// add layer as a child to scene
 	scene->addChild(layer);
 	scene->addChild(hud);
-
+	//scene->addChild(dialog);
 	// return the scene
 	return scene;
 }
@@ -53,15 +54,15 @@ bool GameScene::init()
 	world = new b2World(b2Vec2(0, -visibleSize.height * 8.0f / 3.0f / PTM_RATIO));
 
 	// draw debug
-	/*debugDraw = new (std::nothrow) GLESDebugDraw(PTM_RATIO);
+	debugDraw = new (std::nothrow) GLESDebugDraw(PTM_RATIO);
 	world->SetDebugDraw(debugDraw);
 	uint32 flags = 0;
 	flags += b2Draw::e_shapeBit;
 	flags += b2Draw::e_jointBit;
-	flags += b2Draw::e_aabbBit;
-	flags += b2Draw::e_pairBit;
-	flags += b2Draw::e_centerOfMassBit;
-	debugDraw->SetFlags(flags);*/
+	//flags += b2Draw::e_aabbBit;
+	//flags += b2Draw::e_pairBit;
+	//flags += b2Draw::e_centerOfMassBit;
+	debugDraw->SetFlags(flags);
 
 	world->SetAllowSleeping(true);
 	world->SetContinuousPhysics(true);
@@ -523,7 +524,7 @@ void GameScene::switchItem(float dt)
 			i->body = nullptr;
 			i->setVisible(false);
 			i->removeFromParentAndCleanup(true);
-			//i = nullptr;
+			i = nullptr;
 		}
 		else
 			i->update(dt);
@@ -657,14 +658,14 @@ void GameScene::createInfiniteNode()
 {
 	background = InfiniteParallaxNode::create();
 
-	auto bg1_1 = Sprite::create("bg-1.jpg");
-	//auto bg1_1 = Sprite::create("bg-4.png");
+	//auto bg1_1 = Sprite::create("bg-1.jpg");
+	auto bg1_1 = Sprite::create("bg-4.png");
 	bg1_1->setScaleX(SCREEN_SIZE.width / bg1_1->getContentSize().width);
 	bg1_1->setScaleY(SCREEN_SIZE.height / bg1_1->getContentSize().height);
 	bg1_1->setAnchorPoint(Point(0, 0.5f));
 
-	auto bg1_2 = Sprite::create("bg-1.jpg");
-	//auto bg1_2 = Sprite::create("bg-4.png");
+	//auto bg1_2 = Sprite::create("bg-1.jpg");
+	auto bg1_2 = Sprite::create("bg-4.png");
 	bg1_2->setScaleX(SCREEN_SIZE.width / bg1_2->getContentSize().width);
 	bg1_2->setScaleY(SCREEN_SIZE.height / bg1_2->getContentSize().height);
 	bg1_2->setAnchorPoint(Point(0, 0.5f));
@@ -1154,7 +1155,6 @@ void GameScene::buildItem(TMXTiledMap * map, Layer * layer, float scale, string 
 
 		auto item = Item::create(frameName, type);
 		item->setScale(SCREEN_SIZE.height / 8.0f / item->getContentSize().height);
-		item->size = item->getBoundingBox().size;
 		Point pos = Point(origin.x, origin.y + SCREEN_SIZE.height / Y_INCREMENT_RATIO);
 		item->setPosition(pos);
 		item->initPhysic(world, pos + originThisMap, b2_dynamicBody);
@@ -1455,9 +1455,28 @@ void GameScene::onDraw()
 	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, oldMV);
 }
 
+void GameScene::resumeGame()
+{
+	//Director::getInstance()->resume();
+	this->resume();
+}
+
+void GameScene::pauseGame()
+{
+	//dialog->_listener = EventListenerTouchOneByOne::create();
+	//dialog->_listener->onTouchBegan = CC_CALLBACK_2(Dialog::onTouchBegan, dialog);
+	//_eventDispatcher->addEventListenerWithSceneGraphPriority(dialog->_listener, dialog);
+
+	//dialog->setVisible(true);
+
+	//Director::getInstance()->pause();
+	this->pause();
+}
+
 void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
+		//pauseGame();
 		Director::getInstance()->replaceScene(StartScene::createScene());
 	}
 }

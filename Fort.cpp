@@ -18,7 +18,7 @@ Fort* Fort::create(float scale)
 	e->sizeEnemy = e->getBoundingBox().size;
 	e->setScaleX(-1);
 	e->facingRight = false;
-	e->setAnimation(0, "standing-shoot", false);
+	e->setAnimation(0, "hit", false);
 	e->indexBullet = -1;
 	return e;
 }

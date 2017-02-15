@@ -22,7 +22,6 @@ public:
 
 	TYPE type;
 	bool isTaken;
-	Size size;
 
 	// SCREEN_SIZE
 	const Size SCREEN_SIZE = Director::getInstance()->getVisibleSize();
