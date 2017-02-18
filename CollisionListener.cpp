@@ -42,9 +42,8 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		auto soldier = sA->getTag() == TAG_SOLDIER ? (Soldier *)sA : (Soldier *)sB;
 
 		if (sA->getTag() != TAG_SOLDIER) {
-			auto point = bodyB->GetPosition();
 			auto dentaX = fabs(collidePoint.x - bodyB->GetPosition().x);
-			auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
+			auto radius = (soldier->sizeSoldier.width / PTM_RATIO) / 2;
 			if (bodyB->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
 
 			}
@@ -54,8 +53,8 @@ void CollisionListener::BeginContact(b2Contact * contact)
 		}
 		else {
 			auto dentaX = fabs(collidePoint.x - bodyA->GetPosition().x);
-			auto radius = (soldier->getBoundingBox().size.width / PTM_RATIO) / 2;
-			if (bodyA->GetPosition().y < collidePoint.y  || dentaX > radius / 2) {
+			auto radius = (soldier->sizeSoldier.width / PTM_RATIO) / 2;
+			if (bodyA->GetPosition().y < collidePoint.y || dentaX > radius / 2) {
 			
 			}
 			else {

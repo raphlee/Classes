@@ -129,10 +129,10 @@ bool StartScene::init()
 	play->setPosition(origin.x + posX, origin.y + visibleSize.height * 0.65f);
 	addChild(play);
 
-	setting = Sprite::create("send/btn-setting.png");
+	/*setting = Sprite::create("send/btn-setting.png");
 	setting->setScale(visibleSize.height / 9.0f / setting->getContentSize().height);
 	setting->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.85f);
-	addChild(setting);
+	addChild(setting);*/
 
 	gp1 = Sprite::create("send/GP1.png");
 	gp1->setScale(visibleSize.height / 9.0f / gp1->getContentSize().height);
@@ -170,6 +170,9 @@ bool StartScene::init()
 	if (checkSound) {
 		soundOff->setVisible(false);
 		backgroudSoundID = experimental::AudioEngine::play2d(SOUND_BACKGROUND, true);
+		if (ref->getIntegerForKey(KEY_ID_BG_MUSIC) == NULL) {
+			ref->setIntegerForKey(KEY_ID_BG_MUSIC, backgroudSoundID);
+		}
 	}
 	else {
 		soundOn->setVisible(false);
@@ -189,9 +192,9 @@ bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 		Director::getInstance()->replaceScene(scene);
 	}
 
-	if (setting->getBoundingBox().containsPoint(touch->getLocation())) {
+	/*if (setting->getBoundingBox().containsPoint(touch->getLocation())) {
 		Director::getInstance()->replaceScene(ControlSettingScene::createScene());
-	}
+	}*/
 
 	if (gp1->getBoundingBox().containsPoint(touch->getLocation())) {
 		ref->setIntegerForKey(KEY_CHOICE, 1); ref->flush();

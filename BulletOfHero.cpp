@@ -19,6 +19,7 @@ BulletOfHero * BulletOfHero::create()
 	bullet->type = Type::normal;
 	bullet->setScale(bullet->SCREEN_SIZE.height / 20.0f / bullet->getContentSize().height);
 	bullet->isDie = false;
+	bullet->damage = 1;
 	bullet->setScale((Director::getInstance()->getVisibleSize().height / 20) / bullet->getContentSize().height);
 	return bullet;
 }

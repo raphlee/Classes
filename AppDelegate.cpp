@@ -99,6 +99,8 @@ void AppDelegate::applicationWillEnterForeground() {
 
     // if you use SimpleAudioEngine, it must resume here
     // SimpleAudioEngine::getInstance()->resumeBackgroundMusic();
-	if(UserDefault::sharedUserDefault()->getBoolForKey(KEYSOUND))
+	if (UserDefault::getInstance()->sharedUserDefault()->getBoolForKey(KEYSOUND)) {
 		experimental::AudioEngine::resumeAll();
+		experimental::AudioEngine::resume(UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_ID_BG_MUSIC));
+	}
 }

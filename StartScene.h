@@ -19,7 +19,7 @@ public:
     virtual bool init();
 
 	Sprite *play;
-	Sprite *setting;
+	//Sprite *setting;
 
 	Sprite *gp1;
 	Sprite *gp2;

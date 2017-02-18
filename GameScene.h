@@ -56,16 +56,16 @@ public:
 	vector<BulletOfHero *> existedBullet;
 	//vector<Item*> items;
 
-	//bool isTouchScreen = false;
+	bool isDoneGame = false;
+	bool isChangeControl = false;
+	int timeOut;
 
 public:
 	// main loop in game
 	void update(float dt);
 	void updateSoldier(float dt);
 	void updateStandMan(float dt);
-	/*void updateAutoGun(float dt);
-	void updateMiniFort(float dt);
-	void updateFort(float dt);*/
+	
 
 	void removeOlderSoldier();
 	void transformTank(Point pos);
@@ -98,8 +98,6 @@ public:
 
 	// process enemy for game
 	void createPool();
-	//void genEnemy();			// call in schedule
-	//void checkGenEnemy();		// call in update
 	
 	void genDEnemy();
 	void checkGenDEnemy();
@@ -109,6 +107,7 @@ public:
 	void controlSneakyJoystick();
 	void controlSneakyButtonJump();
 	void controlSneakyButtonFire();
+	void controlSneakyButtonPause();
 
 	//void controlButtonMove();
 
@@ -116,6 +115,9 @@ public:
 
 	virtual void draw(Renderer *renderer, const Mat4 &transform, uint32_t flags) override;
 	void onDraw();
+
+	void changeControl();
+	void finalSection(bool isWin);
 
 	void resumeGame();
 	void pauseGame();

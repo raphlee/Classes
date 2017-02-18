@@ -473,7 +473,6 @@ void Soldier::createBullet(float radian, Point posGun)
 	}
 	else {
 		bullet->type = Type::normal;
-		bullet->damage = 1;
 	}
 
 }

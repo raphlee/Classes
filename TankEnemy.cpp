@@ -39,7 +39,7 @@ TankEnemy * TankEnemy::create(float scale, TankType type)
 	}
 	e->isDie = false;
 	e->update(0.0f);
-	e->health = 2;
+	e->health = 3;
 	e->sizeEnemy = e->getBoundingBox().size;
 	//e->move_vel = e->SCREEN_SIZE.width / PTM_RATIO / 4.0f;
 	e->setScaleX(-1);

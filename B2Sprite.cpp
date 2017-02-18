@@ -25,7 +25,7 @@ void B2Sprite::initPhysic(b2World *world, Point pos, b2BodyType type)
 	auto size = this->getBoundingBox().size;
 	shape.SetAsBox(size.width / 2 / PTM_RATIO, 0 / PTM_RATIO);
 
-	fixtureDef.density = 0.5f;
+	fixtureDef.density = 10.0f;
 	fixtureDef.friction = 1.0f;
 	fixtureDef.restitution = 0.0f;
 	fixtureDef.shape = &shape;

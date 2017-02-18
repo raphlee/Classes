@@ -40,11 +40,19 @@ bool ControlSettingScene::init()
 	addChild(bg);
 
 	auto label = Label::createWithTTF("Control Setting", "fonts/Roboto_Light.ttf", 200);
-	label->setScale(visibleSize.height / 14.0f / label->getBoundingBox().size.height);
+	label->setScale(visibleSize.height / 8.0f / label->getBoundingBox().size.height);
 	label->setColor(Color3B::WHITE);
 	label->enableBold();
-	label->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.83f);
+	label->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.9f);
 	addChild(label);
+
+
+	auto des = Label::createWithTTF("Hold and move joystick or button to new position", "fonts/Roboto_Light.ttf", 200);
+	des->setScale(visibleSize.height / 16.0f / des->getBoundingBox().size.height);
+	des->setColor(Color3B::WHITE);
+	des->enableBold();
+	des->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.75f);
+	addChild(des);
 
 	reference = UserDefault::getInstance()->sharedUserDefault();
 
@@ -82,8 +90,8 @@ bool ControlSettingScene::init()
 	addChild(btnFire, 1);
 
 	submit = Sprite::create("send/ok-button.png");
-	submit->setScale(visibleSize.width / 4.0f / submit->getBoundingBox().size.width);
-	submit->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height / 2);
+	submit->setScale(visibleSize.width / 10.0f / submit->getBoundingBox().size.width);
+	submit->setPosition(origin.x + visibleSize.width * 0.9f, origin.y + visibleSize.height * 0.9f);
 	addChild(submit);
 
 
@@ -119,7 +127,8 @@ bool ControlSettingScene::onTouchBegan(Touch * touch, Event * unused_event)
 		reference->setFloatForKey(KEYBTNFIRE_Y, btnFire->getPositionY()); reference->flush();
 
 
-		Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
+		//Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
+		Director::getInstance()->popScene();
 	}
 
 	return false;

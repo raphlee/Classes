@@ -37,11 +37,11 @@ void HelicopterBoomEnemy::move(Point posOfSoldier)
 			if (this->checkCanShoot == 60) {
 				auto vec = posOfSoldier - (this->getPosition() + this->getParent()->getPosition());
 				if (vec.x <= 0) {
-					move_vel = -SCREEN_SIZE.width / 5 / PTM_RATIO;
+					move_vel = -SCREEN_SIZE.width / 10 / PTM_RATIO;
 					//this->body->SetLinearVelocity(b2Vec2(-SCREEN_SIZE.width / 5 / PTM_RATIO, this->body->GetLinearVelocity().y));
 				}
 				else {
-					move_vel = SCREEN_SIZE.width / 5 / PTM_RATIO;
+					move_vel = SCREEN_SIZE.width / 10 / PTM_RATIO;
 					//this->body->SetLinearVelocity(b2Vec2(SCREEN_SIZE.width / 5 / PTM_RATIO, this->body->GetLinearVelocity().y));
 				}
 				this->body->SetLinearVelocity(b2Vec2(move_vel, this->body->GetLinearVelocity().y));

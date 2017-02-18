@@ -21,7 +21,7 @@ using namespace std;
 #define KEYBTNJUMP_Y					"KEYJUMPY"
 #define KEY_CHOICE						"GAMEPLAY"
 #define KEY_HEALTH						"KEYHEALTH"
-#define KEYONGAME						"KEYONGAME"
+#define KEY_ID_BG_MUSIC					"KEYMUSIC"
 #define KEYADS							"KEYADS"
 #define KEYSOUND						"KEYSOUND"
 
@@ -69,17 +69,6 @@ using namespace std;
 #define ZORDER_ENEMY					6
 #define ZORDER_SOLDIER					7
 #define ZORDER_ITEM						11
-
-
-
-// define scale ratio
-#define ALLIGATOR_RATIO_ORIGIN			2.65f
-#define ALLIGATOR_RATIO					3.65f
-#define HIPPO_RATIO						3.0f
-#define FROG_RATIO						9.0f
-#define VORTEX_RATIO					7.0f
-#define LEAF_RATIO_ORIGIN				8.5f
-#define LOG_RATIO						4.5f
 
 
 #define PTM_RATIO							32

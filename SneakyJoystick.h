@@ -41,8 +41,8 @@ protected:
 	void touchDelegateRelease();
 	void touchDelegateRetain();
 
-private:
 	void updateVelocity(Point point);
+private:
 	void setTouchRadius();
 
 };
