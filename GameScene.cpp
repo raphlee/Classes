@@ -6,7 +6,7 @@
 #include "HelicopterShootEnemy.h"
 #include "HelicopterBoomEnemy.h"
 #include "StartScene.h"
-//#include "Dialog.h"
+#include "PauseLayer.h"
 
 
 USING_NS_CC;
@@ -1611,7 +1611,8 @@ void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
 		//pauseGame();
-		Director::getInstance()->replaceScene(StartScene::createScene());
+		this->addChild(PauseLayer::create(Lose));
+		//Director::getInstance()->replaceScene(StartScene::createScene());
 	}
 }
 

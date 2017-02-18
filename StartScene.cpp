@@ -35,9 +35,16 @@ bool StartScene::init()
 
 	// add Start sprite
 	auto backGround = Sprite::create("background.png");
+
+	/*log("contensize(%f,%f)", backGround->getContentSize().width, backGround->getContentSize().height);
+	log("boundingbox(%f,%f)", backGround->getBoundingBox().size.width, backGround->getBoundingBox().size.height);*/
+
 	backGround->setScaleX(visibleSize.width / backGround->getContentSize().width);
 	backGround->setScaleY(visibleSize.height / backGround->getContentSize().height);
 	backGround->setPosition(origin + visibleSize / 2);
+
+	/*log("contensize(%f,%f)", backGround->getContentSize().width, backGround->getContentSize().height);
+	log("boundingbox(%f,%f)", backGround->getBoundingBox().size.width, backGround->getBoundingBox().size.height);*/
 	addChild(backGround);
 
 	// cache frame

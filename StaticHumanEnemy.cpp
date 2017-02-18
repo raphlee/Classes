@@ -5,7 +5,8 @@
 
 StaticHumanEnemy::StaticHumanEnemy(string jsonFile, string atlasFile, float scale) : Enemy(jsonFile, atlasFile, scale)
 {
-	checkCanShoot = 100;
+	checkCanShoot = 30;
+	periodShoot = 120;
 }
 
 
@@ -166,7 +167,7 @@ void StaticHumanEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 		this->setPositionX(body->GetPosition().x * PTM_RATIO - this->getParent()->getPositionX());
 		this->setPositionY(body->GetPosition().y * PTM_RATIO - this->getParent()->getPositionY() - sizeEnemy.height / 2);
 		checkCanShoot++;
-		if (checkCanShoot == 120) {
+		if (checkCanShoot == periodShoot) {
 			checkCanShoot = 0;
 			shoot(posOfHero);
 		}

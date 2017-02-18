@@ -136,7 +136,7 @@ void HelicopterShootEnemy::die()
 	});
 
 
-	this->runAction(Spawn::createWithTwoActions(Sequence::create(DelayTime::create(0.5f), callFunc, nullptr), Spawn::create(ScaleTo::create(0.5, 0), RotateTo::create(0.5, 360), MoveBy::create(0.5f, Vec2(-SCREEN_SIZE.width / 4, -SCREEN_SIZE.height / 4)), nullptr)));
+	this->runAction(Spawn::createWithTwoActions(Sequence::create(DelayTime::create(0.5f), callFunc, nullptr), Spawn::create(ScaleTo::create(0.5, 0), RotateBy::create(0.5, 720), MoveBy::create(0.5f, Vec2(-SCREEN_SIZE.width / 8, -SCREEN_SIZE.height / 16)), nullptr)));
 }
 
 void HelicopterShootEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)

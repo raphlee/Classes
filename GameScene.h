@@ -63,9 +63,6 @@ public:
 	void update(float dt);
 	void updateSoldier(float dt);
 	void updateStandMan(float dt);
-	/*void updateAutoGun(float dt);
-	void updateMiniFort(float dt);
-	void updateFort(float dt);*/
 
 	void removeOlderSoldier();
 	void transformTank(Point pos);
