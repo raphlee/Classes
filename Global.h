@@ -47,6 +47,7 @@ using namespace std;
 #define TAG_BLINK							56
 #define TAG_BOMB_ENEMY						57
 #define TAG_GAME							58
+#define TAG_PAUSE_LAYER						59
 
 
 #define TAG_ENEMY_SOLDIER					101

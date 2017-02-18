@@ -140,7 +140,7 @@ void PlaneSoldier::shoot(float radian)
 void PlaneSoldier::dropLittleBoy()
 {
 	canDrop++;
-	if (canDrop >= 120 && bombPool != nullptr) {
+	if (canDrop >= 80 && bombPool != nullptr) {
 		createBomb();
 		canDrop = 0;
 	}

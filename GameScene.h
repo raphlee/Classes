@@ -65,7 +65,6 @@ public:
 	void update(float dt);
 	void updateSoldier(float dt);
 	void updateStandMan(float dt);
-	
 
 	void removeOlderSoldier();
 	void transformTank(Point pos);

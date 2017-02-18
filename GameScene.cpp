@@ -418,6 +418,7 @@ void GameScene::transformTank(Point pos)
 	hud->defense->setVisible(true);
 	hud->shield->setOpacity(255);
 	auto ref = UserDefault::getInstance()->sharedUserDefault();
+
 	AudioManager::playSound(SOUND_TRANSFORM);
 	removeOlderSoldier();
 
@@ -442,11 +443,7 @@ void GameScene::transformHelicopter(Point pos)
 {
 	hud->defense->setVisible(false);
 	removeOlderSoldier();
-	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
-	bool checkSound = ref->getBoolForKey(KEYSOUND);
-	if (checkSound) {
-		experimental::AudioEngine::play2d(SOUND_TRANSFORM2);
-	}*/
+	
 	AudioManager::playSound(SOUND_TRANSFORM2);
 
 	if (soldier == nullptr) {
@@ -466,11 +463,7 @@ void GameScene::transformPlane(Point pos)
 {
 	hud->defense->setVisible(false);
 	removeOlderSoldier();
-	/*auto ref = UserDefault::getInstance()->sharedUserDefault();
-	bool checkSound = ref->getBoolForKey(KEYSOUND);
-	if (checkSound) {
-		experimental::AudioEngine::play2d(SOUND_TRANSFORM2);
-	}*/
+	
 	AudioManager::playSound(SOUND_TRANSFORM2);
 	if (soldier == nullptr) {
 		soldier = PlaneSoldier::create("plane/plane.json", "plane/plane.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
@@ -487,69 +480,6 @@ void GameScene::transformPlane(Point pos)
 
 void GameScene::switchItem(float dt)
 {
-	//for (auto i : items) {
-
-	//	if (i != nullptr && i->isTaken) {
-	//		/*auto ref = UserDefault::getInstance()->sharedUserDefault();
-	//		bool checkSound = ref->getBoolForKey(KEYSOUND);
-	//		if (checkSound) {
-	//			experimental::AudioEngine::play2d(SOUND_GET_ITEM);
-	//		}*/
-	//		AudioManager::playSound(SOUND_GET_ITEM);
-	//		switch (i->type)
-	//		{
-	//		case TYPE::TANK: {
-	//			if (hud->btnJump->getParent()->isVisible()) {
-	//				hud->btnJump->getParent()->setVisible(false);
-	//			}
-	//			transformTank(i->getPosition() + i->getParent()->getPosition());
-	//			break;
-	//		}
-	//		case TYPE::HEALTH: {
-	//			if (soldier->health < 5)
-	//				soldier->health++;
-	//			break;
-	//		}
-	//		case TYPE::HELICOPTER: {
-	//			if (hud->btnJump->getParent()->isVisible()) {
-	//				hud->btnJump->getParent()->setVisible(false);
-	//			}
-	//			transformHelicopter(i->getPosition() + i->getParent()->getPosition());
-	//			break;
-	//		}
-	//		case TYPE::FAST_BULLET: {
-	//			soldier->bulletType = BulletType::Fast;
-	//			break;
-	//		}
-	//		case TYPE::MULT_BULLET: {
-	//			soldier->bulletType = BulletType::Super;
-	//			break;
-	//		}
-	//		case TYPE::ORBIT_BULLET: {
-	//			soldier->bulletType = BulletType::Circle;
-	//			break;
-	//		}
-	//		case TYPE::PLANE: {
-	//			if (hud->btnJump->getParent()->isVisible()) {
-	//				hud->btnJump->getParent()->setVisible(false);
-	//			}
-	//			transformPlane(i->getPosition() + i->getParent()->getPosition());
-	//			break;
-	//		}
-	//		default:
-	//			break;
-	//		}
-	//		i->isTaken = false;
-	//		world->DestroyBody(i->body);
-	//		i->body = nullptr;
-	//		i->setVisible(false);
-	//		i->removeFromParentAndCleanup(true);
-	//		//i = nullptr;
-	//	}
-	//	else
-	//		i->update(dt);
-	//}
-
 	if (layCurrentMap != nullptr) {
 		auto listObj = layCurrentMap->getChildren();
 		for (auto e : listObj) {
@@ -1441,6 +1371,7 @@ void GameScene::controlSneakyButtonFire()
 	}
 }
 
+// using sneaky button (cho nhanh :v)
 void GameScene::controlSneakyButtonPause()
 {
 	if (hud->btnPause->getIsActive()) {
@@ -1624,6 +1555,7 @@ void GameScene::onDraw()
 	director->loadMatrix(MATRIX_STACK_TYPE::MATRIX_STACK_MODELVIEW, oldMV);
 }
 
+// change once when you hit button ok in ControlSetting
 void GameScene::changeControl()
 {
 	auto ref = UserDefault::getInstance()->sharedUserDefault();
@@ -1645,7 +1577,7 @@ void GameScene::changeControl()
 void GameScene::finalSection(bool isWin)
 {
 	auto children = hud->getChildren();
-	for each (auto child in children)
+	for (auto child : children)
 	{
 		child->setVisible(false);
 		child->pauseSchedulerAndActions();
@@ -1671,24 +1603,27 @@ void GameScene::finalSection(bool isWin)
 	this->schedule([&](float dt) {
 		timeOut += 1;
 
-		if (timeOut >= 4) {
+		if (timeOut >= 4) {		// 4s to replace scene
 			Director::getInstance()->replaceScene(StartScene::createScene());
 		}
 
 	}, 1.0f, "Key");
 
-	soldier->body->SetLinearVelocity(b2Vec2(0, 0));
-	soldier->changeBodyBitMask(BITMASK_ENEMY);
+	soldier->body->SetLinearVelocity(b2Vec2(0, 0));		// cannot move anymore
+	soldier->changeBodyBitMask(BITMASK_ENEMY);			// cannot collide with ememy
 	
 	if (!soldier->isOnTheAir && !isWin) {
 		soldier->clearTracks();
-		soldier->addAnimation(0, "die", false);
+		soldier->addAnimation(0, "die", false);			// dying animation
 		soldier->setToSetupPose();
 	}
-	else if(soldier->isOnTheAir && !isWin) {
+	
+	
+	if(soldier->isOnTheAir && !isWin) {
+		soldier->isOnTheAir = false;			// falling star
 		soldier->clearTracks();
 		soldier->setToSetupPose();
-		soldier->body->SetGravityScale(0.7f);
+		soldier->body->SetGravityScale(0.7f);		// enable falling
 	}
 	
 }
@@ -1700,7 +1635,7 @@ void GameScene::resumeGame()
 	//this->getParent()->resumeSchedulerAndActions();
 	this->resume();
 	auto children = hud->getChildren();
-	for each (auto child in children)
+	for (auto child : children)
 	{
 		child->resumeSchedulerAndActions();
 	}
@@ -1716,7 +1651,7 @@ void GameScene::pauseGame()
 
 	//Director::getInstance()->pause();
 	auto children = hud->getChildren();
-	for each (auto child in children)
+	for (auto child : children)
 	{
 		child->pauseSchedulerAndActions();
 	}
@@ -1728,7 +1663,6 @@ void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
 		pauseGame();
-		//Director::getInstance()->replaceScene(StartScene::createScene());
 	}
 }
 

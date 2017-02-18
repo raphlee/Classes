@@ -35,9 +35,16 @@ bool StartScene::init()
 
 	// add Start sprite
 	auto backGround = Sprite::create("background.png");
+
+	/*log("contensize(%f,%f)", backGround->getContentSize().width, backGround->getContentSize().height);
+	log("boundingbox(%f,%f)", backGround->getBoundingBox().size.width, backGround->getBoundingBox().size.height);*/
+
 	backGround->setScaleX(visibleSize.width / backGround->getContentSize().width);
 	backGround->setScaleY(visibleSize.height / backGround->getContentSize().height);
 	backGround->setPosition(origin + visibleSize / 2);
+
+	/*log("contensize(%f,%f)", backGround->getContentSize().width, backGround->getContentSize().height);
+	log("boundingbox(%f,%f)", backGround->getBoundingBox().size.width, backGround->getBoundingBox().size.height);*/
 	addChild(backGround);
 
 	// cache frame
@@ -101,7 +108,7 @@ bool StartScene::init()
 	experimental::AudioEngine::preload("sound/Win.mp3");
 
 
-	auto labelVer = Label::createWithTTF("2017-02-15-Build 1", "fonts/Marker Felt.ttf", 200);
+	auto labelVer = Label::createWithTTF("2017-02-17-Build 1", "fonts/Marker Felt.ttf", 200);
 	labelVer->setScale(visibleSize.height / 24.0f / labelVer->getContentSize().height);
 	labelVer->setPosition(origin.x + visibleSize.width * 0.90f, origin.y + visibleSize.height * 0.96f);
 	addChild(labelVer);
@@ -157,12 +164,12 @@ bool StartScene::init()
 	soundOn = Sprite::createWithSpriteFrameName("btn-sound-on.png");
 	soundOff = Sprite::createWithSpriteFrameName("btn-sound-off.png");
 
-	soundOn->setPosition(visibleSize.width * 9 / 10, visibleSize.height / 10);
-	soundOff->setPosition(visibleSize.width * 9 / 10, visibleSize.height / 10);
+	soundOn->setPosition(visibleSize.width * 0.85f, visibleSize.height / 10);
+	soundOff->setPosition(visibleSize.width * 0.85f, visibleSize.height / 10);
 
 	this->addChild(soundOn);
 	this->addChild(soundOff);
-	float scaleOfSound = (visibleSize.height / 13) / soundOn->getContentSize().height;
+	float scaleOfSound = (visibleSize.height / 11) / soundOn->getContentSize().height;
 	soundOn->setScale(scaleOfSound);
 	soundOff->setScale(scaleOfSound);
 

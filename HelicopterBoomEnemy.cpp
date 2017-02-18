@@ -22,6 +22,7 @@ HelicopterBoomEnemy * HelicopterBoomEnemy::create(float scale, HelicopterBoomTyp
 	//e->setTag(TAG_ENEMY);
 	//e->setVisible(0);
 	e->indexBullet = -1;
+	e->periodShoot = 40;
 	return e;
 
 }
@@ -92,7 +93,8 @@ void HelicopterBoomEnemy::die()
 		//removeFromParentAndCleanup(true);
 	});
 
-	this->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));
+	//this->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));
+	this->runAction(Spawn::createWithTwoActions(Sequence::create(DelayTime::create(0.5f), callFunc, nullptr), Spawn::create(ScaleTo::create(0.5f, 0), RotateBy::create(0.5f, 720), MoveBy::create(0.5f, Vec2(-SCREEN_SIZE.width / 8, -SCREEN_SIZE.height / 8)), nullptr)));
 }
 
 void HelicopterBoomEnemy::updateEnemy(float dt, Point cameraPoint, Point posOfHero)

@@ -11,9 +11,10 @@ using namespace spine;
 class StaticHumanEnemy : public Enemy
 {
 public:
-	int checkCanShoot;
+	int checkCanShoot, periodShoot;
 	CCArray *bulletPool;
 	int indexBullet;
+	
 
 	StaticHumanEnemy(string jsonFile, string atlasFile, float scale);
 	static StaticHumanEnemy* create(float scale);
