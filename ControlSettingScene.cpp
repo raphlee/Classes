@@ -126,8 +126,6 @@ bool ControlSettingScene::onTouchBegan(Touch * touch, Event * unused_event)
 		reference->setFloatForKey(KEYBTNFIRE_X, btnFire->getPositionX()); reference->flush();
 		reference->setFloatForKey(KEYBTNFIRE_Y, btnFire->getPositionY()); reference->flush();
 
-
-		//Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
 		Director::getInstance()->popScene();
 	}
 

@@ -54,11 +54,12 @@ public:
 
 	set<int> listIndexExist;
 	vector<BulletOfHero *> existedBullet;
-	//vector<Item*> items;
 
 	bool isDoneGame = false;
 	bool isChangeControl = false;
 	int timeOut;
+	Sprite *blood_bg;
+	Sprite *logo;
 
 public:
 	// main loop in game
@@ -119,7 +120,8 @@ public:
 	void finalSection(bool isWin);
 
 	void resumeGame();
-	void pauseGame();
+	void pauseGame(bool isLoseTheGame);
+	void retryGame();
 
 	//bool onTouchBegan(Touch *touch, Event *unused_event);
 	//void onTouchMoved(Touch *touch, Event *unused_event);

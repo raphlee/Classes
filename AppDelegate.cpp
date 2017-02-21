@@ -1,5 +1,5 @@
 #include "AppDelegate.h"
-#include "StartScene.h"
+#include "SplashScene.h"
 #include "AudioEngine.h"
 
 USING_NS_CC;
@@ -76,7 +76,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
  
-    auto scene = StartScene::createScene();
+    auto scene = SplashScene::createScene();
 
     // run
     director->runWithScene(scene);

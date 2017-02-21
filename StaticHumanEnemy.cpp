@@ -23,8 +23,6 @@ StaticHumanEnemy * StaticHumanEnemy::create(float scale)
 	e->setScaleX(-1);
 	e->facingRight = false;
 	e->setAnimation(0, "standing-shoot", false);
-	//e->setTag(TAG_ENEMY);
-	//e->setVisible(0);
 	e->indexBullet = -1;
 	return e;
 }

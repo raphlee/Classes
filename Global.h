@@ -47,7 +47,6 @@ using namespace std;
 #define TAG_BLINK							56
 #define TAG_BOMB_ENEMY						57
 #define TAG_GAME							58
-#define TAG_PAUSE_LAYER						59
 
 
 #define TAG_ENEMY_SOLDIER					101
@@ -58,8 +57,6 @@ using namespace std;
 #define TAG_ENEMY_TANK_STUPID				106
 #define TAG_ENEMY_HELICOPTER_SHOOT			107
 #define TAG_ENEMY_HELICOPTER_BOOM			108
-
-
 
 
 // z-order
@@ -83,9 +80,6 @@ using namespace std;
 #define MAX_BULLET_FORT_POOL				6
 #define MAX_BULLET_TANK_POOL				3
 #define MAX_BULLET_HELICOPTER_POOL			2
-
-#define Z_BACKGROUND						0
-#define Z_HERO								1
 
 #define	SOUND_BACKGROUND					"sound/theme_music.mp3"
 #define SOUND_BULLET_NORMAL					"sound/normal bullet.mp3"
