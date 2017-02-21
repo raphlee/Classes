@@ -1,9 +1,15 @@
 #include "HelicopterSoldier.h"
+#include "Global.h"
 
 
 HelicopterSoldier::HelicopterSoldier(string jsonFile, string atlasFile, float scale) : Soldier(jsonFile, atlasFile, scale)
 {
 
+}
+
+HelicopterSoldier::~HelicopterSoldier()
+{
+	AudioManager::stopSoundForever(idSound);
 }
 
 HelicopterSoldier * HelicopterSoldier::create(string jsonFile, string atlasFile, float scale)
@@ -24,6 +30,7 @@ HelicopterSoldier * HelicopterSoldier::create(string jsonFile, string atlasFile,
 	h->bulletType = BulletType::Slow;
 	h->angle = 0;
 	h->isNoDie = 0;		// time to respawn
+	h->idSound = AudioManager::playSoundForever(SOUND_HELICOPTER);
 	return h;
 }
 
@@ -94,5 +101,11 @@ void HelicopterSoldier::updateHero(float dt)
 			canShoot = 0;
 		}
 	}
+}
+
+void HelicopterSoldier::onExit()
+{
+	Node::onExit();
+	AudioManager::stopSoundForever(idSound);
 }
 

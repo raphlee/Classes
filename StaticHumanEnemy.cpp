@@ -5,7 +5,7 @@
 
 StaticHumanEnemy::StaticHumanEnemy(string jsonFile, string atlasFile, float scale) : Enemy(jsonFile, atlasFile, scale)
 {
-	checkCanShoot = 30;
+	checkCanShoot = 110;
 	periodShoot = 120;
 }
 
@@ -117,23 +117,6 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 				bullet->setAngel(-PI / 2);
 			}
 		}
-		/*else if (tmp < 0 && fabs(tmp) > 1 / 2 && fabs(tmp) < 2) {
-			this->setScaleX(-1);
-			this->clearTracks();
-			this->setAnimation(0, "standing-shoot-45up", false);
-			checkCanShoot = false;
-		}
-		else if(fabs(tmp) > 2){
-			this->clearTracks();
-			this->setAnimation(0, "standing-shoot-up", false);
-			checkCanShoot = false;
-		}
-		else if (tmp > 0 && fabs(tmp) > 1 / 2 && fabs(tmp) < 2) {
-			this->setScaleX(1);
-			this->clearTracks();
-			this->setAnimation(0, "standing-shoot-45up", false);
-			checkCanShoot = false;
-		}*/
 	}
 
 }

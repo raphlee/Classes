@@ -11,6 +11,7 @@ using namespace spine;
 class MiniFort : public StaticHumanEnemy
 {
 public:
+	Sprite *barrel;
 
 	MiniFort(string jsonFile, string atlasFile, float scale);
 	static MiniFort* create(float scale);
@@ -18,7 +19,9 @@ public:
 	virtual	void shoot(Point posOfHero);
 	virtual	bool checkOutScreen(Point posCamera);
 	virtual void die();
-	//void updateBullet();
+	void createBarrel();
+	Vec2 getGunLocation();
+	void updateEnemy(float dt, Point cameraPoint, Point posOfHero);
 	
 };
 

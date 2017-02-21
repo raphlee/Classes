@@ -16,5 +16,7 @@ public:
 	~AudioManager();
 
 	static void playSound(string keysound);
+	static int playSoundForever(string keysound);
+	static void stopSoundForever(int keysound);
 };
 #endif // __TANK_SOLDIER_H__
