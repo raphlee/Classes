@@ -78,9 +78,9 @@ bool GameScene::init()
 	camera = Follow::create(follow);
 	runAction(camera);
 
-	auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
+	//auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
 
-	indexOfCurrentMap = indexMap;
+	indexOfCurrentMap = 17;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
@@ -126,6 +126,12 @@ void GameScene::update(float dt)
 
 	world->Step(dt, velocityIterations, positionIterations);
 
+	if (indexOfCurrentMap == 17 && !isDoneGame) {
+		if (soldier->getPosition().x > originOfLastMap.x + tmxNextMap->getBoundingBox().size.width - SCREEN_SIZE.width/6) {
+			finalSection(true);
+			isDoneGame = true;
+		}
+	}
 	updateSoldier(dt);
 	updateStandMan(dt);
 	//updateAutoGun(dt);
@@ -282,7 +288,7 @@ void GameScene::updateSoldier(float dt)
 		}
 		else {
 			soldier->health--;
-			if(soldier->health >= 0)
+			//if(soldier->health >= 0)
 				soldier->die(follow->getPosition());
 		}
 
@@ -337,8 +343,8 @@ void GameScene::updateSoldier(float dt)
 	}
 	default:
 		if (hud->joystick->getParent()->isVisible()) {
-			isDoneGame = true;
-			finalSection(false);
+			//isDoneGame = true;
+			//finalSection(false);
 		}
 			
 		break;
@@ -409,7 +415,7 @@ void GameScene::removeOlderSoldier()
 	soldier->bulletPool->removeAllObjects();
 	world->DestroyBody(soldier->body);
 
-	removeChildByTag(TAG_SOLDIER);
+	removeChildByTag(TAG_SOLDIER,true);
 	soldier = nullptr;
 }
 
@@ -442,6 +448,7 @@ void GameScene::transformTank(Point pos)
 void GameScene::transformHelicopter(Point pos)
 {
 	hud->defense->setVisible(false);
+	//AudioManager::stopSoundForever((HelicopterSoldier*)soldier->isSound);
 	removeOlderSoldier();
 	
 	AudioManager::playSound(SOUND_TRANSFORM2);
@@ -463,7 +470,6 @@ void GameScene::transformPlane(Point pos)
 {
 	hud->defense->setVisible(false);
 	removeOlderSoldier();
-	
 	AudioManager::playSound(SOUND_TRANSFORM2);
 	if (soldier == nullptr) {
 		soldier = PlaneSoldier::create("plane/plane.json", "plane/plane.atlas", SCREEN_SIZE.height / 11.0f / 80.0f);
@@ -840,11 +846,6 @@ void GameScene::loadNextMap()
 {
 
 	if ((soldier->getPosition().x > (originOfLastMap.x + tmxNextMap->getBoundingBox().size.width - SCREEN_SIZE.width))) {
-		if (indexOfCurrentMap >= 17 && hud->joystick->getParent()->isVisible()) {
-			isDoneGame = true;
-			finalSection(true);
-			return;
-		}
 		
 		if(indexOfCurrentMap < 17) {
 			Point originOfNextmap = Point(originOfLastMap.x + tmxNextMap->getContentSize().width*scaleOfMap, 0);
@@ -1049,6 +1050,7 @@ void GameScene::buildMiniFort(TMXTiledMap * map, Layer * layer, float scale)
 		//and set it back
 		gun->setPosition(pos);
 		layer->addChild(gun, 3);
+		gun->createBarrel();
 		gun->createPool(MAX_BULLET_FORT_MINI_POOL);
 
 	}

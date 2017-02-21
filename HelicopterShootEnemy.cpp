@@ -59,7 +59,7 @@ void HelicopterShootEnemy::shoot(Point posOfHero)
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_HELICOPTER);
 	}*/
-	AudioManager::playSound(SOUND_HELICOPTER);
+	AudioManager::playSound(SOUND_ENEMY_BULLET);
 	switch (type) {
 	case HelicopterType::SHOOT_SMART:
 	{

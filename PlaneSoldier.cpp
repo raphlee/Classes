@@ -128,6 +128,7 @@ void PlaneSoldier::shoot(float radian)
 	if (canShoot < INT_MAX) {
 		if (!canShoot) {
 			if (!canShoot && bulletPool != nullptr) {
+				AudioManager::playSound(SOUND_BULLET_SUPER);
 				createBullet(radian, getGunLoc("bshoot"));
 				createBullet(radian, getGunLoc("fshoot"));
 			}

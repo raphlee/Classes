@@ -43,20 +43,25 @@ void MiniFort::shoot(Point posOfHero)
 	bullet->isDie = false;
 	//bullet->body->SetTransform(this->body->GetPosition(), 0);
 	//
-	this->clearTracks();
-	this->setAnimation(0, "hit", false);
+	//this->clearTracks();
+	//this->setAnimation(0, "hit", false);
+	auto thisToHero = posOfHero - this->getPosition();
+	auto unitVecto = thisToHero / thisToHero.length();
+	thisToHero = thisToHero*(SCREEN_SIZE.width / 3 / thisToHero.length());
+	auto vecOfBarrel = (barrel->getBoundingBox().size.width*unitVecto)/PTM_RATIO;
 
-	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition());
+	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition()+b2Vec2(vecOfBarrel.x,vecOfBarrel.y));
 	bullet->setVisible(true);
+	//barrel->setRotation(thisToHero.getAngle());
+	bullet->body->SetLinearVelocity(b2Vec2(thisToHero.x / PTM_RATIO, thisToHero.y / PTM_RATIO));
 
 	indexBullet++;
 	if (indexBullet == MAX_BULLET_SOLDIER_ENEMY_POOL) {
 		indexBullet = 0;
 	}
 
-	auto thisToHero = posOfHero - this->getPosition();
-	thisToHero = thisToHero*(SCREEN_SIZE.width / 3 / thisToHero.length());
-	bullet->body->SetLinearVelocity(b2Vec2(thisToHero.x / PTM_RATIO, thisToHero.y / PTM_RATIO));
+	
+	
 
 }
 
@@ -76,6 +81,34 @@ void MiniFort::die()
 
 	this->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));
 
+}
+
+void MiniFort::createBarrel()
+{
+	barrel = Sprite::createWithSpriteFrameName("enemy-gun-barrel.png");
+	barrel->setScale((SCREEN_SIZE.height/45.0f)/barrel->getContentSize().height);
+	barrel->setAnchorPoint(Point(1, 0.5f));
+	barrel->setPosition(this->getGunLocation());
+	this->getParent()->addChild(barrel);
+}
+
+Vec2 MiniFort::getGunLocation()
+{
+	auto gun = findBone("top");
+	auto pos = Vec2(this->getScaleX()*gun->worldX, gun->worldY);
+	pos = pos + this->getPosition();
+	return pos;
+}
+
+void MiniFort::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
+{
+	StaticHumanEnemy::updateEnemy(dt, cameraPoint, posOfHero);
+	posOfHero = posOfHero - this->getParent()->getPosition();
+	auto thisToHero = posOfHero - this->getPosition();
+	thisToHero.x = -thisToHero.x;
+	log("Angle: %f", thisToHero.getAngle());
+	barrel->setPosition(this->getGunLocation());
+	barrel->setRotation((thisToHero.getAngle()/PI)*180);
 }
 
 

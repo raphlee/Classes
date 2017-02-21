@@ -5,7 +5,7 @@
 
 StaticHumanEnemy::StaticHumanEnemy(string jsonFile, string atlasFile, float scale) : Enemy(jsonFile, atlasFile, scale)
 {
-	checkCanShoot = 30;
+	checkCanShoot = 110;
 	periodShoot = 120;
 }
 

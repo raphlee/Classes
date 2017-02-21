@@ -3,6 +3,8 @@
 
 HelicopterBoomEnemy::HelicopterBoomEnemy(string jsonFile, string atlasFile, float scale) : StaticHumanEnemy(jsonFile, atlasFile, scale)
 {
+	checkCanShoot = 39;
+	periodShoot = 40;
 }
 
 HelicopterBoomEnemy * HelicopterBoomEnemy::create(float scale, HelicopterBoomType type)
@@ -22,7 +24,7 @@ HelicopterBoomEnemy * HelicopterBoomEnemy::create(float scale, HelicopterBoomTyp
 	//e->setTag(TAG_ENEMY);
 	//e->setVisible(0);
 	e->indexBullet = -1;
-	e->periodShoot = 40;
+	//e->periodShoot = 40;
 	return e;
 
 }
@@ -59,7 +61,7 @@ void HelicopterBoomEnemy::shoot(Point posOfHero)
 	if (checkSound) {
 		experimental::AudioEngine::play2d(SOUND_HELICOPTER);
 	}*/
-	AudioManager::playSound(SOUND_HELICOPTER);
+	AudioManager::playSound(SOUND_ENEMY_BOMB);
 	posOfHero = posOfHero - this->getParent()->getPosition();
 	auto bullet = (BombOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;

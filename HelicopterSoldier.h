@@ -5,9 +5,12 @@
 
 class HelicopterSoldier : public Soldier
 {
-public:
+
 	
+public:
+	int idSound;
 	HelicopterSoldier(string jsonFile, string atlasFile, float scale);
+	~HelicopterSoldier();
 	static HelicopterSoldier* create(string jsonFile, string atlasFile, float scale);
 
 	void initPhysic(b2World * world, Point pos);
@@ -19,5 +22,8 @@ public:
 	void shoot(float radian);
 
 	void updateHero(float dt);
+
+
+	void onExit();
 };
 #endif // __HELICOPTER_SOLDIER_H__
