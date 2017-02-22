@@ -30,7 +30,6 @@ Scene* GameScene::createScene()
 	auto layer = GameScene::create();
 	layer->setTag(TAG_GAME);
 
-
 	// add layer as a child to scene
 	scene->addChild(layer);
 	scene->addChild(hud);
@@ -53,7 +52,9 @@ bool GameScene::init()
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginGoogleAnalytics::logScreen("Onplaying in GameScene");
 	sdkbox::PluginGoogleAnalytics::dispatchHits();
-	sdkbox::PluginAdMob::hide("home");
+	if (sdkbox::PluginAdMob::isAvailable("home")) {
+		sdkbox::PluginAdMob::hide("home");
+	}
 #endif
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -89,6 +90,9 @@ bool GameScene::init()
 	runAction(camera);
 
 	auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
+
+	if (indexMap == NULL)
+		indexMap = 1;
 
 	indexOfCurrentMap = indexMap;
 	createBackground();
@@ -1660,7 +1664,7 @@ void GameScene::finalSection(bool isWin)
 	this->schedule([&](float dt) {
 		timeOut += 1;
 
-		if (timeOut >= 4) {		// 4s to replace scene
+		if (timeOut >= 3) {		// 4s to replace scene
 			//Director::getInstance()->replaceScene(StartScene::createScene());
 			unschedule("Key");
 			timeOut = 0;
@@ -1677,12 +1681,12 @@ void GameScene::finalSection(bool isWin)
 		soldier->addAnimation(0, "die", false);			// dying animation
 		soldier->setToSetupPose();
 	}
-	
-	if(soldier->isOnTheAir && !isWin) {
-		//soldier->isOnTheAir = false;			// falling star
-		//soldier->clearTracks();
-		//soldier->body->SetGravityScale(0.7f);		// enable falling
-	}
+	//
+	//if(soldier->isOnTheAir && !isWin) {
+	//	//soldier->isOnTheAir = false;			// falling star
+	//	//soldier->clearTracks();
+	//	//soldier->body->SetGravityScale(0.7f);		// enable falling
+	//}
 }
 
 void GameScene::resumeGame()
@@ -1690,12 +1694,14 @@ void GameScene::resumeGame()
 	//Director::getInstance()->resume();
 	
 	dialog->removeFromParentAndCleanup(true);
+	dialog = nullptr;
 	this->resume();
 	auto children = hud->getChildren();
 	for (auto child : children)
 	{
 		child->resumeSchedulerAndActions();
 	}
+	experimental::AudioEngine::resumeAll();
 }
 
 void GameScene::pauseGame(bool isLoseTheGame)

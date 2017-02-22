@@ -33,10 +33,13 @@ bool StartScene::init()
 	}
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginGoogleAnalytics::logScreen("StartScene");
-	sdkbox::PluginGoogleAnalytics::dispatchHits();
+	//sdkbox::PluginGoogleAnalytics::dispatchHits();
 #endif
 #ifdef SDKBOX_ENABLED
-	sdkbox::PluginAdMob::show("home");
+	if (sdkbox::PluginAdMob::isAvailable("home")) {
+		sdkbox::PluginAdMob::show("home");
+	}
+	
 #endif
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -111,12 +114,14 @@ bool StartScene::init()
 
 
 	if (ref->getIntegerForKey(KEYGUIDE) == NULL) {
-		setting->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, 1.3f), ScaleTo::create(0.4f, 1), nullptr)));
+		auto scale1 = setting->getScale();
+		setting->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, scale1*1.1f), ScaleTo::create(0.4f, scale1), nullptr)));
 		auto setting_text = Sprite::create("send/setting.png");
 		setting_text->setScale(visibleSize.height / 9.0f / setting_text->getContentSize().height);
 		setting_text->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.71f);
 		addChild(setting_text, 3);
-		setting_text->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, 0.6f), ScaleTo::create(0.4f, 0.5f), nullptr)));
+		auto scale2 = setting_text->getScale();
+		setting_text->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, scale2*1.1f), ScaleTo::create(0.4f, scale2), nullptr)));
 	}
 
 	gp1 = Sprite::create("send/GP1.png");
@@ -205,7 +210,9 @@ void StartScene::onEnter()
 	grass2->runAction(action_2);
 	grass3->runAction(action_3);
 #ifdef SDKBOX_ENABLED
-	sdkbox::PluginAdMob::show("home");
+	if (sdkbox::PluginAdMob::isAvailable("home")) {
+		sdkbox::PluginAdMob::show("home");
+	}
 #endif
 
 }
@@ -218,9 +225,9 @@ bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 	}
 
 	else if (setting->getBoundingBox().containsPoint(touch->getLocation())) {
-		grass1->stopAllActions(); grass2->stopAllActions(); grass3->stopAllActions();
-
-		ref->setIntegerForKey(KEYGUIDE, 1);
+		//grass1->stopAllActions(); grass2->stopAllActions(); grass3->stopAllActions();
+		
+		ref->setIntegerForKey(KEYGUIDE, 1); ref->flush();
 		Director::getInstance()->replaceScene(ControlSettingScene::createScene());
 	}
 
@@ -253,13 +260,13 @@ bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 		if (ref->getBoolForKey(KEYSOUND, true)) {
 			soundOn->setVisible(false);
 			soundOff->setVisible(true);
-			ref->setBoolForKey(KEYSOUND, false);
+			ref->setBoolForKey(KEYSOUND, false); ref->flush();
 			experimental::AudioEngine::stop(backgroudSoundID);
 		}
 		else {
 			soundOff->setVisible(false);
 			soundOn->setVisible(true);
-			ref->setBoolForKey(KEYSOUND, true);
+			ref->setBoolForKey(KEYSOUND, true); ref->flush();
 			backgroudSoundID = experimental::AudioEngine::play2d(SOUND_BACKGROUND, true);
 		}
 	}

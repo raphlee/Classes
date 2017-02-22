@@ -35,7 +35,7 @@ bool ControlSettingScene::init()
 
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginGoogleAnalytics::logScreen("Setting Scene");
-	sdkbox::PluginGoogleAnalytics::dispatchHits();
+	//sdkbox::PluginGoogleAnalytics::dispatchHits();
 #endif
 
 	setKeyboardEnabled(true);
@@ -105,7 +105,9 @@ bool ControlSettingScene::init()
 	addChild(submit);
 
 #ifdef SDKBOX_ENABLED
-	sdkbox::PluginAdMob::show("home");
+	if (sdkbox::PluginAdMob::isAvailable("home")) {
+		sdkbox::PluginAdMob::show("home");
+	}
 #endif
 
 	auto listener = EventListenerTouchOneByOne::create();
@@ -140,8 +142,9 @@ bool ControlSettingScene::onTouchBegan(Touch * touch, Event * unused_event)
 		reference->setFloatForKey(KEYBTNFIRE_Y, btnFire->getPositionY()); reference->flush();
 
 		if (reference->getIntegerForKey(KEYGUIDE) == 1) {		// chui ra tu setting
+			reference->setIntegerForKey(KEYGUIDE, 2); reference->flush();
 			Director::getInstance()->replaceScene(GameScene::createScene());
-			reference->setIntegerForKey(KEYGUIDE, 2);
+			
 		} else
 			Director::getInstance()->popScene();
 	}
@@ -176,7 +179,9 @@ void ControlSettingScene::onExit()
 {
 	Node::onExit();
 #ifdef SDKBOX_ENABLED
-	sdkbox::PluginAdMob::hide("home");
+	if (sdkbox::PluginAdMob::isAvailable("home")) {
+		sdkbox::PluginAdMob::hide("home");
+	}
 #endif
 
 }

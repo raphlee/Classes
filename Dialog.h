@@ -12,6 +12,7 @@ class Dialog : public Layer
 {
 public:
 
+	float scaleOfRetry;
 	virtual bool init();
 
 	bool isLoseTheGame;

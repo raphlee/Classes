@@ -73,7 +73,7 @@ bool SplashScene::init()
 	this->schedule([&](float dt) {
 		timer += 1;
 
-		if (timer >= 1) {
+		if (timer >= 3) {
 			unschedule("KeyMeNow");
 			Director::getInstance()->replaceScene(TransitionFade::create(0.67f, StartScene::createScene()));
 		}

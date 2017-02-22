@@ -65,6 +65,7 @@ bool Dialog::init()
 		resumeGameBtn = Sprite::create("send/retry-button.png");
 		resumeGameBtn->setScale(win_size.height / 7 / resumeGameBtn->getContentSize().height);
 		resumeGameBtn->setPosition(origin.x + win_size.width * 0.43f, origin.y + win_size.height * 0.45f);
+		scaleOfRetry = resumeGameBtn->getScale();
 		addChild(resumeGameBtn);
 
 
@@ -100,10 +101,11 @@ Dialog* Dialog::create(bool isLoseTheGame)
 bool Dialog::onTouchBegan(Touch * touch, Event * event)
 {
 	if (exitGameBtn->getBoundingBox().containsPoint(touch->getLocation())) {
-		log("AHHIHIH");
 		Director::getInstance()->replaceScene(StartScene::createScene());
 #ifdef SDKBOX_ENABLED
-		sdkbox::PluginAdMob::show("gameover");
+		if (sdkbox::PluginAdMob::isAvailable("gameover")) {
+			sdkbox::PluginAdMob::show("gameover");
+		}
 #endif
 	}
 
@@ -114,7 +116,7 @@ bool Dialog::onTouchBegan(Touch * touch, Event * event)
 		if (!isLoseTheGame) {
 			gameScene->resumeGame();
 			Director::getInstance()->getEventDispatcher()->removeEventListener(_listener);
-		}
+		}		
 		else {
 #ifdef SDKBOX_ENABLED
 			if (sdkbox::PluginAdMob::isAvailable("gameover")) {
@@ -123,12 +125,9 @@ bool Dialog::onTouchBegan(Touch * touch, Event * event)
 				sdkbox::PluginAdMob::show("gameover");
 			}
 			else {
-				resumeGameBtn->runAction(Sequence::create(ScaleTo::create(0.4f, 1.3f), ScaleTo::create(0.4f, 1), nullptr));
+				resumeGameBtn->runAction(Sequence::create(ScaleTo::create(0.4f, scaleOfRetry*1.3), ScaleTo::create(0.4f, scaleOfRetry), nullptr));
 			}
 #endif
-//#ifndef SDKBOX_ENABLED
-//			gameScene->retryGame();
-//#endif
 		}
 	}
 
