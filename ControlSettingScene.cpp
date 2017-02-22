@@ -37,6 +37,7 @@ bool ControlSettingScene::init()
 	sdkbox::PluginGoogleAnalytics::logScreen("Setting Scene");
 	sdkbox::PluginGoogleAnalytics::dispatchHits();
 #endif
+
 	setKeyboardEnabled(true);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -106,6 +107,7 @@ bool ControlSettingScene::init()
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginAdMob::show("home");
 #endif
+
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(ControlSettingScene::onTouchBegan, this);
 	listener->onTouchMoved = CC_CALLBACK_2(ControlSettingScene::onTouchMoved, this);

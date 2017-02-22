@@ -90,7 +90,7 @@ bool GameScene::init()
 
 	auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
 
-	indexOfCurrentMap = 1;
+	indexOfCurrentMap = indexMap;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
