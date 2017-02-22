@@ -35,7 +35,7 @@ bool ControlSettingScene::init()
 
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginGoogleAnalytics::logScreen("Setting Scene");
-	sdkbox::PluginGoogleAnalytics::dispatchHits();
+	//sdkbox::PluginGoogleAnalytics::dispatchHits();
 #endif
 	setKeyboardEnabled(true);
 

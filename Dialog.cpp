@@ -65,6 +65,7 @@ bool Dialog::init()
 		resumeGameBtn = Sprite::create("send/retry-button.png");
 		resumeGameBtn->setScale(win_size.height / 7 / resumeGameBtn->getContentSize().height);
 		resumeGameBtn->setPosition(origin.x + win_size.width * 0.43f, origin.y + win_size.height * 0.45f);
+		scaleOfRetry = resumeGameBtn->getScale();
 		addChild(resumeGameBtn);
 
 
@@ -106,30 +107,32 @@ bool Dialog::onTouchBegan(Touch * touch, Event * event)
 #endif
 	}
 
-	if (resumeGameBtn->getBoundingBox().containsPoint(touch->getLocation())) {
-		GameScene* gameScene = (GameScene*) this->getParent()->getChildByTag(TAG_GAME);
+	else if (resumeGameBtn->getBoundingBox().containsPoint(touch->getLocation())) {
+		
+		if (!isLoseTheGame) {
+			GameScene* gameScene = (GameScene*) this->getParent()->getChildByTag(TAG_GAME);
 
-		Director::getInstance()->getEventDispatcher()->removeEventListener(_listener);
-
-		if (!isLoseTheGame)
+			Director::getInstance()->getEventDispatcher()->removeEventListener(_listener);
 			gameScene->resumeGame();
+		}
 		else {
-//#ifdef SDKBOX_ENABLED
-//			if (sdkbox::PluginAdMob::isAvailable("gameover")) {
-//				gameScene->retryGame();
-//				sdkbox::PluginAdMob::show("gameover");
-//			}
-//			else {
-//				resumeGameBtn->runAction(Sequence::create(ScaleTo::create(0.4f, 1.3f), ScaleTo::create(0.4f, 1), nullptr));
-//			}
-//#endif
-//#ifndef SDKBOX_ENABLED
-			gameScene->retryGame();
-//#endif
+#ifdef SDKBOX_ENABLED
+			if (sdkbox::PluginAdMob::isAvailable("gameover")) {
+				GameScene* gameScene = (GameScene*) this->getParent()->getChildByTag(TAG_GAME);
+
+				Director::getInstance()->getEventDispatcher()->removeEventListener(_listener);
+				gameScene->retryGame();
+				sdkbox::PluginAdMob::show("gameover");
+			}
+			else {
+				//auto scale = resumeGameBtn->getScale();
+				resumeGameBtn->runAction(Sequence::create(ScaleTo::create(0.4f, scaleOfRetry*1.3), ScaleTo::create(0.4f, scaleOfRetry), nullptr));
+			}
+#endif
 		}
 	}
 
-	if (!isLoseTheGame && goSettingBtn->getBoundingBox().containsPoint(touch->getLocation())) {
+	else if (!isLoseTheGame && goSettingBtn->getBoundingBox().containsPoint(touch->getLocation())) {
 		GameScene* gameScene = (GameScene*) this->getParent()->getChildByTag(TAG_GAME);
 		gameScene->isChangeControl = true;
 

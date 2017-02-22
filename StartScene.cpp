@@ -33,7 +33,7 @@ bool StartScene::init()
 	}
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginGoogleAnalytics::logScreen("StartScene");
-	sdkbox::PluginGoogleAnalytics::dispatchHits();
+	//sdkbox::PluginGoogleAnalytics::dispatchHits();
 #endif
 #ifdef SDKBOX_ENABLED
 	sdkbox::PluginAdMob::show("home");
@@ -111,12 +111,14 @@ bool StartScene::init()
 
 
 	if (ref->getIntegerForKey(KEYGUIDE) == NULL) {
-		setting->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, 1.3f), ScaleTo::create(0.4f, 1), nullptr)));
+		auto scale1 = setting->getScale();
+		setting->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, scale1*1.1f), ScaleTo::create(0.4f, scale1), nullptr)));
 		auto setting_text = Sprite::create("send/setting.png");
 		setting_text->setScale(visibleSize.height / 9.0f / setting_text->getContentSize().height);
 		setting_text->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.71f);
 		addChild(setting_text, 3);
-		setting_text->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, 0.6f), ScaleTo::create(0.4f, 0.5f), nullptr)));
+		auto scale2 = setting_text->getScale();
+		setting_text->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, scale2*1.1f), ScaleTo::create(0.4f, scale2), nullptr)));
 	}
 
 	gp1 = Sprite::create("send/GP1.png");
