@@ -126,12 +126,14 @@ void PlaneSoldier::createBomb()
 void PlaneSoldier::shoot(float radian)
 {
 	if (canShoot < INT_MAX) {
-		if (!canShoot && bulletPool != nullptr) {
-			createBullet(radian, getGunLoc("bshoot"));
-			createBullet(radian, getGunLoc("fshoot"));
-		}
+		if (!canShoot) {
+			if (!canShoot && bulletPool != nullptr) {
+				createBullet(radian, getGunLoc("bshoot"));
+				createBullet(radian, getGunLoc("fshoot"));
+			}
 
-		canShoot = 1;
+			canShoot = 1;
+		}
 	}
 }
 

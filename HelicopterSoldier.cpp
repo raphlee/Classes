@@ -72,14 +72,17 @@ void HelicopterSoldier::idleShoot()
 void HelicopterSoldier::shoot(float radian)
 {
 	if (canShoot < INT_MAX) {
-		if (!canShoot && bulletPool != nullptr) {
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.5f, getPositionY() + sizeSoldier.height * 0.4f));
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.73f, getPositionY() + sizeSoldier.height * 0.25f));
-			createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.51f, getPositionY() + sizeSoldier.height * 0.16f));
+		if (!canShoot) {
+			if (!canShoot && bulletPool != nullptr) {
+				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.5f, getPositionY() + sizeSoldier.height * 0.4f));
+				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.73f, getPositionY() + sizeSoldier.height * 0.25f));
+				createBullet(radian, Point(getPositionX() + sizeSoldier.height * 0.51f, getPositionY() + sizeSoldier.height * 0.16f));
 
+			}
+
+			canShoot = 1;
 		}
-
-		canShoot = 1;
+		
 	}
 }
 

@@ -43,7 +43,7 @@ bool ControlSettingScene::init()
 	label->setScale(visibleSize.height / 8.0f / label->getBoundingBox().size.height);
 	label->setColor(Color3B::WHITE);
 	label->enableBold();
-	label->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.9f);
+	label->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.8f);
 	addChild(label);
 
 
@@ -51,7 +51,7 @@ bool ControlSettingScene::init()
 	des->setScale(visibleSize.height / 16.0f / des->getBoundingBox().size.height);
 	des->setColor(Color3B::WHITE);
 	des->enableBold();
-	des->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.75f);
+	des->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.7f);
 	addChild(des);
 
 	reference = UserDefault::getInstance()->sharedUserDefault();
@@ -90,8 +90,8 @@ bool ControlSettingScene::init()
 	addChild(btnFire, 1);
 
 	submit = Sprite::create("send/ok-button.png");
-	submit->setScale(visibleSize.width / 10.0f / submit->getBoundingBox().size.width);
-	submit->setPosition(origin.x + visibleSize.width * 0.9f, origin.y + visibleSize.height * 0.9f);
+	submit->setScale(visibleSize.width / 8.0f / submit->getBoundingBox().size.width);
+	submit->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f);
 	addChild(submit);
 
 
@@ -126,7 +126,11 @@ bool ControlSettingScene::onTouchBegan(Touch * touch, Event * unused_event)
 		reference->setFloatForKey(KEYBTNFIRE_X, btnFire->getPositionX()); reference->flush();
 		reference->setFloatForKey(KEYBTNFIRE_Y, btnFire->getPositionY()); reference->flush();
 
-		Director::getInstance()->popScene();
+		if (reference->getIntegerForKey(KEYGUIDE) == 1) {		// chui ra tu setting
+			Director::getInstance()->replaceScene(GameScene::createScene());
+			reference->setIntegerForKey(KEYGUIDE, 2);
+		} else
+			Director::getInstance()->popScene();
 	}
 
 	return false;
