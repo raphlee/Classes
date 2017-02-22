@@ -69,6 +69,7 @@ void MiniFort::shoot(Point posOfHero)
 void MiniFort::die()
 {
 	//Enemy::die();
+	barrel->removeFromParentAndCleanup(true);
 	auto world = this->body->GetWorld();
 	if (world->IsLocked()) return;
 	world->DestroyBody(body);
@@ -103,12 +104,14 @@ Vec2 MiniFort::getGunLocation()
 void MiniFort::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 {
 	StaticHumanEnemy::updateEnemy(dt, cameraPoint, posOfHero);
-	posOfHero = posOfHero - this->getParent()->getPosition();
-	auto thisToHero = posOfHero - this->getPosition();
-	thisToHero.x = -thisToHero.x;
-	log("Angle: %f", thisToHero.getAngle());
-	barrel->setPosition(this->getGunLocation());
-	barrel->setRotation((thisToHero.getAngle()/PI)*180);
+	if (!isDie) {
+		posOfHero = posOfHero - this->getParent()->getPosition();
+		auto thisToHero = posOfHero - this->getPosition();
+		thisToHero.x = -thisToHero.x;
+		log("Angle: %f", thisToHero.getAngle());
+		barrel->setPosition(this->getGunLocation());
+		barrel->setRotation((thisToHero.getAngle() / PI) * 180);
+	}
 }
 
 

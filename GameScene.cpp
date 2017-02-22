@@ -78,9 +78,9 @@ bool GameScene::init()
 	camera = Follow::create(follow);
 	runAction(camera);
 
-	//auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
+	auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
 
-	indexOfCurrentMap = 17;
+	indexOfCurrentMap = 15;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
@@ -288,7 +288,7 @@ void GameScene::updateSoldier(float dt)
 		}
 		else {
 			soldier->health--;
-			//if(soldier->health >= 0)
+			if(soldier->health >= 0)
 				soldier->die(follow->getPosition());
 		}
 
@@ -343,8 +343,8 @@ void GameScene::updateSoldier(float dt)
 	}
 	default:
 		if (hud->joystick->getParent()->isVisible()) {
-			//isDoneGame = true;
-			//finalSection(false);
+			isDoneGame = true;
+			finalSection(false);
 		}
 			
 		break;
@@ -368,7 +368,7 @@ void GameScene::updateStandMan(float dt)
 				}
 				else {
 					if (tmp->getPosition().x + tmp->getParent()->getPosition().x < follow->getPosition().x) {
-						if (tmp->body != nullptr)
+						if (tmp->body != nullptr&&!tmp->isDie)
 							tmp->die();
 					}
 
@@ -1074,6 +1074,7 @@ void GameScene::buildFort(TMXTiledMap * map, Layer * layer, float scale)
 		//and set it back
 		gun->setPosition(pos);
 		layer->addChild(gun, 3);
+		gun->createBarrel();
 		gun->createPool(MAX_BULLET_FORT_POOL);
 
 	}

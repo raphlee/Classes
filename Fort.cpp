@@ -31,22 +31,42 @@ void Fort::shoot(float angle)
 		experimental::AudioEngine::play2d(SOUND_BIG_FORT_SHOOT);
 	}*/
 
+	//auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
+	//bullet->isDie = false;
+	////bullet->body->SetTransform(this->body->GetPosition(), 0);
+	////
+	//this->clearTracks();
+	////this->setAnimation(0, "hit", false);
+
+	//bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition());
+	//bullet->setVisible(true);
+
+	//indexBullet++;
+	//if (indexBullet == MAX_BULLET_FORT_POOL) {
+	//	indexBullet = 0;
+	//}
+	//
+	//bullet->setAngel(angle);
+
+	AudioManager::playSound(SOUND_CANON_SHOOT);
 	auto bullet = (BulletOfEnemy*)bulletPool->getObjectAtIndex(indexBullet);
 	bullet->isDie = false;
-	//bullet->body->SetTransform(this->body->GetPosition(), 0);
-	//
-	this->clearTracks();
-	this->setAnimation(0, "hit", false);
+	barrel->setRotation((-angle / PI * 180) +180);
+	
+	auto unitVecto = Vec2(cosf(angle), sinf(angle));
+	
+	auto vecOfBarrel = (barrel->getBoundingBox().size.width*unitVecto) / PTM_RATIO;
 
-	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition());
+	bullet->initPhysic(this->body->GetWorld(), this->body->GetPosition() + b2Vec2(vecOfBarrel.x, vecOfBarrel.y));
 	bullet->setVisible(true);
+	//barrel->setRotation(thisToHero.getAngle());
+	bullet->setAngel(angle);
 
 	indexBullet++;
-	if (indexBullet == MAX_BULLET_FORT_POOL) {
+	if (indexBullet == MAX_BULLET_SOLDIER_ENEMY_POOL) {
 		indexBullet = 0;
 	}
-	
-	bullet->setAngel(angle);
+
 }
 
 void Fort::getHit()
@@ -59,6 +79,7 @@ void Fort::getHit()
 void Fort::updateEnemy(float dt, Point cameraPoint, Point posOfHero)
 {
 	if (!isDie) {
+		barrel->setPosition(getGunLocation());
 		this->setPositionX(body->GetPosition().x * PTM_RATIO - this->getParent()->getPositionX());
 		this->setPositionY(body->GetPosition().y * PTM_RATIO - this->getParent()->getPositionY() - sizeEnemy.height / 2);;
 		
