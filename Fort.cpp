@@ -63,7 +63,7 @@ void Fort::shoot(float angle)
 	bullet->setAngel(angle);
 
 	indexBullet++;
-	if (indexBullet == MAX_BULLET_SOLDIER_ENEMY_POOL) {
+	if (indexBullet == MAX_BULLET_FORT_POOL) {
 		indexBullet = 0;
 	}
 

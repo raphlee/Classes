@@ -8,6 +8,11 @@
 #include "StartScene.h"
 #include "Dialog.h"
 
+#ifdef SDKBOX_ENABLED
+#include "PluginGoogleAnalytics/PluginGoogleAnalytics.h"
+#include "PluginAdMob/PluginAdMob.h"
+#endif
+
 
 USING_NS_CC;
 
@@ -21,7 +26,7 @@ Scene* GameScene::createScene()
 
 	// 'layer' is an autorelease object
 	hud = Hud::create();
-	dialog = Dialog::create();
+	//dialog = Dialog::create(false);
 	auto layer = GameScene::create();
 	layer->setTag(TAG_GAME);
 
@@ -29,7 +34,7 @@ Scene* GameScene::createScene()
 	// add layer as a child to scene
 	scene->addChild(layer);
 	scene->addChild(hud);
-	scene->addChild(dialog);
+	//scene->addChild(dialog);
 
 	// return the scene
 	return scene;
@@ -45,6 +50,11 @@ bool GameScene::init()
 		return false;
 	}
 
+#ifdef SDKBOX_ENABLED
+	sdkbox::PluginGoogleAnalytics::logScreen("Onplaying in GameScene");
+	sdkbox::PluginGoogleAnalytics::dispatchHits();
+	sdkbox::PluginAdMob::hide("home");
+#endif
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
@@ -80,7 +90,7 @@ bool GameScene::init()
 
 	auto indexMap = UserDefault::getInstance()->sharedUserDefault()->getIntegerForKey(KEY_CHOICE);
 
-	indexOfCurrentMap = 15;
+	indexOfCurrentMap = 1;
 	createBackground();
 	createPool();
 	originOfLastMap = Point(0, 0);
@@ -130,11 +140,14 @@ void GameScene::update(float dt)
 		if (soldier->getPosition().x > originOfLastMap.x + tmxNextMap->getBoundingBox().size.width - SCREEN_SIZE.width/6) {
 			finalSection(true);
 			isDoneGame = true;
+#ifdef SDKBOX_ENABLED
+			sdkbox::PluginGoogleAnalytics::logEvent("CheckWin", "Win", "Win", 17);
+			sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 		}
 	}
 	updateSoldier(dt);
 	updateStandMan(dt);
-	//updateAutoGun(dt);
 
 	for (int i = 0; i < dEnemyPool->count(); i++) {
 		((DynamicHumanEnemy*)dEnemyPool->getObjectAtIndex(i))->updateEnemy(dt, follow->getPosition());
@@ -224,9 +237,10 @@ void GameScene::update(float dt)
 		//controlButtonMove();
 
 	if (isChangeControl) {
+
 		changeControl();
 		isChangeControl = false;
-		log("Changed");
+		//log("Changed");
 	}
 
 	loadNextMap();
@@ -264,91 +278,46 @@ void GameScene::updateSoldier(float dt)
 			soldier->die(follow->getPosition());
 			if (soldier->defense < 0) {
 
-				hud->shield->setOpacity(50);
-
 				auto lastPos = soldier->getPosition();
 				auto sizeSoldier = soldier->sizeSoldier;
 
-				//auto callFunc = CallFunc::create([&]() {
 				removeOlderSoldier();
 				createSoldier(Point(lastPos.x, lastPos.y + sizeSoldier.height));
 
-				//soldier->die(Point(lastPos.x, lastPos.y + sizeSoldier.height));
 				auto ref = UserDefault::getInstance()->sharedUserDefault();
 				soldier->health = ref->getIntegerForKey(KEY_HEALTH);
 				soldier->body->SetLinearVelocity(b2Vec2(0.0f, soldier->jump_vel / 1.8f));
 
 				hud->btnJump->getParent()->setVisible(true);
+				hud->shield->setVisible(false);
 				hud->defense->setVisible(false);
-				//});
-
-				//soldier->runAction((Sequence::create(DelayTime::create(0.5f), callFunc, nullptr)));
 
 			}
 		}
 		else {
 			soldier->health--;
-			if(soldier->health >= 0)
+			if (soldier->health < -1) soldier->health = -1;
+			if (soldier->health >= 0) {
+				hud->menuLife[soldier->health]->setVisible(false);
 				soldier->die(follow->getPosition());
+			}
 		}
 
 
 	}
 
-	switch (soldier->health)
-	{
-	case 5: {
-		if (!hud->life_5->isVisible()) {
-			hud->life_5->setVisible(true);
-			hud->life_4->setVisible(true);
-			hud->life_3->setVisible(true);
-			hud->life_2->setVisible(true);
-			hud->life_1->setVisible(true);
-		}
 
-		break;
-	}
-	case 4: {
-		if (hud->life_5->isVisible())
-			hud->life_5->setVisible(false);
-		if (!hud->life_4->isVisible())
-			hud->life_4->setVisible(true);
-		break;
-	}
-	case 3: {
-		if (hud->life_4->isVisible())
-			hud->life_4->setVisible(false);
-		if (!hud->life_3->isVisible())
-			hud->life_3->setVisible(true);
-		break;
-	}
-	case 2: {
-		if (hud->life_3->isVisible())
-			hud->life_3->setVisible(false);
-		if (!hud->life_2->isVisible())
-			hud->life_2->setVisible(true);
-		break;
-	}
-	case 1: {
-		if (hud->life_2->isVisible())
-			hud->life_2->setVisible(false);
-		if (!hud->life_1->isVisible())
-			hud->life_1->setVisible(true);
-		break;
-	}
-	case 0: {
-		if (hud->life_1->isVisible())
-			hud->life_1->setVisible(false);
-		break;
-	}
-	default:
+	if (soldier->health < 0) {
 		if (hud->joystick->getParent()->isVisible()) {
 			isDoneGame = true;
 			finalSection(false);
+#ifdef SDKBOX_ENABLED
+			sdkbox::PluginGoogleAnalytics::logEvent("Check Lose", "Lose", "False in: ", indexOfCurrentMap);
+			sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 		}
-			
-		break;
 	}
+
 
 	if (hud->defense->isVisible()) {
 		hud->defense->setString(StringUtils::toString(soldier->defense));
@@ -422,7 +391,7 @@ void GameScene::removeOlderSoldier()
 void GameScene::transformTank(Point pos)
 {
 	hud->defense->setVisible(true);
-	hud->shield->setOpacity(255);
+	hud->shield->setVisible(true);
 	auto ref = UserDefault::getInstance()->sharedUserDefault();
 
 	AudioManager::playSound(SOUND_TRANSFORM);
@@ -450,7 +419,7 @@ void GameScene::transformHelicopter(Point pos)
 	hud->defense->setVisible(false);
 	//AudioManager::stopSoundForever((HelicopterSoldier*)soldier->isSound);
 	removeOlderSoldier();
-	
+
 	AudioManager::playSound(SOUND_TRANSFORM2);
 
 	if (soldier == nullptr) {
@@ -463,6 +432,9 @@ void GameScene::transformHelicopter(Point pos)
 		soldier->setScaleX(-1);
 		soldier->idleShoot();
 		soldier->blinkTrans();
+
+		for (int i = 0; i < soldier->health; i++)
+			hud->menuLife[i]->setVisible(true);
 	}
 }
 
@@ -479,8 +451,10 @@ void GameScene::transformPlane(Point pos)
 		soldier->body->SetFixedRotation(true);
 		soldier->createPool();
 		soldier->createBombPool();
-		//soldier->idle();
 		soldier->blinkTrans();
+
+		for (int i = 0; i < soldier->health; i++)
+			hud->menuLife[i]->setVisible(true);
 	}
 }
 
@@ -496,6 +470,10 @@ void GameScene::switchItem(float dt)
 					switch (tmp->type)
 					{
 					case TYPE::TANK: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "ItemTank in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						if (hud->btnJump->getParent()->isVisible()) {
 							hud->btnJump->getParent()->setVisible(false);
 						}
@@ -503,11 +481,21 @@ void GameScene::switchItem(float dt)
 						break;
 					}
 					case TYPE::HEALTH: {
-						if (soldier->health < 5)
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item health in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
+						if (soldier->health < 5) {
 							soldier->health++;
+							hud->menuLife[soldier->health - 1]->setVisible(true);
+						}
 						break;
 					}
 					case TYPE::HELICOPTER: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item helicopter in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						if (hud->btnJump->getParent()->isVisible()) {
 							hud->btnJump->getParent()->setVisible(false);
 						}
@@ -516,18 +504,34 @@ void GameScene::switchItem(float dt)
 						break;
 					}
 					case TYPE::FAST_BULLET: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item fast bullet in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						soldier->bulletType = BulletType::Fast;
 						break;
 					}
 					case TYPE::MULT_BULLET: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item penta bullet in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						soldier->bulletType = BulletType::Super;
 						break;
 					}
 					case TYPE::ORBIT_BULLET: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item circle bullet in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						soldier->bulletType = BulletType::Circle;
 						break;
 					}
 					case TYPE::PLANE: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item plane in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						if (hud->btnJump->getParent()->isVisible()) {
 							hud->btnJump->getParent()->setVisible(false);
 						}
@@ -562,6 +566,10 @@ void GameScene::switchItem(float dt)
 					switch (tmp->type)
 					{
 					case TYPE::TANK: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "ItemTank in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						if (hud->btnJump->getParent()->isVisible()) {
 							hud->btnJump->getParent()->setVisible(false);
 						}
@@ -569,11 +577,21 @@ void GameScene::switchItem(float dt)
 						break;
 					}
 					case TYPE::HEALTH: {
-						if (soldier->health < 5)
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item health in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
+						if (soldier->health < 5) {
 							soldier->health++;
+							hud->menuLife[soldier->health - 1]->setVisible(true);
+						}
 						break;
 					}
 					case TYPE::HELICOPTER: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item helicopter in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						if (hud->btnJump->getParent()->isVisible()) {
 							hud->btnJump->getParent()->setVisible(false);
 						}
@@ -582,18 +600,34 @@ void GameScene::switchItem(float dt)
 						break;
 					}
 					case TYPE::FAST_BULLET: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item fast bullet in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						soldier->bulletType = BulletType::Fast;
 						break;
 					}
 					case TYPE::MULT_BULLET: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item penta bullet in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						soldier->bulletType = BulletType::Super;
 						break;
 					}
 					case TYPE::ORBIT_BULLET: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item circle bullet in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						soldier->bulletType = BulletType::Circle;
 						break;
 					}
 					case TYPE::PLANE: {
+#ifdef SDKBOX_ENABLED
+						sdkbox::PluginGoogleAnalytics::logEvent("Get item", "got it", "Item plane in map", indexOfCurrentMap);
+						sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 						if (hud->btnJump->getParent()->isVisible()) {
 							hud->btnJump->getParent()->setVisible(false);
 						}
@@ -846,7 +880,10 @@ void GameScene::loadNextMap()
 {
 
 	if ((soldier->getPosition().x > (originOfLastMap.x + tmxNextMap->getBoundingBox().size.width - SCREEN_SIZE.width))) {
-		
+#ifdef SDKBOX_ENABLED
+		sdkbox::PluginGoogleAnalytics::logEvent("LoadNextMap", "Loading it", "Loading map number", indexOfCurrentMap + 1);
+		sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 		if(indexOfCurrentMap < 17) {
 			Point originOfNextmap = Point(originOfLastMap.x + tmxNextMap->getContentSize().width*scaleOfMap, 0);
 
@@ -879,7 +916,12 @@ void GameScene::loadNextMap()
 /************************************************************************/
 void GameScene::freePassedMap()
 {
+
 	if ((soldier->getPosition().x > (originOfLastMap.x + SCREEN_SIZE.width) && indexOfCurrentMap < 17)) {
+#ifdef SDKBOX_ENABLED
+		sdkbox::PluginGoogleAnalytics::logEvent("Free Passed Map", "Freeing it", "Freeing map number", indexOfCurrentMap -1);
+		sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 		if (layCurrentMap != nullptr) {
 			vector <b2Body*> toDestroy;
 
@@ -1002,7 +1044,7 @@ void GameScene::buildStandEnemy(TMXTiledMap * map, Layer * layer, float scale)
 		standMan->initCirclePhysic(world, pos + originThisMap);
 		//and set it back
 		//standMan->setTag(TAG_STANDMAN);
-		standMan->setPosition(pos);
+		standMan->setPosition(pos.x, pos.y - standMan->sizeEnemy.height / 2);
 
 		layer->addChild(standMan, 3);
 		standMan->createPool(MAX_BULLET_SOLDIER_ENEMY_POOL);
@@ -1048,7 +1090,7 @@ void GameScene::buildMiniFort(TMXTiledMap * map, Layer * layer, float scale)
 		gun->initCirclePhysic(world, pos + originThisMap);
 		//gun->changeBodyBitMask(BITMASK_SOLDIER);
 		//and set it back
-		gun->setPosition(pos);
+		gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 		layer->addChild(gun, 3);
 		gun->createBarrel();
 		gun->createPool(MAX_BULLET_FORT_MINI_POOL);
@@ -1072,7 +1114,7 @@ void GameScene::buildFort(TMXTiledMap * map, Layer * layer, float scale)
 		gun->initCirclePhysic(world, pos + originThisMap);
 		//gun->changeBodyBitMask(BITMASK_SOLDIER);
 		//and set it back
-		gun->setPosition(pos);
+		gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 		layer->addChild(gun, 3);
 		gun->createBarrel();
 		gun->createPool(MAX_BULLET_FORT_POOL);
@@ -1097,7 +1139,7 @@ void GameScene::buildTankEnemy(TMXTiledMap * map, Layer * layer, float scale)
 			gun->initCirclePhysic(world, pos + originThisMap);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setPosition(pos);
+			gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_TANK_POOL);
 		}
@@ -1116,7 +1158,7 @@ void GameScene::buildTankEnemy(TMXTiledMap * map, Layer * layer, float scale)
 			gun->initCirclePhysic(world, pos + originThisMap);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setPosition(pos);
+			gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_TANK_POOL);
 		}
@@ -1135,7 +1177,7 @@ void GameScene::buildTankEnemy(TMXTiledMap * map, Layer * layer, float scale)
 			gun->initCirclePhysic(world, pos + originThisMap);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setPosition(pos);
+			gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_TANK_POOL);
 		}
@@ -1161,7 +1203,7 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
 			//gun->setTag(TAG_ENEMY_TANK);
-			gun->setPosition(pos);
+			gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
 		}
@@ -1182,7 +1224,7 @@ void GameScene::buildHelicopterShoot(TMXTiledMap * map, Layer * layer, float sca
 			gun->body->GetFixtureList()->SetSensor(true);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setPosition(pos);
+			gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
 		}
@@ -1209,7 +1251,7 @@ void GameScene::buildHelicopterBoom(TMXTiledMap * map, Layer * layer, float scal
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
 			//gun->setTag(TAG_ENEMY_TANK);
-			gun->setPosition(pos);
+			gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 			layer->addChild(gun, 3);
 			gun->createPool(TAG_ENEMY_HELICOPTER_BOOM);
 		}
@@ -1230,7 +1272,7 @@ void GameScene::buildHelicopterBoom(TMXTiledMap * map, Layer * layer, float scal
 			gun->body->GetFixtureList()->SetSensor(true);
 			//gun->changeBodyBitMask(BITMASK_SOLDIER);
 			//and set it back
-			gun->setPosition(pos);
+			gun->setPosition(pos.x, pos.y - gun->sizeEnemy.height / 2);
 			layer->addChild(gun, 3);
 			gun->createPool(MAX_BULLET_HELICOPTER_POOL);
 		}
@@ -1254,8 +1296,6 @@ void GameScene::buildItem(TMXTiledMap * map, Layer * layer, float scale, string 
 		item->setPosition(pos);
 		item->initPhysic(world, pos + originThisMap, b2_dynamicBody);
 		layer->addChild(item, ZORDER_ENEMY);
-
-		//items.push_back(item);
 	}
 
 }
@@ -1378,7 +1418,7 @@ void GameScene::controlSneakyButtonFire()
 void GameScene::controlSneakyButtonPause()
 {
 	if (hud->btnPause->getIsActive()) {
-		pauseGame();
+		pauseGame(false);
 	}
 }
 
@@ -1579,6 +1619,7 @@ void GameScene::changeControl()
 
 void GameScene::finalSection(bool isWin)
 {
+	experimental::AudioEngine::pauseAll();
 	auto children = hud->getChildren();
 	for (auto child : children)
 	{
@@ -1586,34 +1627,50 @@ void GameScene::finalSection(bool isWin)
 		child->pauseSchedulerAndActions();
 	}
 
-	auto blood_bg = Sprite::create("end-screen/red-screen.png");
-	blood_bg->setScaleX(SCREEN_SIZE.width / blood_bg->getContentSize().width);
-	blood_bg->setScaleY(SCREEN_SIZE.height / blood_bg->getContentSize().height);
-	blood_bg->setPosition(follow->getPosition());
-	addChild(blood_bg, 100);
-	Sprite *logo;
 	if (isWin) {
+		logo = nullptr;
 		logo = Sprite::create("end-screen/text-win.png");
+		logo->setScale(SCREEN_SIZE.width / 5.0f / logo->getContentSize().width);
+		addChild(logo, 101);
+		AudioManager::playSound(SOUND_WIN);
 	}
 	else {
-		logo = Sprite::create("end-screen/text-lose.png");
+		if(logo == nullptr)
+			logo = Sprite::create("end-screen/text-lose.png");
+		AudioManager::playSound(SOUND_LOSE);
 	}
 
-	logo->setScale(SCREEN_SIZE.width / 5.0f / logo->getContentSize().width);
+	if (blood_bg == nullptr) {
+		blood_bg = Sprite::create("end-screen/red-screen.png");
+		blood_bg->setScaleX(SCREEN_SIZE.width / blood_bg->getContentSize().width);
+		blood_bg->setScaleY(SCREEN_SIZE.height / blood_bg->getContentSize().height);
+		addChild(blood_bg, 100);
+
+		logo->setScale(SCREEN_SIZE.width / 5.0f / logo->getContentSize().width);
+		addChild(logo, 101);
+	} else {
+		blood_bg->setVisible(true);
+		logo->setVisible(true);
+	}
+
+	blood_bg->setPosition(follow->getPosition());
 	logo->setPosition(follow->getPosition());
-	addChild(logo, 101);
+	
 	timeOut = 0;
 	this->schedule([&](float dt) {
 		timeOut += 1;
 
 		if (timeOut >= 4) {		// 4s to replace scene
-			Director::getInstance()->replaceScene(StartScene::createScene());
+			//Director::getInstance()->replaceScene(StartScene::createScene());
+			unschedule("Key");
+			timeOut = 0;
+			pauseGame(true);		// die hard
 		}
 
 	}, 1.0f, "Key");
 
 	soldier->body->SetLinearVelocity(b2Vec2(0, 0));		// cannot move anymore
-	soldier->changeBodyBitMask(BITMASK_ENEMY);			// cannot collide with ememy
+	soldier->changeBodyBitMask(BITMASK_BLINK);			// cannot collide with ememy
 	
 	if (!soldier->isOnTheAir && !isWin) {
 		soldier->clearTracks();
@@ -1621,21 +1678,18 @@ void GameScene::finalSection(bool isWin)
 		soldier->setToSetupPose();
 	}
 	
-	
 	if(soldier->isOnTheAir && !isWin) {
-		soldier->isOnTheAir = false;			// falling star
-		soldier->clearTracks();
-		soldier->setToSetupPose();
-		soldier->body->SetGravityScale(0.7f);		// enable falling
+		//soldier->isOnTheAir = false;			// falling star
+		//soldier->clearTracks();
+		//soldier->body->SetGravityScale(0.7f);		// enable falling
 	}
-	
 }
 
 void GameScene::resumeGame()
 {
 	//Director::getInstance()->resume();
 	
-	//this->getParent()->resumeSchedulerAndActions();
+	dialog->removeFromParentAndCleanup(true);
 	this->resume();
 	auto children = hud->getChildren();
 	for (auto child : children)
@@ -1644,28 +1698,50 @@ void GameScene::resumeGame()
 	}
 }
 
-void GameScene::pauseGame()
+void GameScene::pauseGame(bool isLoseTheGame)
 {
+	dialog = Dialog::create(isLoseTheGame);
+	this->getParent()->addChild(dialog);
 	dialog->_listener = EventListenerTouchOneByOne::create();
 	dialog->_listener->onTouchBegan = CC_CALLBACK_2(Dialog::onTouchBegan, dialog);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(dialog->_listener, dialog);
 
-	dialog->setVisible(true);
-
-	//Director::getInstance()->pause();
-	auto children = hud->getChildren();
-	for (auto child : children)
-	{
-		child->pauseSchedulerAndActions();
+	if (!isLoseTheGame) {		// pause
+		auto children = hud->getChildren();
+		for (auto child : children)
+		{
+			child->pauseSchedulerAndActions();
+		}
 	}
+	
 	this->pause();
-	//this->getParent()->pauseSchedulerAndActions();
+}
+
+void GameScene::retryGame()
+{
+#ifdef SDKBOX_ENABLED
+	sdkbox::PluginGoogleAnalytics::logEvent("Check view Ad", "view ad", "View in: ", indexOfCurrentMap);
+	sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
+	isDoneGame = false;
+	blood_bg->setVisible(false);
+	logo->setVisible(false);
+
+	resumeGame();
+	
+	soldier->health = 1;
+
+	hud->joystick->getParent()->setVisible(true);
+	hud->btnFire->getParent()->setVisible(true);
+	if(!soldier->isOnTheAir)
+		hud->btnJump->getParent()->setVisible(true);
+	hud->btnPause->getParent()->setVisible(true);
 }
 
 void GameScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
 {
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
-		pauseGame();
+		pauseGame(false);
 	}
 }
 

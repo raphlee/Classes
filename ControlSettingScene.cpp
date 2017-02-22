@@ -2,6 +2,11 @@
 #include "StartScene.h"
 #include "AudioEngine.h"
 
+#ifdef SDKBOX_ENABLED
+#include "PluginGoogleAnalytics/PluginGoogleAnalytics.h"
+#include "PluginAdMob/PluginAdMob.h"
+#endif
+
 Scene* ControlSettingScene::createScene()
 {
 
@@ -28,6 +33,10 @@ bool ControlSettingScene::init()
 		return false;
 	}
 
+#ifdef SDKBOX_ENABLED
+	sdkbox::PluginGoogleAnalytics::logScreen("Setting Scene");
+	sdkbox::PluginGoogleAnalytics::dispatchHits();
+#endif
 	setKeyboardEnabled(true);
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
@@ -43,7 +52,7 @@ bool ControlSettingScene::init()
 	label->setScale(visibleSize.height / 8.0f / label->getBoundingBox().size.height);
 	label->setColor(Color3B::WHITE);
 	label->enableBold();
-	label->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.9f);
+	label->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.8f);
 	addChild(label);
 
 
@@ -51,7 +60,7 @@ bool ControlSettingScene::init()
 	des->setScale(visibleSize.height / 16.0f / des->getBoundingBox().size.height);
 	des->setColor(Color3B::WHITE);
 	des->enableBold();
-	des->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.75f);
+	des->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height * 0.7f);
 	addChild(des);
 
 	reference = UserDefault::getInstance()->sharedUserDefault();
@@ -90,11 +99,13 @@ bool ControlSettingScene::init()
 	addChild(btnFire, 1);
 
 	submit = Sprite::create("send/ok-button.png");
-	submit->setScale(visibleSize.width / 10.0f / submit->getBoundingBox().size.width);
-	submit->setPosition(origin.x + visibleSize.width * 0.9f, origin.y + visibleSize.height * 0.9f);
+	submit->setScale(visibleSize.width / 8.0f / submit->getBoundingBox().size.width);
+	submit->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.55f);
 	addChild(submit);
 
-
+#ifdef SDKBOX_ENABLED
+	sdkbox::PluginAdMob::show("home");
+#endif
 	auto listener = EventListenerTouchOneByOne::create();
 	listener->onTouchBegan = CC_CALLBACK_2(ControlSettingScene::onTouchBegan, this);
 	listener->onTouchMoved = CC_CALLBACK_2(ControlSettingScene::onTouchMoved, this);
@@ -126,8 +137,6 @@ bool ControlSettingScene::onTouchBegan(Touch * touch, Event * unused_event)
 		reference->setFloatForKey(KEYBTNFIRE_X, btnFire->getPositionX()); reference->flush();
 		reference->setFloatForKey(KEYBTNFIRE_Y, btnFire->getPositionY()); reference->flush();
 
-
-		//Director::getInstance()->replaceScene(TransitionFade::create(0.67f, GameScene::createScene()));
 		Director::getInstance()->popScene();
 	}
 
@@ -155,6 +164,15 @@ void ControlSettingScene::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * 
 	if (keyCode == EventKeyboard::KeyCode::KEY_ESCAPE) {
 		Director::getInstance()->replaceScene(StartScene::createScene());
 	}
+}
+
+void ControlSettingScene::onExit()
+{
+	Node::onExit();
+#ifdef SDKBOX_ENABLED
+	sdkbox::PluginAdMob::hide("home");
+#endif
+
 }
 
 //void ControlSettingScene::onTouchEnded(Touch * touch, Event * unused_event)

@@ -77,6 +77,8 @@ void MiniFort::die()
 	this->clearTracks();
 	this->setAnimation(0, "destroy", false);
 	auto callFunc = CallFunc::create([&]() {
+		//barrel->removeFromParentAndCleanup(true);
+		barrel = nullptr;
 		this->setVisible(false);//removeFromParentAndCleanup(true);
 	});
 

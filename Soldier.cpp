@@ -184,7 +184,9 @@ void Soldier::die(Point posOfCammera)
 		setScaleX(1);
 		cur_state = JUMPING;
 		onGround = false;
-		body->SetLinearVelocity(b2Vec2(0, 0));
+		changeBodyBitMask(BITMASK_BLINK);
+
+		body->SetLinearVelocity(b2Vec2(0, -move_vel / 9));
 		body->SetTransform(b2Vec2((posOfCammera.x) / PTM_RATIO,
 			SCREEN_SIZE.height / PTM_RATIO), this->body->GetAngle());
 
@@ -192,7 +194,7 @@ void Soldier::die(Point posOfCammera)
 		this->bulletType = BulletType::Slow;
 
 		isNoDie = -180;
-		changeBodyBitMask(BITMASK_BLINK);
+		
 		auto blink = CCBlink::create(1, 3);
 		auto visible = CallFunc::create([=] {
 			this->setVisible(true);
@@ -466,7 +468,7 @@ void Soldier::createBullet(float radian, Point posGun)
 		indexBullet = 0;
 	}
 	if (this->bulletType == BulletType::Circle) {
-		bullet->damage = 2;
+//		bullet->damage = 2;
 		bullet->type = Type::circle;
 		bullet->alpha = 3*PI/2;
 		bullet->radian = radian;

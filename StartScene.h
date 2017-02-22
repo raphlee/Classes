@@ -19,17 +19,27 @@ public:
     virtual bool init();
 
 	Sprite *play;
-	//Sprite *setting;
+	Sprite *setting;
 
 	Sprite *gp1;
 	Sprite *gp2;
 	Sprite *gp3;
 	Sprite *gp4;
 
+	Sprite *grass1;
+	Sprite *grass2;
+	Sprite *grass3;
+	Action * action_1;
+	Action * action_2;
+	Action * action_3;
+
 	Sprite *soundOn;
 	Sprite *soundOff;
 	int backgroudSoundID;
 	UserDefault *ref;
+
+	void createAction();
+	void onEnter();
 
 	bool onTouchBegan(Touch *touch, Event *unused_event);
 

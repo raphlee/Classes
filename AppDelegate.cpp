@@ -1,7 +1,10 @@
 #include "AppDelegate.h"
-#include "StartScene.h"
+#include "SplashScene.h"
 #include "AudioEngine.h"
-
+#ifdef SDKBOX_ENABLED
+#include "PluginGoogleAnalytics/PluginGoogleAnalytics.h"
+#include "PluginAdMob/PluginAdMob.h"
+#endif
 USING_NS_CC;
 
 static cocos2d::Size designResolutionSize = cocos2d::Size(711, 400);
@@ -49,7 +52,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     }
 
     // turn on display FPS
-    director->setDisplayStats(true);
+    //director->setDisplayStats(true);
 
     // set FPS. the default value is 1.0/60 if you don't call this
     director->setAnimationInterval(1.0 / 60);
@@ -76,11 +79,18 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
  
-    auto scene = StartScene::createScene();
+    auto scene = SplashScene::createScene();
 
     // run
+#ifdef SDKBOX_ENABLED
+	sdkbox::PluginGoogleAnalytics::init();
+	sdkbox::PluginGoogleAnalytics::startSession();
+	sdkbox::PluginAdMob::init();
+#endif
     director->runWithScene(scene);
 
+	
+	
     return true;
 }
 

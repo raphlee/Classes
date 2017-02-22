@@ -42,44 +42,25 @@ bool Hud::init()
 	addJoystickButtonFire(fireXRatio, fireYRatio);
 	addJoystickButtonPause();
 
+	menuLife = new Sprite*[5];
+
+	for (int i = 0; i < 5; i++) {
+		menuLife[i] = Sprite::create("send/item-life.png");
+		menuLife[i]->setScale(SCREEN_SIZE.height / 12 / menuLife[i]->getContentSize().height);
+		menuLife[i]->setPosition(Point(origin.x + winSize.width * (0.05f + i * 0.03f), origin.y + winSize.height * 0.9f));
+		addChild(menuLife[i]);
+	}
+
 	/*} else
 		addButton();*/
-	life_1 = Sprite::create("send/item-life.png");
-	life_1->setScale(SCREEN_SIZE.height / 12 / life_1->getContentSize().height);
-	life_1->setPosition(Point(origin.x + winSize.width * 0.05f, origin.y + winSize.height * 0.9f));
-	addChild(life_1);
-
-
-	life_2 = Sprite::create("send/item-life.png");
-	life_2->setScale(SCREEN_SIZE.height / 12 / life_2->getContentSize().height);
-	life_2->setPosition(Point(origin.x + winSize.width * 0.08f, origin.y + winSize.height * 0.9f));
-	addChild(life_2);
-
-
-	life_3 = Sprite::create("send/item-life.png");
-	life_3->setScale(SCREEN_SIZE.height / 12 / life_3->getContentSize().height);
-	life_3->setPosition(Point(origin.x + winSize.width * 0.11f, origin.y + winSize.height * 0.9f));
-	addChild(life_3);
-
-
-	life_4 = Sprite::create("send/item-life.png");
-	life_4->setScale(SCREEN_SIZE.height / 12 / life_4->getContentSize().height);
-	life_4->setPosition(Point(origin.x + winSize.width * 0.14f, origin.y + winSize.height * 0.9f));
-	addChild(life_4);
-
-
-	life_5 = Sprite::create("send/item-life.png");
-	life_5->setScale(SCREEN_SIZE.height / 12 / life_5->getContentSize().height);
-	life_5->setPosition(Point(origin.x + winSize.width * 0.17f, origin.y + winSize.height * 0.9f));
-	addChild(life_5);
 
 	shield = Sprite::create("send/icon-shield.png");
-	shield->setScale(SCREEN_SIZE.height / 10 / shield->getContentSize().height);
+	shield->setScale(SCREEN_SIZE.height / 12 / shield->getContentSize().height);
 	shield->setPosition(Point(origin.x + winSize.width * 0.06f, origin.y + winSize.height * 0.78f));
-	shield->setOpacity(50);
+	shield->setVisible(false);
 	addChild(shield);
 
-	defense = Label::createWithTTF("2", "fonts/Roboto_Light.ttf", 200);
+	defense = Label::createWithTTF("3", "fonts/Roboto_Light.ttf", 200);
 	defense->enableBold();
 	defense->setScale(SCREEN_SIZE.height / 23.0f / defense->getContentSize().height);
 	defense->setPosition(shield->getPositionX() + shield->getBoundingBox().size.width / 2, 

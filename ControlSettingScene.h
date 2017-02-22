@@ -27,6 +27,8 @@ public:
 
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
 
+	void onExit();
+
     // implement the "static create()" method manually
     CREATE_FUNC(ControlSettingScene);
 };

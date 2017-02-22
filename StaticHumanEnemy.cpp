@@ -23,8 +23,6 @@ StaticHumanEnemy * StaticHumanEnemy::create(float scale)
 	e->setScaleX(-1);
 	e->facingRight = false;
 	e->setAnimation(0, "standing-shoot", false);
-	//e->setTag(TAG_ENEMY);
-	//e->setVisible(0);
 	e->indexBullet = -1;
 	return e;
 }
@@ -119,23 +117,6 @@ void StaticHumanEnemy::shoot(Point posOfHero)
 				bullet->setAngel(-PI / 2);
 			}
 		}
-		/*else if (tmp < 0 && fabs(tmp) > 1 / 2 && fabs(tmp) < 2) {
-			this->setScaleX(-1);
-			this->clearTracks();
-			this->setAnimation(0, "standing-shoot-45up", false);
-			checkCanShoot = false;
-		}
-		else if(fabs(tmp) > 2){
-			this->clearTracks();
-			this->setAnimation(0, "standing-shoot-up", false);
-			checkCanShoot = false;
-		}
-		else if (tmp > 0 && fabs(tmp) > 1 / 2 && fabs(tmp) < 2) {
-			this->setScaleX(1);
-			this->clearTracks();
-			this->setAnimation(0, "standing-shoot-45up", false);
-			checkCanShoot = false;
-		}*/
 	}
 
 }
