@@ -133,8 +133,6 @@ void PlaneSoldier::shoot(float radian)
 			}
 			canShoot = 1;
 		}
-
-		
 	}
 }
 

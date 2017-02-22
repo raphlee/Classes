@@ -106,7 +106,7 @@ bool Dialog::onTouchBegan(Touch * touch, Event * event)
 #endif
 	}
 
-	else if (resumeGameBtn->getBoundingBox().containsPoint(touch->getLocation())) {
+	if (resumeGameBtn->getBoundingBox().containsPoint(touch->getLocation())) {
 		GameScene* gameScene = (GameScene*) this->getParent()->getChildByTag(TAG_GAME);
 
 		Director::getInstance()->getEventDispatcher()->removeEventListener(_listener);
@@ -114,24 +114,22 @@ bool Dialog::onTouchBegan(Touch * touch, Event * event)
 		if (!isLoseTheGame)
 			gameScene->resumeGame();
 		else {
-#ifdef SDKBOX_ENABLED
-		if (sdkbox::PluginAdMob::isAvailable("gameover")) {
+//#ifdef SDKBOX_ENABLED
+//			if (sdkbox::PluginAdMob::isAvailable("gameover")) {
+//				gameScene->retryGame();
+//				sdkbox::PluginAdMob::show("gameover");
+//			}
+//			else {
+//				resumeGameBtn->runAction(Sequence::create(ScaleTo::create(0.4f, 1.3f), ScaleTo::create(0.4f, 1), nullptr));
+//			}
+//#endif
+//#ifndef SDKBOX_ENABLED
 			gameScene->retryGame();
-#ifdef SDKBOX_ENABLED
-			sdkbox::PluginAdMob::show("gameover");
-#endif
+//#endif
 		}
-		else {
-			resumeGameBtn->runAction(CCBlink::create(0.5f, 1));
-		}
-#endif
-#ifndef SDKBOX_ENABLED
-			gameScene->retryGame();
-#endif
 	}
-}
 
-	else if (!isLoseTheGame && goSettingBtn->getBoundingBox().containsPoint(touch->getLocation())) {
+	if (!isLoseTheGame && goSettingBtn->getBoundingBox().containsPoint(touch->getLocation())) {
 		GameScene* gameScene = (GameScene*) this->getParent()->getChildByTag(TAG_GAME);
 		gameScene->isChangeControl = true;
 

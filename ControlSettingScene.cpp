@@ -100,7 +100,7 @@ bool ControlSettingScene::init()
 
 	submit = Sprite::create("send/ok-button.png");
 	submit->setScale(visibleSize.width / 8.0f / submit->getBoundingBox().size.width);
-	submit->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.55f);
+	submit->setPosition(origin.x + visibleSize.width * 0.5f, origin.y + visibleSize.height * 0.5f);
 	addChild(submit);
 
 #ifdef SDKBOX_ENABLED
@@ -137,7 +137,11 @@ bool ControlSettingScene::onTouchBegan(Touch * touch, Event * unused_event)
 		reference->setFloatForKey(KEYBTNFIRE_X, btnFire->getPositionX()); reference->flush();
 		reference->setFloatForKey(KEYBTNFIRE_Y, btnFire->getPositionY()); reference->flush();
 
-		Director::getInstance()->popScene();
+		if (reference->getIntegerForKey(KEYGUIDE) == 1) {		// chui ra tu setting
+			Director::getInstance()->replaceScene(GameScene::createScene());
+			reference->setIntegerForKey(KEYGUIDE, 2);
+		} else
+			Director::getInstance()->popScene();
 	}
 
 	return false;

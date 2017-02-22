@@ -22,7 +22,7 @@ using namespace std;
 #define KEY_CHOICE						"GAMEPLAY"
 #define KEY_HEALTH						"KEYHEALTH"
 #define KEY_ID_BG_MUSIC					"KEYMUSIC"
-#define KEYADS							"KEYADS"
+#define KEYGUIDE						"KEYGUIDE"
 #define KEYSOUND						"KEYSOUND"
 
 

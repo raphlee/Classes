@@ -99,15 +99,25 @@ bool StartScene::init()
 	addChild(skeleton);
 
 	play = Sprite::createWithSpriteFrameName("btn-play.png");
-	play->setScale(visibleSize.height / 5.0f / play->getContentSize().height);
+	play->setScale(visibleSize.height / 4.5f / play->getContentSize().height);
 	auto posX = visibleSize.width / 2 + rambo->getBoundingBox().size.width / 2 + play->getBoundingBox().size.width * 0.7f;
-	play->setPosition(origin.x + posX, origin.y + visibleSize.height * 0.65f);
+	play->setPosition(origin.x + posX, origin.y + visibleSize.height * 0.6f);
 	addChild(play);
 
 	setting = Sprite::create("send/btn-setting.png");
-	setting->setScale(visibleSize.height / 9.0f / setting->getContentSize().height);
-	setting->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.85f);
-	addChild(setting);
+	setting->setScale(visibleSize.height / 8.0f / setting->getContentSize().height);
+	setting->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.83f);
+	addChild(setting, 3);
+
+
+	if (ref->getIntegerForKey(KEYGUIDE) == NULL) {
+		setting->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, 1.3f), ScaleTo::create(0.4f, 1), nullptr)));
+		auto setting_text = Sprite::create("send/setting.png");
+		setting_text->setScale(visibleSize.height / 9.0f / setting_text->getContentSize().height);
+		setting_text->setPosition(origin.x + visibleSize.width * 0.1f, origin.y + visibleSize.height * 0.71f);
+		addChild(setting_text, 3);
+		setting_text->runAction(RepeatForever::create(Sequence::create(ScaleTo::create(0.4f, 0.6f), ScaleTo::create(0.4f, 0.5f), nullptr)));
+	}
 
 	gp1 = Sprite::create("send/GP1.png");
 	gp1->setScale(visibleSize.height / 9.0f / gp1->getContentSize().height);
@@ -209,7 +219,8 @@ bool StartScene::onTouchBegan(Touch * touch, Event * unused_event)
 
 	else if (setting->getBoundingBox().containsPoint(touch->getLocation())) {
 		grass1->stopAllActions(); grass2->stopAllActions(); grass3->stopAllActions();
-		Director::getInstance()->pushScene(this->getScene());
+
+		ref->setIntegerForKey(KEYGUIDE, 1);
 		Director::getInstance()->replaceScene(ControlSettingScene::createScene());
 	}
 

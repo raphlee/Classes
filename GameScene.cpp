@@ -880,10 +880,10 @@ void GameScene::loadNextMap()
 {
 
 	if ((soldier->getPosition().x > (originOfLastMap.x + tmxNextMap->getBoundingBox().size.width - SCREEN_SIZE.width))) {
-#ifdef SDKBOX_ENABLED
-		sdkbox::PluginGoogleAnalytics::logEvent("LoadNextMap", "Loading it", "Loading map number", indexOfCurrentMap + 1);
-		sdkbox::PluginGoogleAnalytics::dispatchHits();
-#endif
+//#ifdef SDKBOX_ENABLED
+//		sdkbox::PluginGoogleAnalytics::logEvent("LoadNextMap", "Loading it", "Loading map number", indexOfCurrentMap + 1);
+//		sdkbox::PluginGoogleAnalytics::dispatchHits();
+//#endif
 		if(indexOfCurrentMap < 17) {
 			Point originOfNextmap = Point(originOfLastMap.x + tmxNextMap->getContentSize().width*scaleOfMap, 0);
 
@@ -918,10 +918,10 @@ void GameScene::freePassedMap()
 {
 
 	if ((soldier->getPosition().x > (originOfLastMap.x + SCREEN_SIZE.width) && indexOfCurrentMap < 17)) {
-#ifdef SDKBOX_ENABLED
-		sdkbox::PluginGoogleAnalytics::logEvent("Free Passed Map", "Freeing it", "Freeing map number", indexOfCurrentMap -1);
-		sdkbox::PluginGoogleAnalytics::dispatchHits();
-#endif
+//#ifdef SDKBOX_ENABLED
+//		sdkbox::PluginGoogleAnalytics::logEvent("Free Passed Map", "Freeing it", "Freeing map number", indexOfCurrentMap -1);
+//		sdkbox::PluginGoogleAnalytics::dispatchHits();
+//#endif
 		if (layCurrentMap != nullptr) {
 			vector <b2Body*> toDestroy;
 
